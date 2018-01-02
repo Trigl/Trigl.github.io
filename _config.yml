@@ -52,7 +52,7 @@ ga_domain: huangxuan.me
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "码渣，铲屎官，尤克里里爱好者，小时候的梦想是成为作家，老了以后希望可以当一个厨子 :)"
-sidebar-avatar: img/avatar.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: img/avatar-cat.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 # Featured Tags
@@ -90,8 +90,8 @@ relative_link: false
 future: true
 highlight:
   enable: true
-  line_number: true
-  auto_detect: true
+  line_number: false
+  auto_detect: false
   tab_replace:
 
 # Category & Tag
@@ -120,5 +120,6 @@ theme: huxblog
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repo: https://github.com/Kaijun/hexo-theme-huxblog
-  branch: gh-pages
+  repo:
+    github: https://github.com/Trigl/Trigl.github.io.git,master
+    coding: https://git.coding.net/baixin2world/baixin2world.coding.me.git,master
