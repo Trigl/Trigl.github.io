@@ -5,14 +5,14 @@ subtitle:   "Process with SparkStreaming, Flume and Kafka"
 date:       2017-05-24
 author:     "Ink"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
+header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-sparkstreaming.jpg"
 tags:
     - Spark
 ---
 
 > 每个公司想要进行数据分析或数据挖掘，收集日志、ETL都是第一步的，今天就讲一下如何实时地（准实时，每分钟分析一次）收集日志，处理日志，把处理后的记录存入Hive中，并附上完整实战代码
 
-##  整体架构
+## 整体架构
 思考一下，正常情况下我们会如何收集并分析日志呢？
 
 首先，业务日志会通过Nginx（或者其他方式，我们是使用Nginx写入日志）每分钟写入到磁盘中，现在我们想要使用Spark分析日志，就需要先将磁盘中的文件上传到HDFS上，然后Spark处理，最后存入Hive表中，如图所示：
@@ -43,7 +43,7 @@ Kafka是一个消息系统，Flume收集的日志可以移动到Kafka消息队�
 
 ---
 
-##  实战演练
+## 实战演练
 #### 安装Kafka
 下载安装Kafka以及一些基本命令请传送到这里：*[Kafka安装与简介](http://blog.csdn.net/trigl/article/details/72581735)*
 
