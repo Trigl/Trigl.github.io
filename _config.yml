@@ -61,7 +61,12 @@ featured-condition-size: 1              # A tag will be featured if the size of 
 
 
 # Friends
-friends: []
+friends: [
+    {
+        title: "lxw的大数据田地",
+        href: "http://lxw1234.com"
+    }
+]
 
 
 #Custom Setting End
