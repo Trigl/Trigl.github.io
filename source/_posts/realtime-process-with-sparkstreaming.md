@@ -3,7 +3,7 @@ layout:     post
 title:      "SparkStreaming + Flume + Kafka 进行实时日志分析"
 subtitle:   "Process with SparkStreaming, Flume and Kafka"
 date:       2017-05-24
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-sparkstreaming.jpg"
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      "Spring AOP（三）"
 subtitle:   "通过 @AspectJ 注解切面"
 date:       2016-03-17
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      "关于 web.xml 中 Spring 配置文件的启动顺序"
 subtitle:   "《Spring in Action》笔记，总体介绍一下Spring"
 date:       2016-07-31
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    false
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
 tags:

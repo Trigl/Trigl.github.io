@@ -3,7 +3,7 @@ layout:     post
 title:      "Summary of Spring"
 subtitle:   "《Spring in Action》笔记，总体介绍一下Spring"
 date:       2015-11-25
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
 tags:

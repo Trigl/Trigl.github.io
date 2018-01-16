@@ -3,7 +3,7 @@ layout:     post
 title:      "Spring AOP（一）"
 subtitle:   "什么是 AOP?"
 date:       2016-03-12
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
 tags:

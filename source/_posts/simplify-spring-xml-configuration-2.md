@@ -3,7 +3,7 @@ layout:     post
 title:      "简化 Spring XML 配置（二）"
 subtitle:   "使用注解装配 bean"
 date:       2016-01-10 00:00:00
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
 tags:

@@ -3,7 +3,7 @@ layout:     post
 title:      "Spring 事务管理"
 subtitle:   "超级干货讲解 + 实战演练"
 date:       2016-03-25
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
 tags:

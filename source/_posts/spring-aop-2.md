@@ -3,7 +3,7 @@ layout:     post
 title:      "Spring AOP（二）"
 subtitle:   "在 XML 中配置切面"
 date:       2016-03-16
-author:     "Ink"
+author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
 tags:
