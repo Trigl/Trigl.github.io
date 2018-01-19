@@ -1,0 +1,17 @@
+---
+layout:     post
+title:      "Designing Data-Intensive Applications 读书笔记"
+subtitle:   "Notes of Designing Data-Intensive Applications"
+date:       2018-01-11
+author:     "Ink Bai"
+catalog:    true
+# header-img: "http://ox2ru2icv.bkt.clouddn.com/image/jpg/post-bg-ddia.jpg"
+tags:
+    - Big Data
+---
+
+## Preface
+所谓的数据密集型，是指数据是其主要挑战，数据的质量、数据的复杂度以及数据变化的速度是要考虑的主要方面。与之对应的是计算密集型，即CPU是主要瓶颈。
+
+## 第一部分：数据系统的基础
+####
