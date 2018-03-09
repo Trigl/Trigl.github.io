@@ -1,0 +1,18 @@
+---
+layout:     post
+title:      "Akka HTTP Study"
+subtitle:   "Notes of Akka HTTP"
+date:       2018-03-01
+author:     "Ink Bai"
+catalog:    true
+header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/winter-akka.jpg"
+tags:
+    - Akka
+---
+
+The Akka HTTP modules implement a full server-side and client-side HTTP stack on top of akka-actor and akka-stream.
+
+如果是开发一个与浏览器交互的应用，最好的选择是使用成熟的 Web 框架，但是如果并非浏览器交互应用而只是需要用到 HTTP，那么可以使用轻量级的 Akka HTTP，因为相对于框架来说其灵活性很高。
+
+## Routing DSL for HTTP servers
+The high-level, routing API of Akka HTTP provides a DSL to describe HTTP “routes” and how they should be handled.
