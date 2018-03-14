@@ -91,12 +91,13 @@ public class Audience {
 
 ## 准备工作
 
-- 引入以下几个AOP包：
+引入以下几个AOP包：
+
 	>[aopalliance-1.0.jar](http://pan.baidu.com/s/1hryYVo4)
 	[aspectjrt-1.7.4.jar](http://pan.baidu.com/s/1skfejZB)
 	[aspectjweaver-1.7.4.jar](http://pan.baidu.com/s/1kUqL9f5)
 
-- 在XML文件中加入包含关于Spring AOP命名空间的内容
+在XML文件中加入包含关于Spring AOP命名空间的内容
 
 	```xml
 	<?xml version="1.0" encoding="UTF-8"?>

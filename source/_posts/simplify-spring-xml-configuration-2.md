@@ -40,14 +40,14 @@ Spring3提供了多种用于自动装配的注解方法：
 ## Spring的注解方式 @Autowired
 #### 注入属性、方法、构造器
 
- - 可以直接注入用@Autowired注入属性，不用管setter方法，即使是private类型的
+1.可以直接注入用@Autowired注入属性，不用管setter方法，即使是private类型的
 
   ```java
   @Autowired
   private Song songJay;
   ```
 
- - 也可以直接在方法上加@Autowired注解，而且这个方法不再仅限于setter方法，所有注入属性的方法都可以使用@Autowired：
+2.也可以直接在方法上加@Autowired注解，而且这个方法不再仅限于setter方法，所有注入属性的方法都可以使用@Autowired：
 
   ```java
   @Autowired
@@ -74,7 +74,7 @@ Spring3提供了多种用于自动装配的注解方法：
 	}
   ```
 
- - 也可以使用@Autowired给构造器加注解，但是注意加了自动注解以后在XML中就不可以再手动配置了，要用注解方式就只能使用注解方式：
+3.也可以使用@Autowired给构造器加注解，但是注意加了自动注解以后在XML中就不可以再手动配置了，要用注解方式就只能使用注解方式：
 
   ```java
   @Autowired

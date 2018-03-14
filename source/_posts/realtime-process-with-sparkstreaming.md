@@ -64,7 +64,8 @@ bin/kafka-topics.sh --describe --zookeeper hxf:2181,cfg:2181,jqs:2181,jxf:2181,s
 
 #### 安装Flume
 
-- 下载解压
+**下载解压**
+
 下载地址： https://flume.apache.org/download.html
 注意进入下载地址页面，使用清华大学的那个地址，否则会很慢
 
@@ -73,7 +74,8 @@ bin/kafka-topics.sh --describe --zookeeper hxf:2181,cfg:2181,jqs:2181,jxf:2181,s
   tar -xvf apache-flume-1.7.0-bin.tar.gz
   ```
 
-- 修改配置文件
+**修改配置文件**
+
 进入flume目录，修改conf/flume-env.sh
 
   ```
@@ -126,13 +128,13 @@ bin/kafka-topics.sh --describe --zookeeper hxf:2181,cfg:2181,jqs:2181,jxf:2181,s
   logser.sinks.kfk_launcherclick.channel = ch_launcherclick
   ```
 
-- 启动
+**启动**
 
   ```
   nohup bin/flume-ng agent --conf conf/ --conf-file conf/flume_launcherclick.conf --name logser -Dflume.root.logger=INFO,console >> logs/flume_launcherclick.log &
   ```
 
-  此时Kafka和Flume都已经启动了，从配置可以看到Flume的监控文件是/data/launcher/stat_app/.*，所以只要该目录下文件内容有增加就会发送到Kafka，大家可以自己追加一些测试日志到这个目录的文件下，然后开一个Kafka Consumer看一下Kafka是否接收到消息，这里我们完成SparkStreaming以后再看测试结果
+  此时Kafka和Flume都已经启动了，从配置可以看到Flume的监控文件是 `/data/launcher/stat_app/.*`，所以只要该目录下文件内容有增加就会发送到Kafka，大家可以自己追加一些测试日志到这个目录的文件下，然后开一个Kafka Consumer看一下Kafka是否接收到消息，这里我们完成SparkStreaming以后再看测试结果。
 
 #### SparkStreaming编程
 SparkStreaming是Spark用来处理实时流的，能够实时到秒级，我们这里不需要这么实时，是每分钟执行一次日志分析程序，主要代码如下：
