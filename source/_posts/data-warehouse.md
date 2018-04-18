@@ -68,7 +68,7 @@ tags:
 #### 当前架构
 当前我们的数据仓库架构很low，但是能实现基本功能，如下：
 
-![这里写图片描述](http://img.blog.csdn.net/20170401163136099?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVHJpZ2w=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/datawarehouse1.png)
 
 **数据采集**
 
@@ -108,7 +108,7 @@ Spark性能比MapReduce好很多，同时使用SparkSQL操作Hive。
 #### 理想架构
 自己的架构这么低级不能误导了读者，所以给出主流公司会用到的一个架构图：
 
-![这里写图片描述](http://img.blog.csdn.net/20170401165636002?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVHJpZ2w=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/datawarehouse2.png)
 
 增加了以下内容：
 
@@ -136,7 +136,7 @@ Spark性能比MapReduce好很多，同时使用SparkSQL操作Hive。
 
 维是用于从不同角度描述事物特征的，一般维都会有多层（Level：级别），每个Level都会包含一些共有的或特有的属性（Attribute），可以用下图来展示下维的结构和组成：
 
-![这里写图片描述](http://img.blog.csdn.net/20170401173726084?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVHJpZ2w=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/20170401173726084.png)
 
 以时间维为例，时间维一般会包含年、季、月、日这几个Level，每个Level一般都会有ID、NAME、DESCRIPTION这几个公共属性，这几个公共属性不仅适用于时间维，也同样表现在其它各种不同类型的维。
 
@@ -144,13 +144,13 @@ Spark性能比MapReduce好很多，同时使用SparkSQL操作Hive。
 
 OLAP需要基于有层级的自上而下的钻取，或者自下而上地聚合。所以我们一般会在维的基础上再次进行分层，维、分层、层级的关系如下图：
 
-![这里写图片描述](http://img.blog.csdn.net/20170401173848382?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVHJpZ2w=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/20170401173848382.png)
 
 每一级之间可能是附属关系（如市属于省、省属于国家），也可能是顺序关系（如天周年），如下图所示：
 
-![这里写图片描述](http://img.blog.csdn.net/20170401173945319?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVHJpZ2w=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/20170401173945319.png)
 
-![这里写图片描述](http://img.blog.csdn.net/20170401173958210?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVHJpZ2w=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/20170401173958210.png)
 
 **量度**
 
@@ -168,7 +168,7 @@ OLAP需要基于有层级的自上而下的钻取，或者自下而上地聚合�
 
 事实表和维表通过ID相关联，如图所示：
 
-![这里写图片描述](http://img.blog.csdn.net/20170401174227058?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvVHJpZ2w=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/20170401174227058.png)
 
 **星形/雪花形/事实星座**
 
