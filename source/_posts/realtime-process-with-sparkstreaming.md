@@ -204,5 +204,5 @@ SparkStreaming任务状态如下：
 ---
 
 ## Refer
-*[Flume--集群及项目实战](http://blog.xiaoxiaomo.com/2016/05/22/Flume-%E9%9B%86%E7%BE%A4%E5%8F%8A%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/)*
-*[SparkSQL结合SparkStreaming，使用SQL完成实时计算中的数据统计](http://lxw1234.com/archives/2015/11/552.htm)*
+[Flume--集群及项目实战](http://blog.xiaoxiaomo.com/2016/05/22/Flume-%E9%9B%86%E7%BE%A4%E5%8F%8A%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/)
+[SparkSQL结合SparkStreaming，使用SQL完成实时计算中的数据统计](http://lxw1234.com/archives/2015/11/552.htm)
