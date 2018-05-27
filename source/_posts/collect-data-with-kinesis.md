@@ -67,3 +67,8 @@ Kinesis Client Library 是一个用于编写 Consumer 应用的库，简化读�
 而上传记录我们使用的是 AWS 的 KPL，当然也可以使用 AWS 的上传数据的 API，但是 KPL 已经解决并且封装好了我们上面提到的关于批量上传、容错重试和吞吐量的一些问题，例如当数据传过来以后 KPL 并不是立刻上传，而是放在一个 buffer 里面，等到达到了一定量才会批量上传这些记录，这就减少了 Http 请求的次数。
 
 项目代码见我的 github：[kinesis-producer](https://github.com/Trigl/kinesis-producer)
+
+## Refer
+[Amazon Kinesis Data Streams](https://docs.aws.amazon.com/zh_cn/streams/latest/dev/introduction.html)
+[Implementing Efficient and Reliable Producers with the Amazon Kinesis Producer Library](https://aws.amazon.com/blogs/big-data/implementing-efficient-and-reliable-producers-with-the-amazon-kinesis-producer-library/)
+[reactive-kinesis](https://github.com/WW-Digital/reactive-kinesis)
