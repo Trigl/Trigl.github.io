@@ -5,7 +5,7 @@ subtitle:   "AWS Kinesis Producer"
 date:       2018-05-16
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/winter-akka.jpg"
+header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/aws-kinesis.jpg"
 tags:
     - AWS
 ---

@@ -60,7 +60,7 @@ baidusitemap:
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "码渣，铲屎官，尤克里里爱好者，小时候的梦想是成为作家，老了以后希望可以当一个厨子 :)"
-sidebar-avatar: img/avatar-work.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: img/avatar.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 # Featured Tags
