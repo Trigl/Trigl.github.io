@@ -1,12 +1,13 @@
 ---
 layout:     post
 title:      "Protocol Buffers 了解一下？"
+subtitle:   "Scala 中使用 protocol buffer"
 date:       2018-06-20
 author:     "Ink Bai"
 catalog:    true
 header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/protocol-buffers.jpg"
 tags:
-    - Big Data
+    - Scala
 ---
 
 > 本文是学习 Protocol Buffers 时做的笔记，内容来自[官方文档](https://developers.google.com/protocol-buffers/)，把其中的精华部分提炼出来做了一个总结。
