@@ -267,7 +267,7 @@ To celebrate Spring Festival, go from Remote(Shanghai) to Home(Shanxi), by airpl
 ## 上下文绑定
 了解了隐式参数以后，我们可以再看一个有趣的语法糖：上下文绑定 `context bound`
 
-这里我用《Programming in Scala》中的一个例子来讲解，要求找出一个 List 中所有元素的最大值，首先我们看一下常规的实现了隐式参数的写法：
+这里我用 *Programming in Scala* 中的一个例子来讲解，要求找出一个 List 中所有元素的最大值，首先我们看一下常规的实现了隐式参数的写法：
 
 ```scala
 // with implicit
