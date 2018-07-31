@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Scala Implicit 详解"
-subtitle:   "The Details of Scala Implicit"
 date:       2018-02-07
 author:     "Ink Bai"
 catalog:    true

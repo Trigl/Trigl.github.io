@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "那些容易漏掉的 Scala 基础"
-subtitle:   "Notes of Scala Cookbook"
 date:       2018-07-17
 author:     "Ink Bai"
 catalog:    true

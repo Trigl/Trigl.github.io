@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Spark client mode 和 cluster mode 的区别"
-subtitle:   "Distinguish Client mode & Cluster mode of Spark"
 date:       2018-04-28
 author:     "Ink Bai"
 catalog:    true

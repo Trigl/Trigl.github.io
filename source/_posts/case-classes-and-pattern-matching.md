@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Scala 的 Case Classes 和 Pattern Matching"
-subtitle:   "Case Classes and Pattern Matching"
 date:       2018-04-13
 author:     "Ink Bai"
 catalog:    true

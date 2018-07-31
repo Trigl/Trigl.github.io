@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "数据仓库的架构与设计"
-subtitle:   "Data Warehouse Architecture and Design"
 date:       2017-04-01
 author:     "Ink Bai"
 catalog:    true

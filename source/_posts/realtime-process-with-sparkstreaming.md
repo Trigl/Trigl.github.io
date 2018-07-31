@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "SparkStreaming + Flume + Kafka 进行实时日志分析"
-subtitle:   "Process with SparkStreaming, Flume and Kafka"
 date:       2017-05-24
 author:     "Ink Bai"
 catalog:    true

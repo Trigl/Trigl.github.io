@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "使用 AWS Kinesis 收集流数据"
-subtitle:   "AWS Kinesis Producer"
 date:       2018-05-16
 author:     "Ink Bai"
 catalog:    true

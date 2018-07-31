@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Akka Study"
-subtitle:   "Notes of Scala Cookbook"
 date:       2018-05-23
 author:     "Ink Bai"
 catalog:    true
