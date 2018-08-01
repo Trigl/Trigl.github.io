@@ -94,5 +94,5 @@ val blacklist = WordBlacklist.getInstance(rdd.sparkContext)
 val droppedWordsCounter = DroppedWordsCounter.getInstance(rdd.sparkContext)
 ```
 
-## WordCout 实例
+## WordCount 实例
 官网上有一个实时计算重复单词数量的例子，设置了 checkpoint，同时也使用了 `Accumulator` 和 `Broadcast`，可以直接在本地运行，源码见这里：[RecoverableNetworkWordCount](https://github.com/Trigl/spark-learning/blob/master/src/main/scala/ink/baixin/spark/examples/streaming/RecoverableNetworkWordCount.scala)
