@@ -139,3 +139,66 @@ countByValueAndWindow(windowLength, slideInterval, [numTasks])|针对的数据�
 上面第二个 `reduceByKeyAndWindow` 与第一个类似，只不过多了一个参数 `invFunc`，也就是 `inverse function`。顾名思义，第一个参数 `func` 是指窗口向前移动，新的时间段的数据会被加进来，第二个参数 `invFunc` 与之相反，老的时间段的数据会被减出去。第一个 `reduceByKeyAndWindow` 操作是每次都全量计算整个时间窗口内的所有数据，如果窗口时间范围比较大的话相应的吞吐量也会很大。而我们这个改良版的 `reduceByKeyAndWindow` 操作可以实现增量更新，即每次窗口移动只会把新的加进来和把老的移除，而对没有变化的时间段内的数据不再进行计算，很大地提高了效率，相应的源码在这里：[WordCountByWindow2](https://github.com/Trigl/spark-learning/blob/master/src/main/scala/ink/baixin/spark/examples/streaming/WordCountByWindow2.scala)
 
 ## DStream 的输出操作
+##### 常见操作
+输出操作|含义
+-|-
+print()|在 driver 结点运行，打印每个批次的 DStream 数据的前 10 条记录，一般用于开发的 debug。
+saveAsTextFiles(prefix, [suffix])|将 DStream 的内容存为文本文件，前缀是文件路径，后缀是文件后缀名称，最后文件的组合形式是 `prefix-TIME_IN_MS[.suffix]`，如 `/user/spark/file-1540540829.txt`。
+saveAsObjectFiles(prefix, [suffix])|将 DStream 内容保存为 Java 对象的序列化文件。
+saveAsHadoopFiles(prefix, [suffix])|将 DStream 的内容保存为 Hadoop 文件。
+foreachRDD(func)|最通用的输出操作，它会将一个函数应用在 DStream 形成的每一个 RDD 上。这个函数会将数据输出到外部系统中，例如讲 RDD 保存为文件，或者存到数据库中。注意函数 `func` 运行在 driver 进程内。
+
+#### 如何正确使用 foreachRDD？
+`dstream.foreachRDD` 是一种简单但却强大的将数据输出到外部的方法，我们应该避免下面这样的错误。
+
+首先要将数据输出到外部我们就需要创建一个连接（例如到远程服务器的 TCP 连接），这时我们可能会这样写代码：
+
+```scala
+dstream.foreachRDD { rdd =>
+  val connection = createNewConnection()  // executed at the driver
+  rdd.foreach { record =>
+    connection.send(record) // executed at the worker
+  }
+}
+```
+
+`foreachRDD` 运行在 driver 节点上，而 `rdd.foreach` 运行在 worker 节点，这就需要将这个连接对象序列化然后从 driver 节点传输到 worker 节点，一般我们不会这样做，因此会报序列化错误 `connection object not serializable` 或者初始化错误 `connection object needs to be initialized at the workers` 等等。正确的做法应该是在 worker 节点创建连接对象。
+
+现在我们改一下代码如下，这样是否正确呢？
+
+```scala
+dstream.foreachRDD { rdd =>
+  rdd.foreach { record =>
+    val connection = createNewConnection()
+    connection.send(record)
+    connection.close()
+  }
+}
+```
+
+这样也是有问题的，因为这样会为每条 record 都创建一个连接对象，我们知道创建一个连接对象需要消耗时间和资源，因此为每一条记录创建并且销毁连接会导致不必要的高负载并且极大降低系统的吞吐量，更好的解决方式是使用 `rdd.foreachPartition`，为一个 RDD 分区内的所有记录创建一个单独的连接。
+
+```scala
+dstream.foreachRDD { rdd =>
+  rdd.foreachPartition { partitionOfRecords =>
+    val connection = createNewConnection()
+    partitionOfRecords.foreach(record => connection.send(record))
+    connection.close()
+  }
+}
+```
+
+当然以上代码还是有可以优化的空间，我们可以使用一个固定连接池来复用连接。
+
+```scala
+dstream.foreachRDD { rdd =>
+  rdd.foreachPartition { partitionOfRecords =>
+    // ConnectionPool is a static, lazily initialized pool of connections
+    val connection = ConnectionPool.getConnection()
+    partitionOfRecords.foreach(record => connection.send(record))
+    ConnectionPool.returnConnection(connection)  // return to the pool for future reuse
+  }
+}
+```
+
+这个连接池应当在需要的时候延迟创建并且设置超时时间如果有一段时间不使用的话，这样就可以实现最高效地向外部传输数据。
