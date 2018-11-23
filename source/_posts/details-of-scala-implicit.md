@@ -4,7 +4,7 @@ title:      "Scala Implicit 详解"
 date:       2018-02-07
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-implicit.jpg"
+header-img: "/img/post/post-bg-implicit.jpg"
 tags:
     - Scala
 ---

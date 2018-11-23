@@ -4,7 +4,7 @@ title:      "Scala 的矩阵运算"
 date:       2018-07-24
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/scala-breeze.jpg"
+header-img: "/img/post/scala-breeze.jpg"
 tags:
     - Scala
 ---

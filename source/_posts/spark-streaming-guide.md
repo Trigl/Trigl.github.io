@@ -4,7 +4,7 @@ title:      "Spark Streaming 初见"
 date:       2018-07-26
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/spark-streaming.jpg"
+header-img: "/img/post/spark-streaming.jpg"
 tags:
     - Spark
 ---

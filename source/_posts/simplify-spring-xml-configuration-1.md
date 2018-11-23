@@ -5,7 +5,7 @@ subtitle:   "自动装配 bean 属性"
 date:       2016-01-07
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
+header-img: "/img/post/post-bg-spring.jpg"
 tags:
     - Spring
 ---

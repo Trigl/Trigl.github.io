@@ -4,7 +4,7 @@ title:      "Spark Streaming 常见操作"
 date:       2018-08-01
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/spark-stream-operations.jpg"
+header-img: "/img/post/spark-stream-operations.jpg"
 tags:
     - Spark
 ---

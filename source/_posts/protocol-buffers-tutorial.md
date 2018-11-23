@@ -5,7 +5,7 @@ subtitle:   "Scala 中使用 protocol buffer"
 date:       2018-06-20
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/protocol-buffers.jpg"
+header-img: "/img/post/protocol-buffers.jpg"
 tags:
     - Scala
 ---

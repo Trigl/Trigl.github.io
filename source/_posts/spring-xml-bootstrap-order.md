@@ -5,7 +5,7 @@ title:      "关于 web.xml 中 Spring 配置文件的启动顺序"
 date:       2016-07-31
 author:     "Ink Bai"
 catalog:    false
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
+header-img: "/img/post/post-bg-spring.jpg"
 tags:
     - Spring
 ---

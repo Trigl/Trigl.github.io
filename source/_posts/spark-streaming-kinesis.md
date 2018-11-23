@@ -4,7 +4,7 @@ title:      "Spark Streaming 集成 AWS Kinesis"
 date:       2018-08-02
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/spark-kinesis.jpg"
+header-img: "/img/post/spark-kinesis.jpg"
 tags:
     - Spark
 ---

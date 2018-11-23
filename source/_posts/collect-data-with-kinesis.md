@@ -4,7 +4,7 @@ title:      "使用 AWS Kinesis 收集流数据"
 date:       2018-05-16
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/aws-kinesis.jpg"
+header-img: "/img/post/aws-kinesis.jpg"
 tags:
     - AWS
 ---

@@ -4,7 +4,7 @@ title:      "Apache Calcite 学习"
 date:       2018-08-13
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/winter-akka.jpg"
+header-img: "/img/post/winter-akka.jpg"
 tags:
     - Big Data
 ---

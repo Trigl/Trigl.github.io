@@ -4,7 +4,7 @@ title:      "SBT 那些常用的功能"
 date:       2018-08-20
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/sbt.jpg"
+header-img: "/img/post/sbt.jpg"
 tags:
     - Scala
 ---

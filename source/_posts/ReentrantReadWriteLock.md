@@ -3,7 +3,7 @@ layout:     post
 title:      "ReentrantReadWriteLock 使用"
 date:       2018-10-18
 author:     "Ink Bai"
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/read-write-lock.jpg"
+header-img: "/img/post/read-write-lock.jpg"
 tags:
     - 并发
 ---

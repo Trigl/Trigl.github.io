@@ -3,7 +3,7 @@ layout:     post
 title:      "使用 Netty 写一个 HTTP Server"
 date:       2018-07-13
 author:     "Ink Bai"
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/netty-httpserve.jpg"
+header-img: "/img/post/netty-httpserve.jpg"
 tags:
     - Netty
 ---

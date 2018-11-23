@@ -4,7 +4,7 @@ title:      "SparkStreaming + Flume + Kafka 进行实时日志分析"
 date:       2017-05-24
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-sparkstreaming.jpg"
+header-img: "/img/post/post-bg-sparkstreaming.jpg"
 tags:
     - Spark
 ---
@@ -16,7 +16,7 @@ tags:
 
 首先，业务日志会通过Nginx（或者其他方式，我们是使用Nginx写入日志）每分钟写入到磁盘中，现在我们想要使用Spark分析日志，就需要先将磁盘中的文件上传到HDFS上，然后Spark处理，最后存入Hive表中，如图所示：
 
-![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/nginx2hive.png)
+![这里写图片描述](/img/content/nginx2hive.png)
 
 我们之前就是使用这种方式每天分析一次日志，但是这样有几个缺点：
 
@@ -28,7 +28,7 @@ tags:
 
 可以看出来我们以前收集分析日志的方式还是比较原始的，而且比较耗时，很多时间浪费在了网络传输上面，如果日志量大的话还有丢失数据的可能性，所以在此基础上改进了一下架构：
 
-![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/flume2spark.png)
+![这里写图片描述](/img/content/flume2spark.png)
 
 整个过程就是，Flume会实时监控写入日志的磁盘，只要有新的日志写入，Flume就会将日志以消息的形式传递给Kafka，然后Spark Streaming实时消费消息传入Hive
 
@@ -58,7 +58,7 @@ bin/kafka-topics.sh --create --zookeeper hxf:2181,cfg:2181,jqs:2181,jxf:2181,sxt
 bin/kafka-topics.sh --describe --zookeeper hxf:2181,cfg:2181,jqs:2181,jxf:2181,sxtb:2181 --topic launcher_click
 ```
 
-![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/showtopic.png)
+![这里写图片描述](/img/content/showtopic.png)
 
 
 #### 安装Flume
@@ -185,7 +185,7 @@ nohup /data/install/spark-2.0.0-bin-hadoop2.7/bin/spark-submit  --master spark:/
 
 查看HDFS的对应目录是否有内容：
 
-![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/hdfsdir.png)
+![这里写图片描述](/img/content/hdfsdir.png)
 
 HDFS存储的分析后的日志内容如下：
 
@@ -195,7 +195,7 @@ HDFS存储的分析后的日志内容如下：
 
 SparkStreaming任务状态如下：
 
-![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/sparkjob.png)
+![这里写图片描述](/img/content/sparkjob.png)
 
 可以看到的确是每分钟执行一次
 

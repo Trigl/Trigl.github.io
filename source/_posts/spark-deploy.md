@@ -4,7 +4,7 @@ title:      "Spark 部署要点"
 date:       2018-10-24
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/spark-deploy.jpg"
+header-img: "/img/post/spark-deploy.jpg"
 tags:
     - Spark
 ---
@@ -38,11 +38,39 @@ Spark 应用运行在 driver 进程中，主要由 `SparkContext` 协调管理�
 - 由于 driver 和 executor 必须保持通信，所以两者最好处在同一个网段下。
 
 ## 如何向集群提交应用
+在提交应用之间首先要把应用代码打包，在 Scala 中一般使用 [sbt-assembly](https://github.com/sbt/sbt-assembly) 来打包，可以把所有依赖的包都打在一起，但是注意与 Spark 或者 Hadoop 相关的依赖都要添加 `provided`，保证打包时不会包含这些依赖。打好包以后就可以把 Jar 包上传到集群准备提交应用了，提交命令如下：
 
+```scala
+./bin/spark-submit \
+  --class <main-class> \
+  --master <master-url> \
+  --deploy-mode <deploy-mode> \
+  --conf <key>=<value> \
+  ... # other options
+  <application-jar> \
+  [application-arguments]
+```
 
-## 监控
+下面是用 Yarn cluster 模式提交应用的一个示例：
 
-## 资源调度
+```scala
+spark-submit \
+--class ink.baixin.ripple.spark.RippleJob \
+--master yarn \
+--deploy-mode cluster \
+--conf spark.driver.memory=1g \
+--conf spark.executor.memory=2g \
+--num-executors=2 \
+--executor-cores 2 \
+./ripple-jobs.jar \
+-t streaming
+```
+
+## 工作调度
+Spark 调度资源的方式主要有两种，前面有讲过，不同的 Spark 应用部署在集群的时候，他们的 executor 进程都是相互独立的，所占用的资源也都是相互独立的，这种调度成为应用之间的调度，由集群管理器控制。而在一个 Spark 应用内部，多个 job 可能会在多个线程上并发执行，针对每一个 SparkContext，Spark 提供了 fair schduler 来调度资源。
+
+#### 应用间调度
+
 
 ## Refer
 [Spark 官方文档](http://spark.apache.org/docs/latest/cluster-overview.html)

@@ -5,7 +5,7 @@ subtitle:   "自动寻找 bean"
 date:       2016-01-10 00:00:01
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-spring.jpg"
+header-img: "/img/post/post-bg-spring.jpg"
 tags:
     - Spring
 ---

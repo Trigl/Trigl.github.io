@@ -4,7 +4,7 @@ title:      "Scala 的 Case Classes 和 Pattern Matching"
 date:       2018-04-13
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/pattern-matching.jpg"
+header-img: "/img/post/pattern-matching.jpg"
 tags:
     - Scala
 ---

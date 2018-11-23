@@ -4,7 +4,7 @@ title:      "Spark client mode 和 cluster mode 的区别"
 date:       2018-04-28
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/spark-mode.png"
+header-img: "/img/post/spark-mode.png"
 tags:
     - Spark
 ---
@@ -26,7 +26,7 @@ tags:
 
 ## client mode
 
-![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/20170609165010221.png)
+![这里写图片描述](/img/content/20170609165010221.png)
 
 首先明白几个基本概念：Master节点就是你用来提交任务，即执行bin/spark-submit命令所在的那个节点；Driver进程就是开始执行你Spark程序的那个Main函数，虽然我这里边画的Driver进程在Master节点上，但注意Driver进程不一定在Master节点上，它可以在任何节点；Worker就是Slave节点，Executor进程必然在Worker节点上，用来进行实际的计算
 
@@ -38,7 +38,7 @@ tags:
 
 4、client mode下没有监督重启机制，Driver进程如果挂了，需要额外的程序重启
 ## cluster mode
-![这里写图片描述](http://ox2ru2icv.bkt.clouddn.com/image/content/20170609183743824.png)
+![这里写图片描述](/img/content/20170609183743824.png)
 
 1、Driver程序在worker集群中某个节点，而非Master节点，但是这个节点由Master指定
 

@@ -5,7 +5,7 @@ subtitle:   "无形装逼，最为致命——LOL那些有趣的台词"
 date:       2016-01-09
 author:     "Ink Bai"
 catalog:    false
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/post-bg-lol.jpg"
+header-img: "/img/post/post-bg-lol.jpg"
 tags:
     - 因崔斯汀
 ---

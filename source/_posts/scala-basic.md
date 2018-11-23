@@ -4,7 +4,7 @@ title:      "那些容易漏掉的 Scala 基础"
 date:       2018-07-17
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/scala-basic.jpg"
+header-img: "/img/post/scala-basic.jpg"
 tags:
     - Scala
 ---

@@ -5,7 +5,7 @@ subtitle:   "多情剑客无情剑"
 date:       2015-12-27
 author:     "Ink Bai"
 catalog:    false
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/the-sword.jpg"
+header-img: "/img/post/the-sword.jpg"
 tags:
     - 因崔斯汀
 ---

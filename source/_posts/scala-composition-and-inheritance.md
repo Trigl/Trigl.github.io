@@ -5,7 +5,7 @@ subtitle:   "Notes of Programming in Scala"
 date:       2018-01-15
 author:     "Ink Bai"
 catalog:    true
-# header-img: "http://ox2ru2icv.bkt.clouddn.com/image/jpg/post-bg-ddia.jpg"
+# header-img: "img/jpg/post-bg-ddia.jpg"
 tags:
     - Scala
 ---

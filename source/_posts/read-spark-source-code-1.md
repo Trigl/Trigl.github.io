@@ -5,7 +5,7 @@ subtitle:   "通过 Spark Submit 提交应用流程分析"
 date:       2018-06-06
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/spark-code-1.jpg"
+header-img: "/img/post/spark-code-1.jpg"
 tags:
     - Spark
 ---

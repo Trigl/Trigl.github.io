@@ -4,7 +4,7 @@ title:      "Spark Streaming Checkpoint"
 date:       2018-07-31
 author:     "Ink Bai"
 catalog:    true
-header-img: "http://ox2ru2icv.bkt.clouddn.com/image/post/spark-stream-checkpoint.jpg"
+header-img: "/img/post/spark-stream-checkpoint.jpg"
 tags:
     - Spark
 ---
