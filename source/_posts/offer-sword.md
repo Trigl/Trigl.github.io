@@ -9,8 +9,8 @@ tags:
 ---
 > 准备用一个月时间在牛客网上刷完剑指 Offer，每天两道题，立此贴为证，别被打脸哦，下个月 23 号来检验成果，我希望看到完整的笔记链接！
 
-[面试题 02：实现 Singleton 模式](http://baixin.ink/2018/11/07/offer-sword-2/)
-[面试题 03：二维数组中的查找](http://baixin.ink/2018/11/07/offer-sword-3/)
+[面试题 02：实现 Singleton 模式](http://baixin.ink/2018/11/23/offer-sword-2/)
+[面试题 03：二维数组中的查找](http://baixin.ink/2018/11/23/offer-sword-3/)
 面试题 04：替换空格
 面试题 05：从尾到头打印链表
 面试题 06：重建二叉树
