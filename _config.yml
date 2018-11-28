@@ -71,16 +71,20 @@ featured-condition-size: 2              # A tag will be featured if the size of 
 # Friends
 friends: [
     {
-        title: "lxw的大数据田地",
-        href: "http://lxw1234.com"
-    },
-    {
-        title: "Distributed Systems Architecture",
-        href: "https://0x0fff.com"
-    },
-    {
         title: "写点什么",
         href: "http://hongjiang.info"
+    },
+    {
+        title: "编程小梦",
+        href: "https://blog.bcmeng.com"
+    },
+    {
+        title: "Matt's Blog",
+        href: "http://matt33.com"
+    },
+    {
+        title: "美团技术团队",
+        href: "https://tech.meituan.com"
     }
 ]
 

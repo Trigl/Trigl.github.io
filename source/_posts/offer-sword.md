@@ -13,8 +13,8 @@ tags:
 [面试题 03：二维数组中的查找](http://baixin.ink/2018/11/23/offer-sword-3/)
 [面试题 04：替换空格](http://baixin.ink/2018/11/27/offer-sword-4/)
 [面试题 05：从尾到头打印链表](http://baixin.ink/2018/11/27/offer-sword-5/)
-面试题 06：重建二叉树
-面试题 07：用两个栈实现队列
+[面试题 06：重建二叉树](http://baixin.ink/2018/11/29/offer-sword-6/)
+[面试题 07：用两个栈实现队列](http://baixin.ink/2018/11/29/offer-sword-7/)
 面试题 08：旋转数组的最小数字
 面试题 09：斐波那契数列
 面试题 10：二进制中 1 的个数
