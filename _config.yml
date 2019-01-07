@@ -85,6 +85,10 @@ friends: [
     {
         title: "美团技术团队",
         href: "https://tech.meituan.com"
+    },
+    {
+        title: "有态度的HBase/Spark/BigData",
+        href: "http://hbasefly.com"
     }
 ]
 

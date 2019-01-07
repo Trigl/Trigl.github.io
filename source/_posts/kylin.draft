@@ -1,0 +1,181 @@
+---
+layout:     post
+title:      "Kylin Merge 源码分析"
+date:       2018-11-28
+author:     "Ink Bai"
+catalog:    true
+header-img: "/img/post/winter-akka.jpg"
+tags:
+    - Kylin
+---
+
+> 本文基于 Kylin-2.5.2 源码
+
+## 过程分析
+1、API 调用 `PUT /kylin/api/cubes/{cubeName}/build`，这里调用 `build` 和 `rebuild` 是一样的。
+2、在 `CubeController` 里面匹配到该 Restful 请求，开始执行：
+
+```java
+/**
+ * Build/Rebuild a cube segment
+ */
+@RequestMapping(value = "/{cubeName}/rebuild", method = { RequestMethod.PUT }, produces = { "application/json" })
+@ResponseBody
+public JobInstance rebuild(@PathVariable String cubeName, @RequestBody JobBuildRequest req) {
+    return buildInternal(cubeName, new TSRange(req.getStartTime(), req.getEndTime()), null, null, null,
+            req.getBuildType(), req.isForce() || req.isForceMergeEmptySegment());
+}
+```
+
+3、通过 `JobService` 提交 job
+
+```java
+public JobInstance submitJobInternal(CubeInstance cube, TSRange tsRange, SegmentRange segRange, //
+        Map<Integer, Long> sourcePartitionOffsetStart, Map<Integer, Long> sourcePartitionOffsetEnd, //
+        CubeBuildTypeEnum buildType, boolean force, String submitter) throws IOException {
+    Message msg = MsgPicker.getMsg();
+
+    if (cube.getStatus() == RealizationStatusEnum.DESCBROKEN) {
+        throw new BadRequestException(String.format(msg.getBUILD_BROKEN_CUBE(), cube.getName()));
+    }
+
+    // 检测 cube 元数据一致性
+    checkCubeDescSignature(cube);
+    checkAllowBuilding(cube);
+
+    if (buildType == CubeBuildTypeEnum.BUILD || buildType == CubeBuildTypeEnum.REFRESH) {
+        checkAllowParallelBuilding(cube);
+    }
+
+    DefaultChainedExecutable job;
+
+    CubeSegment newSeg = null;
+    try {
+        if (buildType == CubeBuildTypeEnum.BUILD) {
+            // 获取数据源，如 Hive、Kafka
+            ISource source = SourceManager.getSource(cube);
+            // tsRange 和 segRange 不同，当用时间定义时两者相同
+            SourcePartition src = new SourcePartition(tsRange, segRange, sourcePartitionOffsetStart,
+                    sourcePartitionOffsetEnd);
+            src = source.enrichSourcePartitionBeforeBuild(cube, src);
+            newSeg = getCubeManager().appendSegment(cube, src);
+            job = EngineFactory.createBatchCubingJob(newSeg, submitter);
+        } else if (buildType == CubeBuildTypeEnum.MERGE) {
+            newSeg = getCubeManager().mergeSegments(cube, tsRange, segRange, force);
+            job = EngineFactory.createBatchMergeJob(newSeg, submitter);
+        } else if (buildType == CubeBuildTypeEnum.REFRESH) {
+            newSeg = getCubeManager().refreshSegment(cube, tsRange, segRange);
+            job = EngineFactory.createBatchCubingJob(newSeg, submitter);
+        } else {
+            throw new BadRequestException(String.format(msg.getINVALID_BUILD_TYPE(), buildType));
+        }
+
+        getExecutableManager().addJob(job);
+
+    } catch (Exception e) {
+        if (newSeg != null) {
+            logger.error("Job submission might failed for NEW segment {}, will clean the NEW segment from cube",
+                    newSeg.getName());
+            try {
+                // Remove this segment
+                getCubeManager().updateCubeDropSegments(cube, newSeg);
+            } catch (Exception ee) {
+                // swallow the exception
+                logger.error("Clean New segment failed, ignoring it", e);
+            }
+        }
+        throw e;
+    }
+
+    JobInstance jobInstance = getSingleJobInstance(job);
+
+    return jobInstance;
+}
+```
+
+4、job 是通过 `EngineFactory` 里面指定生成引擎生成的，生成引擎的接口是 `IBatchCubingEngine`，目前对应于 `MR` 和 `Spark` 计算引擎的两种实现类。
+例如对于使用 Spark 引擎时通过 `SparkBatchCubingEngine2` 中的以下方法生成 job：
+
+```java
+@Override
+public DefaultChainedExecutable createBatchCubingJob(CubeSegment newSegment, String submitter) {
+    return new SparkBatchCubingJobBuilder2(newSegment, submitter).build();
+}
+```
+
+5、job 具体步骤就在 `build` 方法內：
+
+```java
+public CubingJob build() {
+    logger.info("Spark new job to BUILD segment " + seg);
+
+    final CubingJob result = CubingJob.createBuildJob(seg, submitter, config);
+    final String jobId = result.getId();
+    final String cuboidRootPath = getCuboidRootPath(jobId);
+
+    // Phase 1: Create Flat Table & Materialize Hive View in Lookup Tables
+    inputSide.addStepPhase1_CreateFlatTable(result);
+
+    // Phase 2: Build Dictionary
+    result.addTask(createFactDistinctColumnsSparkStep(jobId));
+
+    if (isEnableUHCDictStep()) {
+        result.addTask(createBuildUHCDictStep(jobId));
+    }
+
+    result.addTask(createBuildDictionaryStep(jobId));
+    result.addTask(createSaveStatisticsStep(jobId));
+
+    // add materialize lookup tables if needed
+    LookupMaterializeContext lookupMaterializeContext = addMaterializeLookupTableSteps(result);
+
+    outputSide.addStepPhase2_BuildDictionary(result);
+
+    // Phase 3: Build Cube
+    addLayerCubingSteps(result, jobId, cuboidRootPath); // layer cubing, only selected algorithm will execute
+    outputSide.addStepPhase3_BuildCube(result);
+
+    // Phase 4: Update Metadata & Cleanup
+    result.addTask(createUpdateCubeInfoAfterBuildStep(jobId, lookupMaterializeContext));
+    inputSide.addStepPhase4_Cleanup(result);
+    outputSide.addStepPhase4_Cleanup(result);
+
+    return result;
+}
+```
+
+## 要点分析
+1、获取 cube 信息的时候加了读锁保证并发安全性。
+
+```java
+// protects concurrent operations around the cached map, to avoid for example
+// writing an entity in the middle of reloading it (dirty read)
+private AutoReadWriteLock cubeMapLock = new AutoReadWriteLock();
+```
+
+2、生成 UUID
+
+```java
+public class RandomUtil {
+    public static UUID randomUUID() {
+        return new UUID(ThreadLocalRandom.current().nextLong(), ThreadLocalRandom.current().nextLong());
+    }
+}
+```
+
+
+## Refer
+(http://kylin.apache.org/cn/docs/howto/howto_optimize_cubes.html)
+使用层级列和衍生列帮助优化cube的创建
+
+http://kylin.apache.org/cn/docs/tutorial/use_dashboard.html
+监控 Kylin 的查询情况，创建系统 cube
+
+http://kylin.apache.org/cn/docs/tutorial/use_cube_planner.html
+设置 cube 计划器，Kylin 根据查询来优化 cube 的构建
+
+http://kylin.apache.org/blog/2015/09/25/hybrid-model/
+Hybrid Model 的概念，用来 cube 变动的问题
+
+http://kylin.apache.org/cn/docs/howto/howto_optimize_build.html
+依照构建 cube 的顺序依次讲解优化方法
