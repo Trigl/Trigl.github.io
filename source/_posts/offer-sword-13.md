@@ -5,7 +5,7 @@ date:       2019-01-08 03:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-13.jpg"
 tags:
-    - 剑指 Offer
+    - 面试
 ---
 
 > 给定单向链表的头指针和一个结点指针，定义一个函数在 O(1) 时间删除该结点。

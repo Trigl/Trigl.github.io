@@ -5,7 +5,7 @@ date:       2019-01-10 05:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-21.jpg"
 tags:
-    - 剑指 Offer
+    - 面试
 ---
 
 > 定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数。在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。

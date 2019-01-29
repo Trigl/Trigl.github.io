@@ -5,7 +5,7 @@ date:       2019-01-02 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-9.jpg"
 tags:
-    - 剑指 Offer
+    - 面试
 ---
 > 输入一个整数 n，输出斐波那契数列的第 n 项。斐波那契数列的定义如下：
 F0 = 0

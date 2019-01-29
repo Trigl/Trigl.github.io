@@ -5,7 +5,7 @@ date:       2019-01-11 01:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-23.jpg"
 tags:
-    - 剑指 Offer
+    - 面试
 ---
 
 > 从上往下打印出二叉树的每个结点，同一层的结点按照从左到右的顺序打印。

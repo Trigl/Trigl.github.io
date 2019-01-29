@@ -5,7 +5,7 @@ date:       2018-11-27 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-5.jpg"
 tags:
-    - 剑指 Offer
+    - 面试
 ---
 
 > 输入一个链表的头结点，从尾到头反过来打印出每个结点的值。

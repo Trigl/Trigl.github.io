@@ -5,7 +5,7 @@ date:       2019-01-11 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-24.jpg"
 tags:
-    - 剑指 Offer
+    - 面试
 ---
 
 > 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数组都互不相同。
