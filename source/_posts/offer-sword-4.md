@@ -16,32 +16,61 @@ tags:
 
 ```java
 public class Solution {
-    public String replaceSpace(StringBuffer str) {
-        // 空格数
-    	int spaceNum = 0;
-        // 计算空格数
-        for(int i = 0; i < str.length(); i++) {
+    public static String replaceSpace(StringBuffer str) {
+        if(str == null || str.toString().equals("")) {
+            return "";
+        }
+
+        // 计算空格的数量
+        int oldLength = str.length();
+        int spaceNum = 0;
+        for(int i = 0; i < oldLength; i++) {
             if(str.charAt(i) == ' ') {
                 spaceNum++;
             }
         }
 
-        // 设置新字符串长度
-        int newLength = str.length() + spaceNum * 2;
-        // 设置从后遍历对应的新老字符串的下标
-        int newIndex = newLength - 1;
-        int oldIndex = str.length() - 1;
+        // 替换后的字符串的长度
+        int newLength = oldLength + spaceNum * 2;
         str.setLength(newLength);
-        for(; oldIndex >= 0; oldIndex--) {
-            if(str.charAt(oldIndex) == ' ') {
-                str.setCharAt(newIndex--, '0');
-                str.setCharAt(newIndex--, '2');
-                str.setCharAt(newIndex--, '%');
+        newLength--;
+        // 从后往前遍历旧字符串的每一个字符并且替换
+        for(int i = oldLength - 1; i >= 0; i--) {
+            if(str.charAt(i) == ' ') {
+                str.setCharAt(newLength--, '0');
+                str.setCharAt(newLength--, '2');
+                str.setCharAt(newLength--, '%');
             } else {
-                str.setCharAt(newIndex--, str.charAt(oldIndex));
+                str.setCharAt(newLength--, str.charAt(i));
             }
         }
+
         return str.toString();
+    }
+
+    // 测试代码
+    public static void main(String[] args) {
+        // 1. 输入的字符串中包含空格：空格位于最前面，最后面，中间，有连续多个空格
+        StringBuffer sb1 = new StringBuffer(" Hello world,   I love you! ");
+        System.out.println(replaceSpace(sb1));
+
+        // 2. 输入的字符串中没有空格
+        StringBuffer sb2 = new StringBuffer("Hahahahaha!");
+        System.out.println(replaceSpace(sb2));
+
+        // 3. 特殊输入
+        // 字符串是 null
+        StringBuffer sb3 = null;
+        System.out.println(replaceSpace(sb3));
+        // 字符串是空字符串
+        StringBuffer sb4 = new StringBuffer("");
+        System.out.println(replaceSpace(sb4));
+        // 字符串只有一个空格
+        StringBuffer sb5 = new StringBuffer(" ");
+        System.out.println(replaceSpace(sb5));
+        // 字符串只有连续多个空格
+        StringBuffer sb6 = new StringBuffer("    ");
+        System.out.println(replaceSpace(sb6));
     }
 }
 ```

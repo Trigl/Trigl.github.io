@@ -30,24 +30,61 @@ tags:
 
 ```java
 public class Solution {
-    public boolean Find(int target, int [][] array) {
-        // 以右上角的点为起始点
-        int row = 0;
-        int col = array[0].length - 1;
+    public static boolean Find(int target, int[][] array) {
+        boolean found = false;
 
-        while(row < array.length && col >= 0) {
-            if(array[row][col] == target) {
-                // 将遍历值与目标比较，相等返回 true
-                return true;
-            } else if(array[row][col] > target) {
-                // 比目标值大，左移一列
-                col--;
-            } else {
-                // 比目标值小，下移一行
-                row++;
+        if (array != null) {
+            // 定义初始位置的下标，初始位置在右上角
+            int row = 0;
+            int column = array[0].length - 1;
+
+            while (row <= array.length - 1 && column >= 0) {
+                int value = array[row][column];
+                if (target == value) {
+                    // 目标值与当前值相同
+                    return true;
+                } else if (target > value) {
+                    // 目标值比当前值大，下移，行增加
+                    row++;
+                } else {
+                    // 目标值比当前值小，左移，列减小
+                    column--;
+                }
             }
         }
-        return false;
+
+        return found;
+    }
+
+    // 测试代码
+    public static void main(String[] args) {
+        int[][] arr = {
+                {1, 2, 8, 9},
+                {2, 4, 9, 12},
+                {4, 7, 10, 13},
+                {6, 8, 11, 15}
+        };
+
+        // 1. 二维数组包含目标值
+        // 查找的数字是数组中的最大值
+        System.out.println(Find(15, arr));
+        // 查找的数字是数组中的最小值
+        System.out.println(Find(1, arr));
+        // 查找的数字介于最大和最小值之间
+        System.out.println(Find(7, arr));
+
+        // 2. 二维数组不包含目标值
+        // 查找的数字大于最大值
+        System.out.println(Find(16, arr));
+        // 查找的数字小于最小值
+        System.out.println(Find(0, arr));
+        // 查找的数字在最大最小值之间但是数组中没有
+        System.out.println(Find(14, arr));
+
+        // 3. 特殊输入：空指针
+        System.out.println(Find(16, null));
     }
 }
 ```
+
+代码最坏情况是列递减到最小值，行递增到最大值，因此时间复杂度是 O(m+n)。

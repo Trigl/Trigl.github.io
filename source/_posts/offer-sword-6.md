@@ -12,6 +12,7 @@ tags:
 
 ![](/img/content/binary-tree-1.png)
 
+## 二叉树
 首先了解一下二叉树：有一个根结点，根结点下面最多有两个子结点，分别是左右子结点，二叉输的遍历方式一般有三种：
 
 - 前序遍历：先访问根结点，再访问左子结点，最后访问右子结点。
@@ -34,7 +35,45 @@ tags:
 
 ![](/img/content/binary-tree-4.png)
 
-通过上面的步骤我们已经确定了该二叉树的根结点，左子结点的前序遍历和中序遍历，右子结点的前序遍历和中序遍历，自然可以想到用递归的方法去解决，代码如下：
+## 代码实现
+通过上面的步骤我们已经确定了该二叉树的根结点，左子结点的前序遍历和中序遍历，右子结点的前序遍历和中序遍历，自然可以想到用递归的方法去解决。
+
+首先看一种非常简洁易懂的方法：
+
+```java
+/**
+ * Definition for binary tree
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+import java.util.Arrays;
+public class Solution {
+    public TreeNode reConstructBinaryTree(int [] pre, int [] in) {
+        if (pre == null || in == null || pre.length == 0 || in.length == 0 || pre.length != in.length) {
+            return null;
+        }
+
+        // 指定根节点的值
+        TreeNode node = new TreeNode(pre[0]);
+        for (int i = 0; i < in.length; i++) {
+            if (in[i] == node.val) {
+                // 递归得到左右子结点重建后的二叉树
+                node.left = reConstructBinaryTree(Arrays.copyOfRange(pre, 1, i+1), Arrays.copyOfRange(in, 0, i));
+                node.right = reConstructBinaryTree(Arrays.copyOfRange(pre, i+1, pre.length), Arrays.copyOfRange(in, i+1,in.length));
+            }
+        }
+
+        return node;
+    }
+}
+```
+
+这种方法非常好理解，缺点是并不是在原来的数组上操作，而是使用了 `copyOfRange` 方法复制了原来的数组，下面这种方法是直接在原来的数组上操作的，但是下标边界直接看不是很明白，需要配合画图才能理解。
 
 ```java
 /**

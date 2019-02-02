@@ -46,3 +46,5 @@ public class Solution {
     }
 }
 ```
+
+这种解法的时间复杂度是 O(n)。

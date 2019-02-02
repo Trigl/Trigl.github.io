@@ -37,3 +37,11 @@ public class Solution {
     }
 }
 ```
+
+算法题目特别要关注异常情况，这里如果队列为空的时候我们调用 pop 方法怎么处理呢？
+队列为空说明 stack1 和 stack2 都没有元素，这个时候是不会返回任何值的，需要抛出一个异常。这个时候如果抛出 `Exception` 的会报错的，必须抛出 `RuntimeException`，这是为什么呢，我们需要了解 Exception 和 RuntimeException 的区别：
+
+- Exception：在程序中必须使用 try...catch 进行处理。
+- RuntimeException：可以不使用 try...catch 进行处理，但是如果有异常产生，则异常将由 JVM 进行处理。
+
+对于 RuntimeException 的子类最好也使用异常处理机制。虽然 RuntimeException 的异常可以不使用 try...catch 进行处理，但是如果一旦发生异常，则肯定会导致程序中断执行，所以，为了保证程序再出错后依然可以执行，在开发代码时最好使用 try...catch 的异常处理机制进行处理。
