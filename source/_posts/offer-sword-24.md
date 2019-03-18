@@ -27,7 +27,7 @@ public class Solution {
 
     private boolean VerifySquenceOfBST(int [] sequence, int start, int end) {
         if (start >= end) return true;
-        int i = 0;
+        int i = start;
         for (; i < end; i++) {
             if (sequence[i] > sequence[end]) break;
         }

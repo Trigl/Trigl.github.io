@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "面试算法基础攻略"
+title:      "闲来无事刷刷题"
 date:       2019-02-11 01:00:00
 author:     "Ink Bai"
 catalog:    true
@@ -8,7 +8,8 @@ header-img: "/img/post/interview-algorithm.jpg"
 tags:
     - 面试
 ---
-> 首先需要熟练掌握链表、树、栈、队列和哈希表等数据结构，以及它们的操作。
+> 刷题呢可以活跃思维，巩固基础，当然最重要的是面试要考啦咳咳。
+首先需要熟练掌握链表、树、栈、队列和哈希表等数据结构，以及它们的操作。
 一般最经常考察链表和二叉树，链表的插入和删除结点，二叉树的各种遍历方法的循环和递归写法。
 掌握常用查找排序算法，重点是二分查找、归并排序和快速排序。
 更加难一点的要求熟练掌握动态规划和贪婪算法。
@@ -34,14 +35,21 @@ tags:
 **剑指 offer**
 [面试题 03：二维数组中的查找](http://baixin.ink/2018/11/23/offer-sword-3/)
 [面试题 08：旋转数组的最小数字](http://baixin.ink/2019/01/01/offer-sword-8/)
+[面试题 14：调整数组顺序使奇数位于偶数前面](http://baixin.ink/2019/01/08/offer-sword-14/)
 
 ## 字符串
 **剑指 offer**
 [面试题 04：替换空格](http://baixin.ink/2018/11/27/offer-sword-4/)
 
 ## 链表
+链表问题一般会有大量的指针移动操作，当我们使用一个指针解决不了的时候可以多定义几个指针来解决。
+
 **剑指 offer**
 [面试题 05：从尾到头打印链表](http://baixin.ink/2018/11/27/offer-sword-5/)
+[面试题 13：在 O(1) 时间删除链表结点](http://baixin.ink/2019/01/08/offer-sword-13/)
+[面试题 15：链表中倒数第 k 个结点](http://baixin.ink/2019/01/08/offer-sword-15/)
+[面试题 16：反转链表](http://baixin.ink/2019/01/09/offer-sword-16/)
+[面试题 17：合并两个排序的链表](http://baixin.ink/2019/01/09/offer-sword-17/)
 
 ## 树
 树有三种遍历方式：
@@ -60,10 +68,17 @@ tags:
 
 **剑指 offer**
 [面试题 06：重建二叉树](http://baixin.ink/2018/11/29/offer-sword-6/)
+[面试题 18：树的子结构](http://baixin.ink/2019/01/10/offer-sword-18/)
+[面试题 19：二叉树的镜像](http://baixin.ink/2019/01/10/offer-sword-19/)
+[面试题 24：二叉搜索树的后序遍历序列](http://baixin.ink/2019/01/11/offer-sword-24/)
+[面试题 25：二叉树中和为某一值的路径](http://baixin.ink/2019/03/11/offer-sword-25/)
 
 ## 栈和队列
 **剑指 offer**
 [面试题 07：用两个栈实现队列](http://baixin.ink/2018/11/29/offer-sword-7/)
+[面试题 21：包含 min 函数的栈](http://baixin.ink/2019/01/10/offer-sword-21/)
+[面试题 22：栈的压入、弹出序列](http://baixin.ink/2019/01/10/offer-sword-22/)
+[面试题 23：从上往下打印二叉树](http://baixin.ink/2019/01/11/offer-sword-23/)
 
 ## 位运算
 **剑指 offer**
@@ -81,6 +96,9 @@ tags:
 ## 其他
 **剑指 offer**
 [面试题 09：斐波那契数列](http://baixin.ink/2019/01/02/offer-sword-9/)
+[面试题 11：数值的整数次方](http://baixin.ink/2019/01/07/offer-sword-11/)
+[面试题 12：打印 1 到最大的 n 位数](http://baixin.ink/2019/01/08/offer-sword-12/)
+[面试题 20：顺时针打印矩阵](http://baixin.ink/2019/01/10/offer-sword-20/)
 
 ## Refer
 [十大经典排序算法](https://github.com/hustcc/JS-Sorting-Algorithm)

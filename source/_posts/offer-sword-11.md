@@ -28,45 +28,38 @@ n 为奇数：`a^n = a^((n-1)/2) * a^((n-1)/2) * a`
 ```java
 public class Solution {
     public double Power(double base, int exponent) {
-        if (equal(base, 0.0) && exponent < 0) {
-            throw new RuntimeException("Base can't be zero when exponent is minus!");
+        if(isEqual(base, 0.00) && exponent < 0) {
+            throw new RuntimeException("Exponent can't be minus when base is zero!");
         }
-
-        int absExponent = exponent;
-        if(exponent < 0) {
-            absExponent = -exponent;
-        }
-
-        double result = powerWithUnsignedExponent(base, absExponent);
-        if(exponent < 0) {
-            result = 1.0 / result;
-        }
-        return result;
+        return PowerRecurisively(base, exponent);
     }
 
-    // 无符号数求整数次方
-    private double powerWithUnsignedExponent(double base, int exponent) {
+    private double PowerRecurisively(double base, int exponent) {
         if(exponent == 0) {
             return 1;
-        }
-        if (exponent == 1) {
+        } else if(exponent == 1) {
             return base;
+        } else if (exponent == -1) {
+            return 1 / base;
+        } else {
+            // 右移来代替除 2
+            double result = PowerRecurisively(base, exponent >> 1);
+            result *= result;
+            // 一个数与 1 与的结果是 1 的话说明它是一个奇数
+            if((exponent & 1) == 1) {
+                // 奇数还需要再乘一次 base
+                result *= base;
+            }
+            return result;
         }
-
-        double result = powerWithUnsignedExponent(base, exponent >> 1);
-        result *= result;
-        if((exponent & 1) == 1) {
-            result *= base;
-        }
-        return result;
     }
 
-    // 自定义 euqal 方法来比较两个浮点数是否相等
-    private boolean equal(double num1, double num2) {
-        if (num1 - num2 > -0.0000001 && num1 - num2 < 0.0000001) {
-            return true;
-        } else {
+    // 判断两个浮点数是否相等
+    private boolean isEqual(double num1, double num2) {
+        if(num1 - num2 > 0.0000001 || num1 - num2 < -0.0000001) {
             return false;
+        } else {
+            return true;
         }
     }
 }

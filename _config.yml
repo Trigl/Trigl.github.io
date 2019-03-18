@@ -89,6 +89,10 @@ friends: [
     {
         title: "有态度的HBase/Spark/BigData",
         href: "http://hbasefly.com"
+    },
+    {
+        title: "Laurence的技术博客",
+        href: "https://blog.csdn.net/bluishglc"
     }
 ]
 

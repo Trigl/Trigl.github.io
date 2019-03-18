@@ -16,24 +16,27 @@ tags:
 public class Solution {
     public void reOrderArray(int [] array) {
         if(array != null && array.length != 0) {
-            // 标志奇数的数量
-            int oddSize = 0;
+            // 标志移动好的奇数的数量
+            int oddIndex = -1;
             for(int i = 0; i < array.length; i++) {
-                // 如果遍历到的数字是奇数
+                // 用位与运算来确定奇偶
                 if((array[i] & 1) == 1) {
-                    int value = array[i];
-                    // 奇数的前一位是否是偶数
                     int j = i - 1;
                     // 依次顺序交换该奇数前的偶数
-                    while(j >= oddSize && (array[j] & 1) == 0) {
-                        array[j + 1] = array[j];
-                        array[j] = value;
+                    while(j > oddIndex && (array[j] & 1) == 0) {
+                        swap(array, j, j + 1);
                         j--;
                     }
-                    oddSize++;
+                    oddIndex++;
                 }
             }
         }
+    }
+
+    private void swap(int[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
     }
 }
 ```

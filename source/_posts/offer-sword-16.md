@@ -24,19 +24,20 @@ public class ListNode {
 }*/
 public class Solution {
     public ListNode ReverseList(ListNode head) {
-        ListNode reservedHead = null;
-        ListNode node = head;
-        ListNode prev = null;
-        while (node != null) {
-            ListNode next = node.next;
-            if (next == null) {
-                reservedHead = node;
-            }
-            node.next = prev;
-            prev = node;
-            node = next;
+        if(head == null) return null;
+
+        // 反转后的链表表头
+        ListNode reversedHead = null;
+        ListNode next = null;
+
+        while(head != null) {
+            next = head.next;
+            head.next = reversedHead;
+            reversedHead = head;
+            head = next;
         }
-        return reservedHead;
+
+        return reversedHead;
     }
 }
 ```

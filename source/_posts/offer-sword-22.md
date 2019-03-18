@@ -15,7 +15,6 @@ tags:
 代码如下：
 
 ```java
-import java.util.ArrayList;
 import java.util.Stack;
 
 public class Solution {
