@@ -50,6 +50,7 @@ tags:
 [面试题 15：链表中倒数第 k 个结点](http://baixin.ink/2019/01/08/offer-sword-15/)
 [面试题 16：反转链表](http://baixin.ink/2019/01/09/offer-sword-16/)
 [面试题 17：合并两个排序的链表](http://baixin.ink/2019/01/09/offer-sword-17/)
+[面试题 26：复杂链表的复制](http://baixin.ink/2019/03/21/offer-sword-26/)
 
 ## 树
 树有三种遍历方式：
