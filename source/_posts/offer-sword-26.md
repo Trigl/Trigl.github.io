@@ -16,7 +16,7 @@ tags:
 
 操作链表的时候我们不要纠结各个中间变量（参数），要站在原始对象的角度上去考虑问题。对于本题目来说，解题思路如下：
 
-![](/img/content/copy-listnode.png)
+![](/img/content/copy-listnode.jpg)
 
 具体代码如下：
 

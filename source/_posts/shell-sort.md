@@ -26,7 +26,7 @@ tags:
 1. 选择增量 gap=length/2，缩小增量继续以 gap = gap/2 的方式，这种增量选择我们可以用一个序列来表示，{n/2,(n/2)/2...1}，称为增量序列。
 2. 在每个 gap 下，分别进行插入排序，这样就会以 gap=n/2，gap=(n/2)/2，...，gap=1 的顺序分别插入排序，在 gap=1 的时候也就实现了全排序。
 
-![](/img/content/shell-sort.png)
+![](/img/content/shell-sort.jpg)
 
 ## 代码实现
 

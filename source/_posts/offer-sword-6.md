@@ -10,7 +10,7 @@ tags:
 
 > 输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。例如输入前序遍历序列 {1, 2, 4, 7, 3, 5, 6, 8} 和中序遍历序列 {4, 7, 2, 1, 5, 3, 8, 6}，则重建出如下图所示的二叉树并返回它的头结点。
 
-![](/img/content/binary-tree-1.png)
+![](/img/content/binary-tree-1.jpg)
 
 ## 二叉树
 首先了解一下二叉树：有一个根结点，根结点下面最多有两个子结点，分别是左右子结点，二叉输的遍历方式一般有三种：
@@ -21,19 +21,19 @@ tags:
 
 让我们找一下规律，前序遍历先访问根结点，前序遍历的序列是 {1, 2, 4, 7, 3, 5, 6, 8}，所以可以确定，1 就是根结点的值。
 
-![](/img/content/binary-tree-2.png)
+![](/img/content/binary-tree-2.jpg)
 
 中序遍历是先访问左子结点，再访问根结点，上面我们确定了 1 是根结点，那可以说明 1 前面的数字就是左子结点对应的中序遍历序列，1 后面是右子结点的中序遍历序列。
 
 **中序遍历**
 
-![](/img/content/binary-tree-3.png)
+![](/img/content/binary-tree-3.jpg)
 
 由于左右子结点的数目应该是相同的，我们可以根据中序遍历序列确定前序遍历序列的左右子结点如下图。
 
 **前序遍历**
 
-![](/img/content/binary-tree-4.png)
+![](/img/content/binary-tree-4.jpg)
 
 ## 代码实现
 通过上面的步骤我们已经确定了该二叉树的根结点，左子结点的前序遍历和中序遍历，右子结点的前序遍历和中序遍历，自然可以想到用递归的方法去解决。
@@ -126,11 +126,11 @@ if(startPre > endPre || startIn > endIn)
 
 **中序遍历**
 
-![](/img/content/binary-tree-6.png)
+![](/img/content/binary-tree-6.jpg)
 
 **前序遍历**
 
-![](/img/content/binary-tree-5.png)
+![](/img/content/binary-tree-5.jpg)
 
 从中序遍历图中可以得到：
 左子结点长度 = i - startIn

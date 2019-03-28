@@ -4,7 +4,7 @@ title:      "Spark client mode 和 cluster mode 的区别"
 date:       2018-04-28
 author:     "Ink Bai"
 catalog:    true
-header-img: "/img/post/spark-mode.png"
+header-img: "/img/post/spark-mode.jpg"
 tags:
     - Spark
 ---
@@ -26,7 +26,7 @@ tags:
 
 ## client mode
 
-![这里写图片描述](/img/content/20170609165010221.png)
+![这里写图片描述](/img/content/20170609165010221.jpg)
 
 首先明白几个基本概念：Master节点就是你用来提交任务，即执行bin/spark-submit命令所在的那个节点；Driver进程就是开始执行你Spark程序的那个Main函数，虽然我这里边画的Driver进程在Master节点上，但注意Driver进程不一定在Master节点上，它可以在任何节点；Worker就是Slave节点，Executor进程必然在Worker节点上，用来进行实际的计算
 
@@ -38,7 +38,7 @@ tags:
 
 4、client mode下没有监督重启机制，Driver进程如果挂了，需要额外的程序重启
 ## cluster mode
-![这里写图片描述](/img/content/20170609183743824.png)
+![这里写图片描述](/img/content/20170609183743824.jpg)
 
 1、Driver程序在worker集群中某个节点，而非Master节点，但是这个节点由Master指定
 
@@ -51,7 +51,7 @@ tags:
 ## Yarn-Client 和 Yarn-Cluster
 #### Yarn-Client
 
-![这里写图片描述](/img/content/yarn-client.png)
+![这里写图片描述](/img/content/yarn-client.jpg)
 
 1. Spark Yarn Client向YARN的ResourceManager申请启动Application Master。同时在SparkContent初始化中将创建DAGScheduler和TASKScheduler等，由于我们选择的是Yarn-Client模式，程序会选择YarnClientClusterScheduler和YarnClientSchedulerBackend
 2. ResourceManager收到请求后，在集群中选择一个NodeManager，为该应用程序分配第一个Container，要求它在这个Container中启动应用程序的ApplicationMaster，与YARN-Cluster区别的是在该ApplicationMaster不运行SparkContext，只与SparkContext进行联系进行资源的分派
@@ -71,8 +71,8 @@ tags:
 
 下图是yarn-cluster模式：
 
-![这里写图片描述](/img/content/yarn-cluster1.png)
-![这里写图片描述](/img/content/yarn-cluster2.png)
+![这里写图片描述](/img/content/yarn-cluster1.jpg)
+![这里写图片描述](/img/content/yarn-cluster2.jpg)
 
 执行过程：
 

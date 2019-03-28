@@ -23,7 +23,7 @@ tags:
 ## 代码实现
 快排的代码实现有多种方式，有填坑法、交换法、顺序遍历法等，而且影响快排最大的是基准点的选取，因此出现了一些优化快排的算法例如三数取中法，这里我们用顺序遍历法来实现一下快排，图解如下：
 
-![](/img/content/quick-sort.png)
+![](/img/content/quick-sort.jpg)
 
 ```java
 public class QuickSort {

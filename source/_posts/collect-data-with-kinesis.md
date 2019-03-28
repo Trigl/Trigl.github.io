@@ -13,7 +13,7 @@ tags:
 
 Kinesis 的整体架构如下：
 
-![](https://docs.aws.amazon.com/streams/latest/dev/images/architecture.png)
+![](https://docs.aws.amazon.com/streams/latest/dev/images/architecture.jpg)
 
 ## Kinesis 的基本术语
 
