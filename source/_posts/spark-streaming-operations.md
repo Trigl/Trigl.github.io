@@ -106,7 +106,7 @@ val cleanedDStream = wordCounts.transform { rdd =>
 #### 窗口操作
 Spark Streaming 也支持窗口计算，即可以把一个转换作用在滑动的窗口数据上，如下图所示：
 
-![](https://spark.apache.org/docs/latest/img/streaming-dstream-window.jpg)
+![](/img/content/streaming-dstream-window.jpg)
 
 上图显示的是一个跨度为 3，每次滑动步数为 2 窗口，一个窗口操作必须指定两个参数：
 
