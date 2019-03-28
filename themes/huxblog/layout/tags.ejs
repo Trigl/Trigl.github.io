@@ -7,7 +7,7 @@ layout: layout
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
+                <div class="site-heading" id="tag-heading">
                     <h1><%= page.title || config.title %></h1>
                     <!--<hr class="small">-->
                     <span class="subheading"><%= page.description || config.subtitle || "" %></span>
@@ -24,7 +24,10 @@ layout: layout
             <!-- 标签云 -->
             <div id='tag_cloud' class="tags">
                 <% site.tags.map(function(tag){  %>
-                    <a href="#<%= tag.name %>" title="<%= tag.name %>" rel="<%= tag.length %>"><%= tag.name %></a>
+                    <a href="#<%= tag.name %>" title="<%= tag.name %>" rel="<%= tag.length %>">
+                      <%= tag.name %>
+                      <sup><%= tag.length %></sup>
+                    </a>
                 <% }) %>
             </div>
 
