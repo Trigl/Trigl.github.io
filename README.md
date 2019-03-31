@@ -2,7 +2,7 @@
 
 > Ported Theme of [Hux Blog](https://github.com/Huxpro/huxpro.github.io), Thank [Huxpro](https://github.com/Huxpro) for designing such a flawless theme.
 
-### [Demo &rarr;](http://kaijun.github.io/hexo-theme-huxblog)
+### [Demo &rarr;](baixin.ink)
 
 
 ![](http://huangxuan.me/img/blog-desktop.jpg)
@@ -18,6 +18,15 @@ So i just pushed the whole hexo project for your convenience, all pre settings a
 ```
 git clone https://github.com/Kaijun/hexo-theme-huxblog.git
 cd hexo-theme-huxblog
+```
+
+##### 2. Install hexo
+
+```
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
+nvm install stable
+sudo npm install -g hexo-cli
+sudo npm install --unsafe-perm --verbose -g hexo
 npm install
 ```
 
@@ -41,5 +50,5 @@ hexo serve // run hexo in local environment
 hexo clean && hexo deploy // hexo will push the static files automatically into the specific branch(gh-pages) of your repo!
 ```
 
-##### 4.Enjoy! 
+##### 4.Enjoy!
 Please [**Star**](https://github.com/kaijun/hexo-theme-huxblog/stargazers) this Project if you like it! [**Following**](https://github.com/Kaijun) would also be appreciated!
