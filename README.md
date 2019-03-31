@@ -30,7 +30,7 @@ sudo npm install --unsafe-perm --verbose -g hexo
 npm install
 ```
 
-##### 2.Modify
+##### 3.Modify
 Modify `_config.yml` file with your own info.
 Especially the section:
 
@@ -42,7 +42,7 @@ deploy:
 ```
 Replace with your own repo!
 
-##### 3.Writting/Serve/Deploy
+##### 4.Writting/Serve/Deploy
 
 ```
 hexo new post IMAPOST
@@ -50,5 +50,5 @@ hexo serve // run hexo in local environment
 hexo clean && hexo deploy // hexo will push the static files automatically into the specific branch(gh-pages) of your repo!
 ```
 
-##### 4.Enjoy!
+##### 5.Enjoy!
 Please [**Star**](https://github.com/kaijun/hexo-theme-huxblog/stargazers) this Project if you like it! [**Following**](https://github.com/Kaijun) would also be appreciated!
