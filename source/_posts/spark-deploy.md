@@ -29,7 +29,7 @@ Stage|一个 Job 会根据是否有 shuffle 操作分成多个 stage，每个 st
 ## 部署流程
 Spark 应用运行在 driver 进程中，主要由 `SparkContext` 协调管理，当开始在一个集群中运行时，SparkContext 首先连接到一个集群管理器（如 Spark 自身的 standalone、Mesos 或者 Yarn），集群管理器的作用是为 Spark 应用分配资源。当 SparkContext 连接到集群管理器以后，就可以为应用程序分配集群资源，分配的集群的不同机器就叫 `excutor` 节点，这些节点用来执行 Spark 应用中计算和存储数据的程序。因此，当 SparkContext 连接到这些 executor 以后，就会把应用代码发送过去，最后会把分配好的 task 发送到这些 executor 去执行。
 
-![](http://spark.apache.org/docs/latest/img/cluster-overview.jpg)
+![](/img/content/cluster-overview.png)
 
 这里注意几点：
 
