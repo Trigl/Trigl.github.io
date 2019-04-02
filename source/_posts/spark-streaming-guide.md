@@ -13,11 +13,11 @@ tags:
 
 Spark Streaming 是用来处理实时流数据的，所以必然有一个输入和一个输出：
 
-![](https://spark.apache.org/docs/latest/img/streaming-arch.jpg)
+![](/img/content/streaming-arch.png)
 
 Spark Streaming 的内部实现其实还是 Spark core，将接收到的实时流数据分成一个一个很小的批数据进行处理：
 
-![](https://spark.apache.org/docs/latest/img/streaming-flow.jpg)
+![](/img/content/streaming-flow.png)
 
 Spark Streaming 基本的数据结构是 DStream（discretized stream)，这是一个连续的数据流，其底层是 RDD 的集合。
 
@@ -149,11 +149,11 @@ val ssc = new StreamingContext(sc, Seconds(1))
 #### 离散流（DStreams）
 `DStream` 是 Spark Streaming 的基本抽象，它代表连续的数据流，不管是源数据还是经过转换处理后的数据。本质上它是一系列 RDD，每一个 DStream 都是确定间隔大小的 RDD 集合，如下图所示。
 
-![](https://spark.apache.org/docs/latest/img/streaming-dstream.jpg)
+![](/img/content/streaming-dstream.png)
 
 Streaming 做的转换操作也都是基于 RDD：
 
-![](https://spark.apache.org/docs/latest/img/streaming-dstream-ops.jpg)
+![](/img/content/streaming-dstream-ops.png)
 
 #### 输入流和接收器
 当在本地执行 Spark Streaming 程序时，不要使用 `local` 或者 `local[1]` 作为 master 的 URL，因为这样就只有一个线程。但是一个 Streaming 程序可能需要两个线程，一个用于接收输入流，一个用于处理数据。当然有接收器的才需要相应的线程来支持，如 Kafka、Flume 等，对于 HDFS 就不需要接收器，也就不需要另开线程。

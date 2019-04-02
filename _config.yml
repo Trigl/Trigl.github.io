@@ -39,7 +39,16 @@ anchorjs: true                          # if you want to customize anchor. check
 
 
 # Disqus settings
-disqus_username: baixin
+# disqus_username: baixin
+# Gitalk
+gitalk:
+  enable: true    #是否开启Gitalk评论
+  clientID: 237a3caad30f68ed4cd9                            #生成的clientID
+  clientSecret: 18d5cc6873b72bffb9c13f7d9355b39c519b04b6    #生成的clientSecret
+  repo: Trigl.github.io    #仓库名称
+  owner: Trigl    #github用户名
+  admin: Trigl
+  distractionFreeMode: false #是否启用类似FB的阴影遮罩
 
 
 # Analytics settings
