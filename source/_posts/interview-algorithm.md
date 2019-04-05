@@ -73,6 +73,7 @@ tags:
 [面试题 19：二叉树的镜像](http://baixin.ink/2019/01/10/offer-sword-19/)
 [面试题 24：二叉搜索树的后序遍历序列](http://baixin.ink/2019/01/11/offer-sword-24/)
 [面试题 25：二叉树中和为某一值的路径](http://baixin.ink/2019/03/11/offer-sword-25/)
+[面试题 27：二叉搜索树与双向链表](http://baixin.ink/2019/04/06/offer-sword-27/)
 
 ## 栈和队列
 **剑指 offer**
