@@ -27,7 +27,6 @@ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | b
 nvm install stable
 sudo npm install -g hexo-cli
 sudo npm install --unsafe-perm --verbose -g hexo
-npm install
 ```
 
 ##### 3.Modify
