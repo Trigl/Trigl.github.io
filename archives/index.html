@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword" content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Archives - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/archives/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archives/">Archives</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/archive-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Archives</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">The only thing that doesn&#39;t change is change.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <!-- 归档列表 -->
+
+            
+
+             <!-- 归档列表 -->
+
+
+
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-check-o listing-seperator" id="2019">
+                    <span class="tag-text">2019</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/05/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/05/10/how-to-learn-opensorce-project/" style="color: #0085a1">
+                        <span>
+                            如何学习开源项目？
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/04/06&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/04/06/offer-sword-27/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 27：二叉搜索树与双向链表
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/04/01&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/04/01/talk-about-work/" style="color: #0085a1">
+                        <span>
+                            聊聊这几年的工作经历
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/03/21&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/03/21/offer-sword-26/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 26：复杂链表的复制
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/03/11&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/03/11/offer-sword-25/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 25：二叉树中和为某一值的路径
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/03/03&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/03/03/flink-paper/" style="color: #0085a1">
+                        <span>
+                            Apache Flink 论文学习
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/02/11&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/02/11/interview-algorithm/" style="color: #0085a1">
+                        <span>
+                            闲来无事刷刷题
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/29/quick-sort/" style="color: #0085a1">
+                        <span>
+                            快速排序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/29/merge-sort/" style="color: #0085a1">
+                        <span>
+                            归并排序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/29/shell-sort/" style="color: #0085a1">
+                        <span>
+                            希尔排序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/29/insertion-sort/" style="color: #0085a1">
+                        <span>
+                            插入排序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/29/sellection-sort/" style="color: #0085a1">
+                        <span>
+                            选择排序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/29/bubble-sort/" style="color: #0085a1">
+                        <span>
+                            冒泡排序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/11&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/11/offer-sword-24/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 24：二叉搜索树的后序遍历序列
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/11&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/11/offer-sword-23/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 23：从上往下打印二叉树
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/10/offer-sword-22/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 22：栈的压入、弹出序列
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/10/offer-sword-21/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 21：包含 min 函数的栈
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/10/offer-sword-20/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 20：顺时针打印矩阵
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/10/offer-sword-19/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 19：二叉树的镜像
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/10/offer-sword-18/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 18：树的子结构
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/09&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/09/offer-sword-17/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 17：合并两个排序的链表
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/09&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/09/offer-sword-16/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 16：反转链表
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/08&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/08/offer-sword-15/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 15：链表中倒数第 k 个结点
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/08&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/08/offer-sword-14/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 14：调整数组顺序使奇数位于偶数前面
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/08&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/08/offer-sword-13/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 13：在 O(1) 时间删除链表结点
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/08&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/08/offer-sword-12/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 12：打印 1 到最大的 n 位数
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/07&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/07/offer-sword-11/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 11：数值的整数次方
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/07&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/07/offer-sword-10/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 10：二进制中 1 的个数
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/02&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/02/offer-sword-9/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 9：斐波那契数列
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2019/01/01&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2019/01/01/offer-sword-8/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 8：旋转数组的最小数字
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-check-o listing-seperator" id="2018">
+                    <span class="tag-text">2018</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/11/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/11/29/offer-sword-7/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 7：用两个栈实现队列
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/11/29&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/11/29/offer-sword-6/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 6：重建二叉树
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/11/27&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/11/27/offer-sword-5/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 5：从尾到头打印链表
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/11/27&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/11/27/offer-sword-4/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 4：替换空格
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/11/23&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/11/23/offer-sword-3/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 3：二维数组中的查找
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/11/23&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/11/23/offer-sword-2/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」面试题 2：实现 Singleton 模式
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/11/23&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/11/23/offer-sword/" style="color: #0085a1">
+                        <span>
+                            「剑指 Offer」刷题笔记
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/10/24&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/10/24/spark-deploy/" style="color: #0085a1">
+                        <span>
+                            Spark 部署要点
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/10/18&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/10/18/ReentrantReadWriteLock/" style="color: #0085a1">
+                        <span>
+                            ReentrantReadWriteLock 使用
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/08/20&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/08/20/sbt/" style="color: #0085a1">
+                        <span>
+                            SBT 那些常用的功能
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/08/02&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/08/02/spark-streaming-kinesis/" style="color: #0085a1">
+                        <span>
+                            Spark Streaming 集成 AWS Kinesis
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/08/01&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/08/01/spark-streaming-operations/" style="color: #0085a1">
+                        <span>
+                            Spark Streaming 常见操作
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/07/31&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/07/31/spark-streaming-checkpoint/" style="color: #0085a1">
+                        <span>
+                            Spark Streaming Checkpoint
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/07/26&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/07/26/spark-streaming-guide/" style="color: #0085a1">
+                        <span>
+                            Spark Streaming 初见
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/07/24&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/07/24/scala-breeze/" style="color: #0085a1">
+                        <span>
+                            Scala 的矩阵运算
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/07/17&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/07/17/scala-basic/" style="color: #0085a1">
+                        <span>
+                            那些容易漏掉的 Scala 基础
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/07/13&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/07/13/netty-http-server/" style="color: #0085a1">
+                        <span>
+                            使用 Netty 写一个 HTTP Server
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/06/20&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/06/20/protocol-buffers-tutorial/" style="color: #0085a1">
+                        <span>
+                            Protocol Buffers 了解一下？
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/06/14&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/06/14/notes-of-ddia-1/" style="color: #0085a1">
+                        <span>
+                            Designing Data-Intensive Applications 读书笔记（I）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/06/06&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/06/06/read-spark-source-code-1/" style="color: #0085a1">
+                        <span>
+                            Spark 源码阅读（I）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/05/23&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/05/23/akka-study/" style="color: #0085a1">
+                        <span>
+                            Akka Study
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/05/16&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/05/16/collect-data-with-kinesis/" style="color: #0085a1">
+                        <span>
+                            使用 AWS Kinesis 收集流数据
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/04/28&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/04/28/spark-mode/" style="color: #0085a1">
+                        <span>
+                            Spark client mode 和 cluster mode 的区别
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/04/13&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/04/13/case-classes-and-pattern-matching/" style="color: #0085a1">
+                        <span>
+                            Scala 的 Case Classes 和 Pattern Matching
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/02/07&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/02/07/details-of-scala-implicit/" style="color: #0085a1">
+                        <span>
+                            Scala Implicit 详解
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2018/01/15&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2018/01/15/scala-composition-and-inheritance/" style="color: #0085a1">
+                        <span>
+                            Scala Composition and Inheritance
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-check-o listing-seperator" id="2017">
+                    <span class="tag-text">2017</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2017/05/24&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2017/05/24/realtime-process-with-sparkstreaming/" style="color: #0085a1">
+                        <span>
+                            SparkStreaming + Flume + Kafka 进行实时日志分析
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2017/04/01&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2017/04/01/data-warehouse/" style="color: #0085a1">
+                        <span>
+                            数据仓库的架构与设计
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-check-o listing-seperator" id="2016">
+                    <span class="tag-text">2016</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/07/31&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/07/31/spring-xml-bootstrap-order/" style="color: #0085a1">
+                        <span>
+                            关于 web.xml 中 Spring 配置文件的启动顺序
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/03/25&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/03/25/spring-transaction/" style="color: #0085a1">
+                        <span>
+                            Spring 事务管理
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/03/17&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/03/17/spring-aop-3/" style="color: #0085a1">
+                        <span>
+                            Spring AOP（三）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/03/16&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/03/16/spring-aop-2/" style="color: #0085a1">
+                        <span>
+                            Spring AOP（二）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/03/12&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/03/12/spring-aop-1/" style="color: #0085a1">
+                        <span>
+                            Spring AOP（一）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/01/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/01/10/simplify-spring-xml-configuration-3/" style="color: #0085a1">
+                        <span>
+                            简化 Spring XML 配置（三）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/01/10&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/01/10/simplify-spring-xml-configuration-2/" style="color: #0085a1">
+                        <span>
+                            简化 Spring XML 配置（二）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/01/09&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/01/09/lines-of-lol/" style="color: #0085a1">
+                        <span>
+                            那些年玩过的英雄联盟
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/01/07&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/01/07/simplify-spring-xml-configuration-1/" style="color: #0085a1">
+                        <span>
+                            简化 Spring XML 配置（一）
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2016/01/05&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2016/01/05/basic-of-spring/" style="color: #0085a1">
+                        <span>
+                            Basic of Spring
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+            <div class="one-tag-list">
+                <span class="fa fa-calendar-check-o listing-seperator" id="2015">
+                    <span class="tag-text">2015</span>
+                </span>
+                <ul>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2015/12/27&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2015/12/27/the-sentimental-swordsman/" style="color: #0085a1">
+                        <span>
+                            那些年迷过的小李飞刀
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+                  <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+                 <li>
+                    2015/11/25&nbsp;
+                    <!-- <i class="fa fa-angle-double-right" aria-hidden="true"></i> -->
+                    <a href="/2015/11/25/summary-of-spring/" style="color: #0085a1">
+                        <span>
+                            Summary of Spring
+                        </span>
+                    </a>
+                    <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+                </li>
+                
+
+                </ul>
+            </div>
+            
+
+
+        </div>
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2019
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+
+</body>
+
+</html>
