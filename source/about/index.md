@@ -12,7 +12,7 @@ comments: true
 > I see and I remember.
 > I do and I understand.
 
-我是白墨，目前在 [哔哩哔哩](https://www.bilibili.com/) 玩玩数据，谢谢代码。
+我是白墨，目前在 [哔哩哔哩](https://www.bilibili.com/) 玩玩数据，写写代码。
 
 爱好广泛，浅尝辄止，一直在工作与兴趣之间找一个平衡。
 
