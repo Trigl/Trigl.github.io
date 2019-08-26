@@ -223,7 +223,7 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">java.sql.DriverManager.registerDriver(<span class="keyword">new</span> Driver());</span><br></pre></td></tr></table></figure>
 <p>所以实际上还是使用的 <code>DriverManager.registerDriver</code> 进行的服务注册。</p>
 <p>综上所诉，服务提供者框架是这样的，首先会有一个官方标准制定者，制定一个具体的服务标准，然后定义一个类似于字典的服务管理器，给外面提供一个注册的接口，你实现了服务以后自己注册到字典里面去。然后会有具体的服务实现厂商，他们只要做两件事就可以了：1、根据官方标准实现服务。2、注册到官方服务管理器中。对于我们这些普通用户而言，我只要知道怎么用就行了，至于你们内部是怎么实现的我并不 care。</p>
-<p>另外还有一点，Java 从 1.6 开始，还贴心地提供了一个通用的服务提供者框架 <code>java.util.ServiceLoader</code> 方便我们编程～</p>
+<p>另外还有一点，Java 从 1.6 开始，还贴心地提供了一个通用的服务提供者框架 <code>java.util.ServiceLoader</code> 方便我们编程，具体的实例可以参考这篇文章：<a href="https://www.baeldung.com/java-spi" target="_blank" rel="noopener">Java Service Provider Interface</a></p>
 
 
                 <hr>
