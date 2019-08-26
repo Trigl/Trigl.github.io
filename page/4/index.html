@@ -191,6 +191,31 @@
 
 <div class="post-preview">
 
+    <a href="/2019/01/02/offer-sword-9/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 9：斐波那契数列
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+输入一个整数 n，输出斐波那契数列的第 n 项。斐波那契数列的定义如下：F0 = 0F1 = 1Fn = F[n-1]+ F[n-2] (n &gt; 1)
+
+这个题目看到的第一眼，很容易就想到使用递归的方法来做，只要我们知道了斐波那契数列第 0 项和第 1 项的值，其他项的值都可以通过这两项递归累加得到。
+但是这样真的没问题吗？每次使用递归的时候我们都要考虑一下有没有性能问题，比如求解 ......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2019/01/01/offer-sword-8/">
         <h2 class="post-title">
             「剑指 Offer」面试题 8：旋转数组的最小数字
@@ -430,29 +455,6 @@ Application jar
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/10/18/ReentrantReadWriteLock/">
-        <h2 class="post-title">
-            ReentrantReadWriteLock 使用
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            ReentrantReadWriteLock 提供了读写锁机制可以方便我们更好实现并发场景，首先明确读写锁地特征：读锁与读锁不互斥，写锁与读锁互斥，写锁与写锁互斥。
-依据此，我们就可以应用在这样地场景下：如果多个线程可以并行跑，那么我们就可以给它们都分配读锁；如果某个线程必须阻塞其他所有线程开跑，那我们就给它设置写锁。
-用一个例子来讲解一下，现在共有四个线程，其中三个可以并行跑，一个必须阻塞......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-10-18
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -492,6 +494,8 @@ Application jar
                     <div class="tags">
                         
                             
+                        
+                            
                             <a href="/tags/#算法" title="算法" rel="6">算法</a>
                             
                         
@@ -506,9 +510,9 @@ Application jar
                             
                         
                             
-                            <a href="/tags/#因崔斯汀" title="因崔斯汀" rel="3">因崔斯汀</a>
-                            
                         
+                            
+                            <a href="/tags/#因崔斯汀" title="因崔斯汀" rel="3">因崔斯汀</a>
                             
                         
                             
@@ -521,8 +525,6 @@ Application jar
                         
                             
                             <a href="/tags/#Spring" title="Spring" rel="10">Spring</a>
-                            
-                        
                             
                         
                             
