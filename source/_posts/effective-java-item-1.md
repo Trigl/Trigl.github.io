@@ -72,7 +72,8 @@ public static <E extends Enum<E>> EnumSet<E> noneOf(Class<E> elementType) {
 可以看到底层实现做了一些优化，可以根据枚举类型的大小返回 `EnumSet` 的两个子类中其中一个的实例，这些都是底层实现的，对外不可知，调用这个 API 的开发者只知道返回的是 `EnumSet` 的一个子类。
 
 **优点五：灵活的静态方法构成了服务提供者框架的基础**
-服务提供者框架可以单开一篇讲一下了，先放入 todo list。
+~~服务提供者框架可以额外再开一坑了，后面补上。~~
+传送门：[服务提供者框架](https://baixin.ink/2019/08/26/effective-java-item-1-plus/)
 
 上面说了静态工厂的一堆优点，下面看一下静态工厂的缺点。
 
