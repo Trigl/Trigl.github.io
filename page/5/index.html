@@ -191,6 +191,45 @@
 
 <div class="post-preview">
 
+    <a href="/2018/10/24/spark-deploy/">
+        <h2 class="post-title">
+            Spark 部署要点
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+写完一个 Spark 应用程序以后，如何把它部署到集群上运行呢，这个部署的过程是怎样的呢，这里我主要以 Yarn 集群为主来讲解。
+
+基本术语让我们先了解一下 Spark 中常用的一些基本术语：
+
+
+
+术语
+含义
+
+
+
+
+Application
+用户创建的 Spark 应用，会在集群中形成 driver 进程和 executor 进程。
+
+
+Application jar
+包含用户 Spa......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-10-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2018/10/18/ReentrantReadWriteLock/">
         <h2 class="post-title">
             ReentrantReadWriteLock 使用
@@ -422,30 +461,6 @@ val toLower = (c: Char) =&gt; (c.toByte + 32).toChar......
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/06/20/protocol-buffers-tutorial/">
-        <h2 class="post-title">
-            Protocol Buffers 了解一下？
-        </h2>
-        <h3 class="post-subtitle">
-            Scala 中使用 protocol buffer
-        </h3>
-        <div class="post-content-preview">
-            
-本文是学习 Protocol Buffers 时做的笔记，内容来自官方文档，把其中的精华部分提炼出来做了一个总结。
-
-什么是 protocol buffersProtocol buffers 是一种跨语言跨平台可扩展的序列化结构化数据的方式，常用于通信协议、数据存储等等。首先会定义数据应当如何构造，然后使用特殊生成的源代码把结构化的数据写入到各个数据流或者读取出来。甚至可以更新数据结构而不......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-06-20
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -487,9 +502,9 @@ val toLower = (c: Char) =&gt; (c.toByte + 32).toChar......
                             
                         
                             
-                            <a href="/tags/#算法" title="算法" rel="6">算法</a>
-                            
                         
+                            
+                            <a href="/tags/#算法" title="算法" rel="6">算法</a>
                             
                         
                             
