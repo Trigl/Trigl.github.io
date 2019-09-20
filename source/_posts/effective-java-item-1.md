@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      "Effective Java 读书笔记：Item 1"
+subtitle:   "考虑使用静态工厂方法替换构造方法"
 date:       2019-08-25
 author:     "Ink Bai"
 header-img: "/img/post/effective-java-1.jpg"

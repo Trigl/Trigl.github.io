@@ -229,3 +229,12 @@
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
 </script>
+
+<!-- fancybox support -->
+<% if(theme.fancybox === true && page.fancybox !== false) { %>
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  <%- js('js/jquery.fancybox.min.js') %>
+  <%- js('js/wrapImage.js') %>
+  <%- css('css/jquery.fancybox.min.css') %>
+<% } %>
