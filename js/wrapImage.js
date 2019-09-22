@@ -28,6 +28,9 @@ function wrapImageWithFancyBox() {
 
     $().fancybox({
         selector: '[data-fancybox="images"]',
-				smallBtn : true
+				mobile: {
+    			clickContent: "close",
+    			clickSlide: "close"
+				}
     });
 }
