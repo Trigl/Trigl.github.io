@@ -27,6 +27,7 @@ function wrapImageWithFancyBox() {
     });
 
     $().fancybox({
-        selector: '[data-fancybox="images"]'
+        selector: '[data-fancybox="images"]',
+				smallBtn : true
     });
 }
