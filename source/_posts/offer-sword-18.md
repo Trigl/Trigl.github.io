@@ -5,7 +5,7 @@ date:       2019-01-10 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-18.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 输入两颗二叉树 A 和 B，判断 B 是不是 A 的字结构。（ps：我们约定空树不是任意一个树的子结构）

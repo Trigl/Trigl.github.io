@@ -5,7 +5,7 @@ date:       2019-01-07 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-11.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 给定一个 double 类型的浮点数 base 和 int 类型的整数 exponent，求 base 的 exponent 次方。不得使用库函数，同时不需要考虑大数问题。

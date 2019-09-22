@@ -6,7 +6,7 @@ author:     "Ink Bai"
 catalog:    true
 header-img: "/img/post/offer-sword-02.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 题目：设计一个类，我们只能生成该类的一个实例。

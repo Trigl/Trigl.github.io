@@ -5,7 +5,7 @@ date:       2019-01-09 01:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-16.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 定义一个函数，输入一个链表的头结点，反转该链表并输出反转后链表的头结点。

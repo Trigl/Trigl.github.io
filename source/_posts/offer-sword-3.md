@@ -6,7 +6,7 @@ author:     "Ink Bai"
 catalog:    true
 header-img: "/img/post/offer-sword-3.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 题目：完成一个函数，输入一个二维数组和一个整数，判断数组中是否含有该整数。这个二维数组的结构是，每一行从左到右递增，每一列从上到下递增。

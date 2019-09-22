@@ -5,7 +5,7 @@ date:       2019-03-21 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-26.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 输入一个复杂链表（每个结点中有结点值，以及两个指针，一个指向下一个结点，另一个特殊指针指向任意一个结点），返回结果为复制后复制链表的 head。

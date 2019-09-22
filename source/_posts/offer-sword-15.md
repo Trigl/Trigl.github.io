@@ -5,7 +5,7 @@ date:       2019-01-08 05:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-15.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 输入一个链表，输出该链表中倒数第 k 个结点。

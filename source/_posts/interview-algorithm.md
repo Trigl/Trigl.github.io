@@ -6,7 +6,7 @@ author:     "Ink Bai"
 catalog:    true
 header-img: "/img/post/interview-algorithm.jpg"
 tags:
-    - 面试
+    面试
 ---
 > 刷题呢可以活跃思维，巩固基础，当然最重要的是面试要考啦咳咳。
 首先需要熟练掌握链表、树、栈、队列和哈希表等数据结构，以及它们的操作。

@@ -5,7 +5,7 @@ date:       2019-04-06 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-27.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。

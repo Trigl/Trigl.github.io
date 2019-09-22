@@ -5,7 +5,7 @@ date:       2018-11-27 01:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-4.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 实现一个函数，把字符串中的每个空格替换成 `%20`。例如输入 `We are happy.`，则输出 `We%20are%20happy.`。

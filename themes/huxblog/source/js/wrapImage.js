@@ -27,6 +27,10 @@ function wrapImageWithFancyBox() {
     });
 
     $().fancybox({
-        selector: '[data-fancybox="images"]'
+        selector: '[data-fancybox="images"]',
+				mobile: {
+    			clickContent: "close",
+    			clickSlide: "close"
+				}
     });
 }

@@ -1,1 +1,90 @@
-<!-- Default Archive layout, we use archives instead. -->
+---
+layout: layout
+---
+
+<!-- Page Header -->
+<header class="intro-header" style="background-image: url('<%= config.root %><%= page["header-img"] || config["header-img"] %>')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading" id="tag-heading">
+                    <h1><%= page.title || config.title %></h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading"><%= page.description || config.subtitle || "" %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <!-- 标签云 -->
+            <div id='tag_cloud' class="tags tags-sup js-tags">
+              <a class="tag-button--all" data-encode="">
+                     ALL<sup><%=site.posts.length%></sup>
+              </a>
+
+              <% var tags = site.tags.sort('length').reverse(); %>
+              <% tags.map(function(tag){  %>
+                <a data-encode="<%=: encodeURIComponent(tag.name.trim()) %>"
+                  class="tag-button"
+                  title="<%= tag.name %>" rel="<%= tag.length %>">
+                  <%= tag.name %>
+                  <sup><%= tag.length %></sup>
+                </a>
+              <% }) %>
+            </div>
+
+            <!-- Article List -->
+            <%
+                var years = {};
+                site.posts.sort('date').reverse().forEach(function(post){
+                    var year = post.date.year()
+                    if(years[year]===undefined){
+                        years[year] = [];
+                    }
+                    years[year].push(post);
+                });
+            %>
+
+            <% Object.keys(years).reverse().forEach(function(year){  %>
+            <div class="mini-post-list js-result d-none">
+              <section>
+                <span class="fa listing-seperator" id="<%= year %>">
+                    <span class="tag-text"><%= year %></span>
+                </span>
+
+                <% years[year].map(function(post){  %>
+                  <%
+                      var _tags = '';
+                      post.tags.forEach(function(tag){
+                          _tags = _tags + encodeURIComponent(tag.name.trim()) + ',';
+                      });
+                      _tags = _tags.slice(0, -1);
+                  %>
+
+                  <div class="post-preview item" data-tags="<%= _tags %>">
+                    <a href="<%- config.root %><%- post.path %>">
+                      <h2 class="post-title">
+                            <%- post.title || "Untitled" %>
+                        </h2>
+                        <% if (post.subtitle && post.subtitle.length) { %>
+                        <h3 class="post-subtitle">
+                            <%- post.subtitle %>
+                        </h3>
+                        <% } %>
+                    </a>
+                    <hr>
+                  </div>
+                <% }) %>
+              </section>
+
+            </div>
+            <% }) %>
+
+        </div>
+    </div>
+</div>

@@ -5,7 +5,7 @@ date:       2019-01-10 04:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-20.jpg"
 tags:
-    - 面试
+    剑指 Offer
 ---
 
 > 输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
