@@ -12,7 +12,11 @@ layout: layout
         background-image: url('<%= page["header-img"] || config.root + config["header-img"] %>')
     }
 </style>
-<header class="intro-header" >
+<% if(page["header-style"] == 'text') { %>
+  <header class="intro-header style-text" >
+<% } else { %>
+  <header class="intro-header" >
+<% } %>
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">

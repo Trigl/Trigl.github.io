@@ -5,6 +5,7 @@ subtitle:   "服务提供者框架"
 date:       2019-08-26
 author:     "Ink Bai"
 header-img: "/img/post/effective-java-1-plus.jpg"
+header-style: "text"
 tags:
     - Effective Java
 ---
