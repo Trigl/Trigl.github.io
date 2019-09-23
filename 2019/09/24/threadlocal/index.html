@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword" content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          ThreadLocal 详解 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2019/09/24/threadlocal/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Pygments Highlight CSS -->
+    <link rel="stylesheet" href="/css/highlight.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+
+  <header class="intro-header style-text">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=并发" title="并发">并发</a>
+                        
+                          <a class="tag" href="/archive/?tag=JDK 源码" title="JDK 源码">JDK 源码</a>
+                        
+                    </div>
+                    <h1>ThreadLocal 详解</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2019-09-24,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>今天来深入研究一下 JDK 中的 <code>ThreadLocal</code> 类。</p>
+</blockquote>
+<h2 id="为什么要使用-ThreadLocal？"><a href="#为什么要使用-ThreadLocal？" class="headerlink" title="为什么要使用 ThreadLocal？"></a>为什么要使用 ThreadLocal？</h2><h2 id="入门例子"><a href="#入门例子" class="headerlink" title="入门例子"></a>入门例子</h2><p>ThreadLocal 类提供了 thread-local 类型变量，这种变量与普通的通过 <code>get</code> 或者 <code>set</code> 方法访问的变量相比，每个线程会对应一个独立的变量值，<strong>它是与线程相关的一个类的私有静态变量</strong>，例如一个用户 ID 或事务 ID 就会被设置成一个 ThreadLocal 类型的变量。</p>
+<p>例如下面这个例子，通过 ThreadLocal 变量可以给每个线程指定 ID。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadId</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ID 生成器</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> AtomicInteger nextId = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 包含线程 ID 的 ThreadLocal 变量</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ThreadLocal&lt;Integer&gt; threadId =</span><br><span class="line">            ThreadLocal.withInitial(() -&gt; nextId.getAndIncrement());</span><br><span class="line">    <span class="comment">// 另一种创建 ThreadLocal 实例的实现：new 一个匿名内部类，当然有了 lambda 表达式就不要用这种方式了</span></span><br><span class="line"><span class="comment">//    private static final ThreadLocal&lt;Integer&gt; threadId = new ThreadLocal&lt;Integer&gt;() &#123;</span></span><br><span class="line"><span class="comment">//        @Override</span></span><br><span class="line"><span class="comment">//        protected Integer initialValue() &#123;</span></span><br><span class="line"><span class="comment">//            return nextId.getAndIncrement();</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line"><span class="comment">//    &#125;;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取当前线程 ID</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> threadId.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">            Thread t = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                System.out.println(<span class="string">"线程:"</span> + Thread.currentThread().getName() + <span class="string">", ID:"</span> + ThreadId.get());</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            t.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么需要 ThreadLocal 这种线程私有的实例呢？</p>
+<p>在 Java 中，避免并发问题最简单有效的方法就是不要引入并发，也就是多个线程之间不共享变量，也就不会存在并发问题。</p>
+<p>当<strong>线程存活</strong>并且 ThreadLocal 实例可以被访问时，每个线程都会有一个该 ThreadLocal 变量引用，这些引用都不相同，可以看作是该 ThreadLocal 变量的多个副本。一旦线程不存在，这些副本就被 GC 掉了。</p>
+<p>看完例子，再来看一下 ThreadLocal 提供的方法：</p>
+<p><img src="/img/content/public.png" alt></p>
+<h2 id="初始化方法：withInitial-amp-initialValue"><a href="#初始化方法：withInitial-amp-initialValue" class="headerlink" title="初始化方法：withInitial &amp; initialValue"></a>初始化方法：<code>withInitial</code> &amp; <code>initialValue</code></h2><p>首先来看一下创建 ThreadLocal 对象的方法，API 提供了两种方法，一种是直接通过构造函数创建，另一种是通过 <code>withInitial</code> 方法，这里我们先看一下 <code>withInitial</code> 方法的具体实现，因为其使用到了 Java 8 的函数式编程接口。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;S&gt; <span class="function">ThreadLocal&lt;S&gt; <span class="title">withInitial</span><span class="params">(Supplier&lt;? extends S&gt; supplier)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SuppliedThreadLocal&lt;&gt;(supplier);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到这里的实现是通过给定一个 <code>Supplier</code> 类型的参数，new 了一个 <code>SuppliedThreadLocal</code> 的内部类，<code>Supplier</code> 是其构造函数的一个参数，所以关键是搞懂 <code>SuppliedThreadLocal</code>。</p>
+<p><code>SuppliedThreadLocal</code> 继承自 <code>ThreadLocal</code> 类，定义这样一个内部类的作用其实就是为了传入 Java8 的 Lambda 表达式，它的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * An extension of ThreadLocal that obtains its initial value from</span></span><br><span class="line"><span class="comment"> * the specified &#123;<span class="doctag">@code</span> Supplier&#125;.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">SuppliedThreadLocal</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">ThreadLocal</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Supplier&lt;? extends T&gt; supplier;</span><br><span class="line"></span><br><span class="line">    SuppliedThreadLocal(Supplier&lt;? extends T&gt; supplier) &#123;</span><br><span class="line">        <span class="keyword">this</span>.supplier = Objects.requireNonNull(supplier);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> T <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> supplier.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个内部类 override 了其父类 <code>ThreadLocal</code> 的 <code>initialValue</code> 方法，这个方法就是 <code>ThreadLocal</code> 实例拿到初始化值时必然会调用到的一个方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> T <span class="title">initialValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法的用法如下：</p>
+<ol>
+<li>该方法返回当前 <code>ThreadLocal</code> 实例的初始化值</li>
+<li>当一个线程第一次访问 <code>ThreadLocal.get()</code> 方法式，该方法将被调用</li>
+<li>该方法在一种情况下不会被调用，那就是线程访问 <code>ThreadLocal.get()</code> 之前先调用了 <code>set</code> 方法</li>
+<li>该方法在大部分情况下最多会被调用一次，除了一种情况：线程先调用 <code>ThreadLocal.remove()</code>，然后调用 <code>ThreadLocal.get()</code></li>
+<li>开发者如何使用这个方法呢？一种就是实现 <code>ThreadLocal</code> 的一个子类，子类里面重载这个方法；另一种就是 new 一个匿名内部类，直接得到其匿名内部类的实例，正如上面<a href="#入门例子">入门例子</a>注释掉的部分。</li>
+</ol>
+<p>回到 <code>SuppliedThreadLocal</code>，这里其实就是继承了 <code>ThreadLocal</code> 然后重载了 <code>initialValue()</code>。重载以后的值就是 <code>supplier.get()</code>，让我们看一下 <code>Supplier</code> 到底是个什么东东：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Supplier</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Gets a result.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> a result</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">T <span class="title">get</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个接口加上了 <code>@FunctionalInterface</code> 注解，是一个典型的函数式编程接口，关于函数式编程接口可以专门再开一篇来讲了，这里可以通过 <a href="https://www.cnblogs.com/chenpi/p/5890144.html" target="_blank" rel="noopener">函数式接口 Functional Interface</a> 简单了解一下，总之，这里 <code>Supplier</code> 的作用其实就是一个我们输入 Lambda 函数式参数，然后它提供给我们需要的对象（T）。</p>
+<p>注意在 <code>java.util.function</code> 包下面有很多类似于 <code>Supplier</code> 的类，可以帮助我们快乐的使用函数式编程接口：</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>参数类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Consumer</td>
+<td>Consumer<t></t></td>
+<td>接收 T 对象，不返回值</td>
+</tr>
+<tr>
+<td>Predicate</td>
+<td>Predicate<t></t></td>
+<td>接收 T 对象并返回 boolean</td>
+</tr>
+<tr>
+<td>Function</td>
+<td>Function&lt;T, R&gt;</td>
+<td>接收 T 对象，返回 R 对象</td>
+</tr>
+<tr>
+<td>Supplier</td>
+<td>Supplier<t></t></td>
+<td>提供 T 对象，不接收值</td>
+</tr>
+</tbody>
+</table>
+<h2 id="静态内部类-ThreadLocalMap-的实现"><a href="#静态内部类-ThreadLocalMap-的实现" class="headerlink" title="静态内部类 ThreadLocalMap 的实现"></a>静态内部类 <code>ThreadLocalMap</code> 的实现</h2><p>当创建了一个 ThreadLocal 对象以后，我们可以通过调用其 <code>get()</code> 方法得到此线程本地变量的副本值。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns the value in the current thread's copy of this</span></span><br><span class="line"><span class="comment"> * thread-local variable.  If the variable has no value for the</span></span><br><span class="line"><span class="comment"> * current thread, it is first initialized to the value returned</span></span><br><span class="line"><span class="comment"> * by an invocation of the &#123;<span class="doctag">@link</span> #initialValue&#125; method.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> the current thread's value of this thread-local</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> T <span class="title">get</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Thread t = Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map = getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="keyword">null</span>) &#123;</span><br><span class="line">        ThreadLocalMap.Entry e = map.getEntry(<span class="keyword">this</span>);</span><br><span class="line">        <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">            T result = (T)e.value;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> setInitialValue();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到这里的实现是基于 ThreadLocal 静态内部类 ThreadLocalMap，让我们看一下它的实现。</p>
+<p>ThreadLocalMap 是专用于维护线程本地变量的 hash map，这个类定义成了包私有的，这样是为了在 Thread 类中声明。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* ThreadLocal values pertaining to this thread. This map is maintained</span></span><br><span class="line"><span class="comment"> * by the ThreadLocal class. */</span></span><br><span class="line">ThreadLocal.ThreadLocalMap threadLocals = <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure>
+<p>ThreadLocalMap 又有一个静态内部类作为其键值对的实现：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Entry</span> <span class="keyword">extends</span> <span class="title">WeakReference</span>&lt;<span class="title">ThreadLocal</span>&lt;?&gt;&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/** The value associated with this ThreadLocal. */</span></span><br><span class="line">    Object value;</span><br><span class="line"></span><br><span class="line">    Entry(ThreadLocal&lt;?&gt; k, Object v) &#123;</span><br><span class="line">        <span class="keyword">super</span>(k);</span><br><span class="line">        value = v;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意当 key 为空时就意味着这个 key 不再被引用，所以这个 entry 可以从 hash 表中删除了。</p>
+<blockquote>
+<p>Question：ThreadLocalMap 使用了 WeakReferences 作为键的类型是出于什么考虑？</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The table, resized as necessary.</span></span><br><span class="line"><span class="comment"> * table.length MUST always be a power of two.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> Entry[] table;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Question：为什么 table 的长度必须是 2 的平方？</p>
+</blockquote>
+<h2 id="Refer"><a href="#Refer" class="headerlink" title="Refer"></a>Refer</h2><p><a href="https://www.cnblogs.com/chenpi/p/5890144.html" target="_blank" rel="noopener">函数式接口 Functional Interface</a><br><a href="https://www.zhihu.com/question/28197253/answer/365692360" target="_blank" rel="noopener">为什么Java内部类要设计成静态和非静态两种？ - Paranoid的回答 - 知乎</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/53698490" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/53698490</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/26713362" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/26713362</a></p>
+<p><a href="https://stackoverflow.com/questions/817856/when-and-how-should-i-use-a-threadlocal-variable" target="_blank" rel="noopener">https://stackoverflow.com/questions/817856/when-and-how-should-i-use-a-threadlocal-variable</a></p>
+<p><a href="https://www.throwable.club/2019/02/17/java-currency-threadlocal/#%E9%BB%84%E9%87%91%E5%88%86%E5%89%B2%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8" target="_blank" rel="noopener">https://www.throwable.club/2019/02/17/java-currency-threadlocal/#%E9%BB%84%E9%87%91%E5%88%86%E5%89%B2%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2019/08/29/netty-introduction/" data-toggle="tooltip" data-placement="top" title="高性能网络应用框架 Netty 介绍">
+                              Previous<br><span>高性能网络应用框架 Netty 介绍</span>
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                <link rel="stylesheet" href="/css/gitalk.css">
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                <script src="/js/gitalk.min.js"></script>
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=并发" title="并发">并发</a>
+                        
+                          <a class="tag" href="/archive/?tag=JDK 源码" title="JDK 源码">JDK 源码</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2019
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  <script src="/js/jquery.fancybox.min.js"></script>
+  <script src="/js/wrapImage.js"></script>
+  <link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+<script src="/js/archive.js"></script>
+
+
+</body>
+
+</html>

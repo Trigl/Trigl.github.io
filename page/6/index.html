@@ -187,6 +187,32 @@
 
 <div class="post-preview">
 
+    <a href="/2018/07/13/netty-http-server/">
+        <h2 class="post-title">
+            使用 Netty 写一个 HTTP Server
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+前一段时间需要写一个 HTTP Server，之前用 Akka 实现了一个，但是 Netty 更能支撑高并发，连 Spark 2.0 也把 Akka 换成了 Netty 进行网络传输，所以现在再撸一个 Netty 的 Server。
+
+闲话少说，直接开搞，首先将 Netty 加入 sbt：
+"io.netty" % "netty-all" % "4.1.25.Final"
+我们需要定义两个......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-07-13
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2018/06/20/protocol-buffers-tutorial/">
         <h2 class="post-title">
             Protocol Buffers 了解一下？
@@ -401,31 +427,6 @@ However, it’s still recommended to write the empty parentheses when the inv...
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2017/05/24/realtime-process-with-sparkstreaming/">
-        <h2 class="post-title">
-            SparkStreaming + Flume + Kafka 进行实时日志分析
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-每个公司想要进行数据分析或数据挖掘，收集日志、ETL都是第一步的，今天就讲一下如何实时地（准实时，每分钟分析一次）收集日志，处理日志，把处理后的记录存入Hive中，并附上完整实战代码
-
-整体架构思考一下，正常情况下我们会如何收集并分析日志呢？
-首先，业务日志会通过Nginx（或者其他方式，我们是使用Nginx写入日志）每分钟写入到磁盘中，现在我们想要使用Spark分析日志，就需要先将磁盘中......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2017-05-24
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -479,9 +480,9 @@ However, it’s still recommended to write the empty parentheses when the inv...
                             
                         
                             
-                            <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="3">因崔斯汀</a>
-                            
                         
+                            
+                            <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="3">因崔斯汀</a>
                             
                         
                             
@@ -498,6 +499,8 @@ However, it’s still recommended to write the empty parentheses when the inv...
                         
                             
                             <a href="/archive/?tag=Spring" title="Spring" rel="10">Spring</a>
+                            
+                        
                             
                         
                             
