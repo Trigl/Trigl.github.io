@@ -30,9 +30,9 @@ layout: layout
                     <h2 class="subheading"><%= page.subtitle || "" %></h2>
                     <span class="meta">
                         Posted by <%- page.author || config.author %> on
-                        <%= page.date.format(config.date_format) %>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <%= page.date.format(config.date_format) %>,
                         <span id="busuanzi_container_page_pv">
-                            <span id="busuanzi_value_page_pv">&</span>&nbsp;views
+                            <span id="busuanzi_value_page_pv">&</span> views
                         </span><br/>
                     </span>
                 </div>
@@ -82,19 +82,19 @@ layout: layout
                 <% } %>
 
                 <ul class="pager">
-                    <% if (page.prev){ %>
+                    <% if (page.next){ %>
                         <li class="previous">
-                            <a href="<%- config.root %><%- page.prev.path %>"
-                              data-toggle="tooltip" data-placement="top" title="<%- page.prev.title %>">
-                              Previous<br><span><%- page.prev.title %></span>
+                            <a href="<%- config.root %><%- page.next.path %>"
+                              data-toggle="tooltip" data-placement="top" title="<%- page.next.title %>">
+                              Previous<br><span><%- page.next.title %></span>
                             </a>
                         </li>
                     <% } %>
-                    <% if (page.next){ %>
+                    <% if (page.prev){ %>
                         <li class="next">
-                            <a href="<%- config.root %><%- page.next.path %>"
-                              data-toggle="tooltip" data-placement="top" title="<%- page.next.title %>">
-                              Next<br><span><%- page.next.title %></span>
+                            <a href="<%- config.root %><%- page.prev.path %>"
+                              data-toggle="tooltip" data-placement="top" title="<%- page.prev.title %>">
+                              Next<br><span><%- page.prev.title %></span>
                             </a>
                         </li>
                     <% } %>
