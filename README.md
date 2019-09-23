@@ -25,6 +25,7 @@ cd hexo-theme-huxblog
 ```
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.29.0/install.sh | bash
 nvm install stable
+sudo npm install hexo
 sudo npm install -g hexo-cli
 sudo npm install --unsafe-perm --verbose -g hexo
 ```
