@@ -203,16 +203,71 @@ private Entry[] table;
 
 > Question：为什么 table 的长度必须是 2 的平方？
 
+```java
+ThreadLocalMap(ThreadLocal<?> firstKey, Object firstValue) {
+    table = new Entry[INITIAL_CAPACITY];
+    int i = firstKey.threadLocalHashCode & (INITIAL_CAPACITY - 1);
+    table[i] = new Entry(firstKey, firstValue);
+    size = 1;
+    setThreshold(INITIAL_CAPACITY);
+}
+```
 
+> Question：ThreadLocalMap 的 hash 函数防碰撞的原理
+
+## `InheritableThreadLocal` 类
+InheritableThreadLocal 继承自 ThreadLocal，它的作用就是当存在子线程的时候，把父线程的 thread-local 变量传递给子线程，当然，传递这些 thread-local 变量实际上传递的也就是 ThreadLocalMap，下面是创建 InheritableThreadLocal 对象之前需要调用的 ThreadLocalMap 的私有构造函数，可以发现就是拷贝了一份父 ThreadLocalMap：
+
+```java
+/**
+ * Construct a new map including all Inheritable ThreadLocals
+ * from given parent map. Called only by createInheritedMap.
+ *
+ * @param parentMap the map associated with parent thread.
+ */
+private ThreadLocalMap(ThreadLocalMap parentMap) {
+    Entry[] parentTable = parentMap.table;
+    int len = parentTable.length;
+    setThreshold(len);
+    table = new Entry[len];
+
+    for (int j = 0; j < len; j++) {
+        Entry e = parentTable[j];
+        if (e != null) {
+            @SuppressWarnings("unchecked")
+            ThreadLocal<Object> key = (ThreadLocal<Object>) e.get();
+            if (key != null) {
+                Object value = key.childValue(e.value);
+                Entry c = new Entry(key, value);
+                int h = key.threadLocalHashCode & (len - 1);
+                while (table[h] != null)
+                    h = nextIndex(h, len);
+                table[h] = c;
+                size++;
+            }
+        }
+    }
+}
+```
+
+从上面的代码可以发现，子类 thread-local 的值是通过 `childValue` 这个方法获得的，一般父线程和子线程 thread-local 的值是相等的，InheritableThreadLocal 将这个方法声明为 `protected` 的，因此如果我们希望子线程的 thread-local 值和父线程不一样，就可以 override 这个方法：
+
+```java
+protected T childValue(T parentValue) {
+    return parentValue;
+}
+```
+
+> Question：InheritableThreadLocal 具体应当如何使用？
 
 ## Refer
+[When and how should I use a ThreadLocal variable?](https://stackoverflow.com/questions/817856/when-and-how-should-i-use-a-threadlocal-variable)
 [函数式接口 Functional Interface](https://www.cnblogs.com/chenpi/p/5890144.html)
-[为什么Java内部类要设计成静态和非静态两种？ - Paranoid的回答 - 知乎](https://www.zhihu.com/question/28197253/answer/365692360)
-
-https://zhuanlan.zhihu.com/p/53698490
-
-https://zhuanlan.zhihu.com/p/26713362
-
-https://stackoverflow.com/questions/817856/when-and-how-should-i-use-a-threadlocal-variable
-
-https://www.throwable.club/2019/02/17/java-currency-threadlocal/#%E9%BB%84%E9%87%91%E5%88%86%E5%89%B2%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8
+[为什么Java内部类要设计成静态和非静态两种？](https://www.zhihu.com/question/28197253/answer/365692360)
+[ThreadLocal：Java中的影分身](https://zhuanlan.zhihu.com/p/53698490)
+[利用ThreadLocal管理登录用户信息实现随用随取](https://zhuanlan.zhihu.com/p/26713362)
+[ThreadLocal源码分析-黄金分割数的使用](https://www.throwable.club/2019/02/17/java-currency-threadlocal/#%E9%BB%84%E9%87%91%E5%88%86%E5%89%B2%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8)
+[ThreadLocal源码分析](https://xuanjian1992.top/2019/07/07/ThreadLocal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/)
+[【细谈Java并发】谈谈ThreadLocal](https://benjaminwhx.com/2018/04/28/%E3%80%90%E7%BB%86%E8%B0%88Java%E5%B9%B6%E5%8F%91%E3%80%91%E8%B0%88%E8%B0%88ThreadLocal/)
+[Java基础-ThreadLocal中的中哈希算法0x61c88647](https://www.jianshu.com/p/bf7cdb8e379c)
+[How does Java handle integer underflows and overflows and how would you check for it?](https://stackoverflow.com/questions/3001836/how-does-java-handle-integer-underflows-and-overflows-and-how-would-you-check-fo)

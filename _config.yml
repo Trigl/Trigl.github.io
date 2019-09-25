@@ -102,6 +102,10 @@ friends: [
     {
         title: "Laurence的技术博客",
         href: "https://blog.csdn.net/bluishglc"
+    },
+    {
+        title: "Throwable",
+        href: "https://www.throwable.club/"
     }
 ]
 
