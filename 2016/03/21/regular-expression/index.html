@@ -409,7 +409,43 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">((<span class="number">1</span>?[<span class="number">0</span>-<span class="number">9</span>]):([<span class="number">0</span>-<span class="number">5</span>][<span class="number">0</span>-<span class="number">9</span>]))[ap]m</span><br></pre></td></tr></table></figure>
 <p>和下面的输出：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="number">11</span>:<span class="number">59</span>am</span><br></pre></td></tr></table></figure>
-<p>那么，11:59am所对应索引是0-6，所包含的群组和边界如下：<br>|群组索引|开始|结束|字符串|<br>|:-:|:-:|:-:|:-:|<br>|0|0|7|11:59am|<br>|1|0|5|11:59|<br>|2|0|2|11|<br>|3|3|5|59|</p>
+<p>那么，11:59am所对应索引是0-6，所包含的群组和边界如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">群组索引</th>
+<th style="text-align:center">开始</th>
+<th style="text-align:center">结束</th>
+<th style="text-align:center">字符串</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">0</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">11:59am</td>
+</tr>
+<tr>
+<td style="text-align:center">1</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">11:59</td>
+</tr>
+<tr>
+<td style="text-align:center">2</td>
+<td style="text-align:center">0</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">11</td>
+</tr>
+<tr>
+<td style="text-align:center">3</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">59</td>
+</tr>
+</tbody>
+</table>
 <p><strong>实例：用括号打印出群组边界</strong></p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.trigl.corejava.regex;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Matcher;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.Pattern;</span><br><span class="line"><span class="keyword">import</span> java.util.regex.PatternSyntaxException;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 首先提示输入一个模式，然后提示输入用于匹配的字符串，随后将打印出输入是否</span></span><br><span class="line"><span class="comment"> * 与模式相匹配。如果输入匹配模式，并且模式包含群组，那么这个程序将用括号打</span></span><br><span class="line"><span class="comment"> * 印出群组边界</span></span><br><span class="line"><span class="comment"> * 如：</span></span><br><span class="line"><span class="comment"> * (([Cc][Rr][Ee][Aa][Tt][Ee])|([Rr][Ee][Pp][Ll][Aa][Cc][Ee])|(([Cc][Rr][Ee][Aa][Tt][Ee])\s([Oo][Rr])\s([Rr][Ee][Pp][Ll][Aa][Cc][Ee])))\s([Pp][Rr][Oo][Cc][Ee][Dd][Uu][Rr][Ee])</span></span><br><span class="line"><span class="comment"> * 匹配3种类型开头的字符串：create procedure/replace procedure/create or replace procedure</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016年3月16日 上午10:16:27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RegexTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> PatternSyntaxException </span>&#123;</span><br><span class="line">		<span class="comment">// 构造一个新的扫描器，产生来自指定输入流的值，现在是从键盘输入</span></span><br><span class="line">		Scanner in = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">		System.out.println(<span class="string">"Enter Pattern: "</span>);</span><br><span class="line">		<span class="comment">// 输入正则表达式并产生模式类对象</span></span><br><span class="line">		String patternString = in.nextLine();</span><br><span class="line">		Pattern pattern = Pattern.compile(patternString);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">			System.out.println(<span class="string">"Enter string to match: "</span>);</span><br><span class="line">			<span class="comment">// 输入字符串并尝试匹配类对象</span></span><br><span class="line">			String input = in.nextLine();</span><br><span class="line">			<span class="keyword">if</span>(input == <span class="keyword">null</span> || input.equals(<span class="string">""</span>)) <span class="keyword">return</span>;</span><br><span class="line">			Matcher matcher = pattern.matcher(input);</span><br><span class="line">			<span class="comment">// 验证是否匹配，若匹配是否有群组，有的话在群组边界打印括号</span></span><br><span class="line">			<span class="keyword">if</span>(matcher.matches()) &#123;</span><br><span class="line">				System.out.println(<span class="string">"Match"</span>);</span><br><span class="line">				<span class="keyword">int</span> g = matcher.groupCount();</span><br><span class="line">				<span class="keyword">if</span>(g &gt; <span class="number">0</span>) &#123;</span><br><span class="line">					<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; input.length(); i++) &#123;</span><br><span class="line">						<span class="comment">// 打印所有的空群组</span></span><br><span class="line">						<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= g; j++)</span><br><span class="line">							<span class="keyword">if</span>(i == matcher.start(j) &amp;&amp; i == matcher.end(j))</span><br><span class="line">								System.out.print(<span class="string">"()"</span>);</span><br><span class="line">						<span class="comment">// 打印非空群组的 ( 前半括号</span></span><br><span class="line">						<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;=g; j++)</span><br><span class="line">							<span class="keyword">if</span>(i == matcher.start(j) &amp;&amp; i != matcher.end(j))</span><br><span class="line">								System.out.print(<span class="string">'('</span>);</span><br><span class="line">						System.out.print(input.charAt(i));</span><br><span class="line">						<span class="comment">// 打印非空群组的 ) 后半括号</span></span><br><span class="line">						<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;=g; j++)</span><br><span class="line">							<span class="keyword">if</span>(i+<span class="number">1</span> != matcher.start(j) &amp;&amp; i+<span class="number">1</span> == matcher.end(j))</span><br><span class="line">								System.out.print(<span class="string">')'</span>);</span><br><span class="line">					&#125;</span><br><span class="line">					System.out.println();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				System.out.println(<span class="string">"No match"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>输出结果</strong></p>
