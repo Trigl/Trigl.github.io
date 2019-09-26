@@ -11,8 +11,6 @@ tags:
 ---
 > 今天来深入研究一下 JDK 中的 `ThreadLocal` 类。ThreadLocal 由 Java 界的两个大师级的作者编写，Josh Bloch 和 Doug Lea。Josh Bloch 是 JDK5 语言增强、Java集合(Collection)框架的创办人以及《Effective Java》系列的作者。Doug Lea是 JUC(java.util.concurrent) 包的作者，Java 并发编程的泰斗。所以，ThreadLocal 的源码十分值得学习。
 
-## 为什么要使用 ThreadLocal？
-
 ## 一个栗子
 ThreadLocal 类提供了 thread-local 类型变量，这种变量与普通的通过 `get` 或者 `set` 方法访问的变量相比，每个线程会对应一个独立的变量值，**它是与线程相关的一个类的私有静态变量**，例如一个用户 ID 或事务 ID 就会被设置成一个 ThreadLocal 类型的变量。
 
