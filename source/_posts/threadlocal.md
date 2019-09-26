@@ -155,8 +155,6 @@ public T get() {
 
 可以看到这里的实现是基于 ThreadLocal 静态内部类 ThreadLocalMap，让我们看一下它的实现。
 #### 基本数据结构
-![](/img/content/threadlocalmap.png)
-
 ```java
 static class ThreadLocalMap {
   // 内部存储 KV 的基本数据结构，注意 key 就是 WeakReference<ThreadLocal<?>>
@@ -188,12 +186,12 @@ static class ThreadLocalMap {
   }
 
   // 以len为模增加i
-  // 作用在于自增i值，如果超过数组长度就变成0，相当于把数组看出环形数组
+  // 可以看作环形数组的下一个索引
   private static int nextIndex(int i, int len) {
       return ((i + 1 < len) ? i + 1 : 0);
   }
 
-  // 以len为模减少i
+  // 以len为模减少i，环形数组的上一个数组
   private static int prevIndex(int i, int len) {
       return ((i - 1 >= 0) ? i - 1 : len - 1);
   }
@@ -207,8 +205,29 @@ ThreadLocal.ThreadLocalMap threadLocals = null;
 ```
 
 这里注意到十分重要的一点：ThreadLocalMap$Entry 是 WeakReference(弱引用)，并且键值 Key 为 ThreadLocal<?> 实例本身，这里使用了无限定的泛型通配符。
+
+![](/img/content/threadlocalmap.png)
+![](/img/content/threadlocalmap-detail.png)
+
+看一下 ThreadLocalMap 的构造函数，是惰性加载的，即只有当有元素要存放的时候才会构建。
+
+```java
+ThreadLocalMap(java.lang.ThreadLocal<?> firstKey, Object firstValue) {
+    // 初始化table数组
+    table = new Entry[INITIAL_CAPACITY];
+    // 用firstKey的threadLocalHashCode与初始大小16取模得到哈希值
+    int i = firstKey.threadLocalHashCode & (INITIAL_CAPACITY - 1);
+    // 初始化该节点
+    table[i] = new Entry(firstKey, firstValue);
+    // 设置节点表大小为1
+    size = 1;
+    // 设定扩容阈值
+    setThreshold(INITIAL_CAPACITY);
+}
+```
+
 #### 巧妙的取模操作
-哈希算法就是根据 key 得到对应的 hash 值，也就是这一句：
+上面代码有一行是 ThreadLocalMap 的哈希算法，哈希算法就是根据 key 得到对应的 hash 值：
 
 ```java
 int i = firstKey.threadLocalHashCode & (INITIAL_CAPACITY - 1);
@@ -291,7 +310,7 @@ public static void main(String[] args) {
 
 上面有一个 long 类型强转 int 类型的操作，最后得到的是一个负数。在 Java 中对 int 的越界处理是这样的：当一个数超过了 `Integer.MAX_VALUE` 后，Java 就会从 Integer 的另一头重新开始，也就是从 `Integer.MIN_VALUE` 往回倒推，所以最终越界数显示的结果就是 `Integer.MIN_VALUE + (越界数 - Integer.MAX_VALUE) - 1`。
 
-而 ThreadLocal 的哈希魔数正是 32 位有符号整型黄金分割数 `1640531527` 的十六进制 `0x61c88647`，使用这个魔数可以使对应的 key 经过 hash 算法后均匀分布到整个容器，实现了完美散列。
+而 ThreadLocal 的哈希魔数正是 32 位有符号整型黄金分割数 `1640531527` 的十六进制 `0x61c88647`，通过相关理论研究和实践证明发现，使用这个魔数可以使对应的 key 经过 hash 算法后均匀分布到整个容器，可以实现了完美散列。
 
 #### ThreadLocalMap 为什么使用 WeakReference 作为其 key 的类型？
 
@@ -300,9 +319,9 @@ public static void main(String[] args) {
 > To help deal with very large and long-lived usages, the hash table entries use WeakReferences for keys.
 为了应对大量并且长期地使用 ThreadLocal，哈希表使用了弱应用作为其 key 的类型。
 
-大量使用意味着对应的 key 的数目会很多，而长期使用则是由于 ThreadLocal 的生命周期和线程的生命周期一样长，这种使用场景下很容易导致堆内存被逐渐占用，如果不加控制一不小心就会内存泄漏。
+大量使用意味着对应的 key 的数目会很多，而长期使用则是由于 ThreadLocal 的生命周期和线程的生命周期一样长。
 
-所以 Java 的做法就是把 key 类型定义成若引用，这样当引用 ThreadLocal 的对象被回收的时候，由于 ThreadLocalMap 持有其弱引用，那么这个 ThreadLocal 也会被回收。
+如果这里使用普通的 key-value 形式来定义存储结构，实质上就会造成节点的生命周期与线程强绑定，只要线程没有销毁，那么节点在 GC 分析中一直处于可达状态，没办法被回收，而程序本身也无法判断是否可以清理节点。弱引用是 Java 中四档引用的第三档，比软引用更加弱一些，如果一个对象没有强引用链可达，那么一般活不过下一次 GC。当某个 ThreadLocal 已经没有强引用可达，则随着它被垃圾回收，在 ThreadLocalMap 里对应的 Entry 的键值会失效，这为 ThreadLocalMap 本身的垃圾清理提供了便利。
 
 看起来结局皆大欢喜，`引用 ThreadLocal 的对象被回收` -> `ThreadLocalMap 弱应用 key 被回收`，真的没问题了吗？既然是一个 map，那就说明数据结构是 key-value 对，现在仅仅 K 使用了弱引用然后被回收了，那么 value 呢？value 为什么不使用弱引用类型？过期的 value 会被回收吗？
 
@@ -346,7 +365,13 @@ public T get() {
 #### ThreadLocalMap 中 set 的实现
 ThreadLocalMap 使用哈希表存储 key，哈希表的优点是查找和插入速度比较快，但是缺点是不同的 key 经过哈希函数计算以后得到的数组下标可能存在冲突。那么如何解决冲突呢，ThreadLocalMap 使用的方法是线性探测法，即当 key 经过哈希函数计算得到一个下标，但是却发现该下标的位置已经有元素了，那么就继续找下一个位置，直到找到一个符合条件的位置。
 
-set 方法的主要流程是首先通过 hash 函数找到存放的数组下标，然后观察对应哈希表的位置能否设置当前 ThreadLocal 变量的值，如果不能的话就逐步增加数组下标的值，到对应的下一个位置继续观察，如此循环直到找到一个合适的位置。
+set 方法的主要流程是：
+
+- 首先通过 hash 函数找到存放的数组下标
+- 利用线性探测法逐步增加数组下标，比对当前要 set 的 key 和当前下标所在位置上 Entry 的 key 是否相同
+- 在上面探测过程中，如果对应位置的 Entry 的 key 恰好是当前要更新的 key，直接更新即可；如果 key 为 null，说明这是一个过期 key，就调用 replaceStaleEntry 方法进行替换更新
+- 当探测到某个位置，这个位置没有元素，即 Entry 为空，说明要 set 的 key 是一个新 key，之前没有 set 过，所以可以设置在当前位置
+- 最后一步是判断是否有必要扩容
 
 ```java
 // 基于 ThreadLocal 作为 key，对当前的哈希表设置值，此方法由 ThreadLocal.set() 调用
@@ -356,7 +381,7 @@ private void set(ThreadLocal<?> key, Object value) {
     // 在 table 中的下标
     int i = key.threadLocalHashCode & (len-1);
 
-    //在i的基础上，不断向前探测，即线性探测法。探查是否已经存在相应的key，如果存在旧替换。
+    //在i的基础上，不断向前探测，即线性探测法。探查是否已经存在相应的key，如果存在就替换。
     for (Entry e = tab[i];
          e != null;
          e = tab[i = nextIndex(i, len)]) {
@@ -386,6 +411,174 @@ private void set(ThreadLocal<?> key, Object value) {
 }
 ```
 
+上面 set 方法代码中有两个方法比较关键，分别是 `cleanSomeSlots` 和 `replaceStaleEntry`，依次来看一下：
+
+```java
+/**
+ * 启发式地对Entry[]进行扫描，并清理无效的slot.
+ * 从下面的while循环表达式可以知道，第一次扫描的单元是i ~ i+log2(n),
+ * 如果在这期间发现了无效slot,那么把n变大到数组的长度，此时扫描单元数为log2(length)。
+ * 即，在扫描的期间，如果发现了无效slot，就不断增大扫描范围。因此称之为启发式扫描。
+ *
+ * @param i 无效slot所在的位置
+ * @param n 控制扫描的数组单元数的参数
+ */
+private boolean cleanSomeSlots(int i, int n) {
+    boolean removed = false;
+    Entry[] tab = table;
+    int len = tab.length;
+    do {
+        //线性探测向前环形扫描
+        i = nextIndex(i, len);
+        Entry e = tab[i];
+        //如果找到一个无效Entry(Key被回收)
+        if (e != null && e.get() == null) {
+            //设置n为Entry[]的长度，以增加扫描单元数
+            n = len;            
+            removed = true;
+            //调用清理函数，i就是下一次向前探测的初始位置，
+            //因为在[旧i,新i]之间的无效slot都被清理了
+            i = expungeStaleEntry(i);      
+        }
+    // n >>>= 1 表示 n = n >>> 1,>>>表示无符号右移
+    } while ( (n >>>= 1) != 0);
+    return removed;
+}
+
+//这里传入的staleSlot表示这个下标位置的Entry是失效的
+private int expungeStaleEntry(int staleSlot) {  
+    Entry[] tab = table;
+    int len = tab.length;
+
+    //把当前位置Entry的value值置空，同时也把Entry[staleSlot]置空，便于GC回收
+    tab[staleSlot].value = null;
+    tab[staleSlot] = null;
+    size--;
+
+    //线性探测法进行环形探测，回收失效的key值及Entry，对于没失效的Entry进行ReHash得到h，
+    //再把该Entry放到对h线性探测的下一个为空的位置
+    Entry e;
+    int i;
+    for (i = nextIndex(staleSlot, len);
+        (e = tab[i]) != null;
+        i = nextIndex(i, len)) {
+        ThreadLocal<?> k = e.get();
+        if (k == null) {
+            e.value = null;
+            tab[i] = null;
+            size--;
+        } else {
+            int h = k.threadLocalHashCode & (len - 1);
+            if (h != i) {
+                tab[i] = null;
+
+                while (tab[h] != null)
+                    h = nextIndex(h, len);
+                tab[h] = e;
+            }
+        }
+    }
+    return i;
+}
+
+// 在已知存在失效slot的情况下，插入一个key-value值。
+// 该方法会触发启发式扫描，清理失效slot。
+private void replaceStaleEntry(ThreadLocal<?> key, Object value,
+                               int staleSlot) {
+    Entry[] tab = table;
+    int len = tab.length;
+    Entry e;
+
+    //向前扫描，寻找一个失效的slot，直到数组元素为null
+    int slotToExpunge = staleSlot;
+    for (int i = prevIndex(staleSlot, len);
+         (e = tab[i]) != null;
+         i = prevIndex(i, len))
+        if (e.get() == null)
+            slotToExpunge = i;
+
+    //向后扫描，直到找到一个key与参数的key相等的位置，
+    //或者遇到数组元素为null停止扫描
+    for (int i = nextIndex(staleSlot, len);
+         (e = tab[i]) != null;
+         i = nextIndex(i, len)) {
+        ThreadLocal<?> k = e.get();
+
+        //如果找到相同的key，把i位置的Entry与staleSlot位置的Entry交换位置
+        //经过这一步骤，失效的slot被移到了i位置
+        if (k == key) {
+            e.value = value;
+
+            tab[i] = tab[staleSlot];
+            tab[staleSlot] = e;
+
+            //从slotToExpunge位置开始启发式清理过程，该位置根据在前向扫描过程中
+            //是否找到另一个失效slot来决定，如果找到，则从该位置开始清理；
+            //否则，从i位置开始清理，即上面被交换了位置的slot。
+            if (slotToExpunge == staleSlot)
+                slotToExpunge = i;
+            cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
+            return;
+        }
+
+        //如果前向扫描没有失效slot，并且在后向扫描的过程中遇到了第一个失效slot，记录下该位置
+        if (k == null && slotToExpunge == staleSlot)
+            slotToExpunge = i;
+    }
+
+    //在staleSlot位置插入新值
+    tab[staleSlot].value = null;
+    tab[staleSlot] = new Entry(key, value);
+
+    //从失效slot位置进行启发式清理
+    if (slotToExpunge != staleSlot)
+        cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);
+}
+```
+
+#### ThreadLocalMap 的 getEntry 的实现
+再来看一下 ThreadLocalMap 的 getEntry 方法的源码：
+
+```java
+private Entry getEntry(ThreadLocal<?> key) {
+    //通过散列函数计算数组下标
+    int i = key.threadLocalHashCode & (table.length - 1);   
+    Entry e = table[i];
+    //如果直接命中，则返回
+    if (e != null && e.get() == key)                        
+        return e;
+    else
+        return getEntryAfterMiss(key, i, e);                
+}
+
+private Entry getEntryAfterMiss(ThreadLocal<?> key, int i, Entry e) {
+    Entry[] tab = table;
+    int len = tab.length;
+
+    //利用线性探测法来寻找key所在的位置  
+    while (e != null) {                
+        ThreadLocal<?> k = e.get();
+        if (k == key)
+            return e;
+        //如果当前遍历到的key已经被回收了，那么进行清理
+        if (k == null)                 
+            expungeStaleEntry(i);
+        else
+            //利用环形数组的原理来变化i值
+            i = nextIndex(i, len);     
+        e = tab[i];
+    }
+    return null;
+}
+```
+
+逻辑还是很清晰的，如果通过散列函数得到的数组下标直接命中key值，那么可以直接返回，否则进一步调用getEntryAfterMiss(key,e)方法来进行线性探测查找key。
+值得注意的是，这里把查找过程分成了两个方法来处理，为什么要这样做？从源码的注释可以看出，这样设计的目的是最大限度提高getEntry(key)方法的性能，也即是提高直接命中时的返回结果的效率。这是因为JVM在运行的过程中，如果一些短函数被频繁的调用，那么JVM会把它优化成内联函数，即直接把函数的代码融合进调用方的代码里面，这样省掉了函数的调用过程，效率也会得到提高。
+
+## ThreadLocal 的最佳实践
+最佳实践很简单，就是每次使用完ThreadLocal实例，都调用它的remove()方法，清除Entry中的数据。
+
+调用remove()方法最佳时机是线程运行结束之前的finally代码块中调用，这样能完全避免操作不当导致的内存泄漏，这种主动清理的方式比惰性删除有效。
 ## `InheritableThreadLocal` 类
 InheritableThreadLocal 继承自 ThreadLocal，它的作用就是当存在子线程的时候，把父线程的 thread-local 变量传递给子线程，当然，传递这些 thread-local 变量实际上传递的也就是 ThreadLocalMap，下面是创建 InheritableThreadLocal 对象之前需要调用的 ThreadLocalMap 的私有构造函数，可以发现就是拷贝了一份父 ThreadLocalMap：
 
@@ -429,16 +622,12 @@ protected T childValue(T parentValue) {
 }
 ```
 
-> Question：InheritableThreadLocal 具体应当如何使用？
-
 ## Refer
 [When and how should I use a ThreadLocal variable?](https://stackoverflow.com/questions/817856/when-and-how-should-i-use-a-threadlocal-variable)
 [函数式接口 Functional Interface](https://www.cnblogs.com/chenpi/p/5890144.html)
 [为什么Java内部类要设计成静态和非静态两种？](https://www.zhihu.com/question/28197253/answer/365692360)
-[ThreadLocal：Java中的影分身](https://zhuanlan.zhihu.com/p/53698490)
-[利用ThreadLocal管理登录用户信息实现随用随取](https://zhuanlan.zhihu.com/p/26713362)
 [ThreadLocal源码分析-黄金分割数的使用](https://www.throwable.club/2019/02/17/java-currency-threadlocal/#%E9%BB%84%E9%87%91%E5%88%86%E5%89%B2%E6%95%B0%E7%9A%84%E5%BA%94%E7%94%A8)
-[ThreadLocal源码分析](https://xuanjian1992.top/2019/07/07/ThreadLocal%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/)
 [【细谈Java并发】谈谈ThreadLocal](https://benjaminwhx.com/2018/04/28/%E3%80%90%E7%BB%86%E8%B0%88Java%E5%B9%B6%E5%8F%91%E3%80%91%E8%B0%88%E8%B0%88ThreadLocal/)
 [Java基础-ThreadLocal中的中哈希算法0x61c88647](https://www.jianshu.com/p/bf7cdb8e379c)
 [How does Java handle integer underflows and overflows and how would you check for it?](https://stackoverflow.com/questions/3001836/how-does-java-handle-integer-underflows-and-overflows-and-how-would-you-check-fo)
+[ThreadLocal源码解读](https://www.cnblogs.com/micrari/p/6790229.html)
