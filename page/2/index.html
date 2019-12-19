@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -184,6 +184,31 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2019/03/03/flink-paper/">
+        <h2 class="post-title">
+            Apache Flink 论文学习
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+本文是 Flink 论文 的学习笔记。
+
+基本介绍一般来说，实时计算的结果要求延迟低，但是可能会有一定的误差，而批处理的结果一般会有一定的延迟，但是结果准确。对应到传统的计算框架，就会出现两套逻辑和两套代码来分别实现实时和批处理的计算。
+Flink 将流式计算和批处理统一了起来，首先，所有的数据其实都可以按照流式进行处理，只要我们与一些可持久化且可重新消费的消息队列系统一起使用，如 Apa......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-03-03
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -294,7 +319,7 @@
 将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。
 从头到尾依次扫描未排序序列，将扫描到的每个元素插入有序序列的适当位置。
 
-代码实现import java.util.Arrays;public class InsertionSor......
+代码实现1234567891011121314151617181920212223242526272829......
         </div>
     </a>
     <p class="post-meta">
@@ -365,7 +390,7 @@
 首先明确二叉搜索树的特点：左边结点小于根结点，右边结点大于根结点。
 然后根据后序遍历我们可以确定最后一个结点是根结点，然后再循环找出左右结点的分界点，继续循环确保右边的数字都大于根结点，最后再递归查看左右两个子结点。
 代码如下：
-publ......
+1234......
         </div>
     </a>
     <p class="post-meta">
@@ -391,36 +416,12 @@ publ......
 
 每一次打印一个结点的时候，如果该结点有子结点，则把该结点的子结点放到一个队列的末尾。接下来到队列的头部取出最早进入队列的结点，重复前面的打印操作，直至队列中所有的结点都被打印出来为止。
 代码如下：
-import java.util.ArrayList;import java.util.Queue;import java......
+1234567891011121314151617181920212223242526272829303132333435......
         </div>
     </a>
     <p class="post-meta">
         Posted by Ink Bai on
         2019-01-11
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2019/01/10/offer-sword-22/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 22：栈的压入、弹出序列
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列 1、2、3、4、5 是某栈的压栈序列，序列 4、5、3、2、1 是该压栈序列对应的一个弹出序列，但 4、3、5、1、2 就不可能是该压栈序列的弹出序列。
-
-定义一个辅助栈用来模拟入栈出栈的过程。首先一次将压栈序列中的树压入，在此过程中比较弹出栈中的元素和栈顶元素是否相......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-01-10
     </p>
 
 </div>
@@ -465,11 +466,11 @@ import java.util.ArrayList;import java.util.Queue;import java......
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
                             
                         
                             
@@ -484,6 +485,8 @@ import java.util.ArrayList;import java.util.Queue;import java......
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             

@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -187,6 +187,33 @@
 
 <div class="post-preview">
 
+    <a href="/2018/07/17/scala-basic/">
+        <h2 class="post-title">
+            那些容易漏掉的 Scala 基础
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+最近重读了一下 Scala Cookbook 来巩固基础，记录一些容易忘记的关键内容。
+
+Scala 中方法和函数的区别举个例子吧，下面是一个方法：
+1def towLower(c: Char): Char = (c.toByte + 32).toChar
+下面是与之完全等价的一个函数：
+1val toLower = (c: Char) =&gt; (c.toByte + 32).toCh......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-07-17
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2018/07/13/netty-http-server/">
         <h2 class="post-title">
             使用 Netty 写一个 HTTP Server
@@ -199,8 +226,8 @@
 前一段时间需要写一个 HTTP Server，之前用 Akka 实现了一个，但是 Netty 更能支撑高并发，连 Spark 2.0 也把 Akka 换成了 Netty 进行网络传输，所以现在再撸一个 Netty 的 Server。
 
 闲话少说，直接开搞，首先将 Netty 加入 sbt：
-"io.netty" % "netty-all" % "4.1.25.Final"
-我们需要定义两个......
+1"io.netty" % "netty-all" % "4.1.25.Final"
+我们需要定义两......
         </div>
     </a>
     <p class="post-meta">
@@ -271,7 +298,7 @@
 提交 Spark 应用的第一步是通过 spark-submit 执行的，本文将会从源码研究整个过程，对源码的详细注释可以查看这里： https://github.com/Trigl/spark
 
 我们用 Spark 自带的 SparkPi 的例子来讲解，我们通过 spark-submit 提交的命令如下：
-./bin/spark-submit --class org.apache.spar......
+123456789./bin/spark-submit --class org.ap......
         </div>
     </a>
     <p class="post-meta">
@@ -343,7 +370,7 @@ Kinesis 的基本术语Kinesis Data StreamKinesis Data Stream 实时吸收大量
         </h3>
         <div class="post-content-preview">
             在使用spark-submit提交Spark任务一般有以下参数：
-./bin/spark-submit \  --class &lt;main-class&gt; \  --master &lt;master-url&gt; \  --deploy-mode &lt;deploy-mode&gt; \  --conf &lt;key&gt;=&lt;value&gt; \  ... # ot......
+12345678./bin/spark-submit \  --class &lt;main-class&gt; \  --master &lt;master-url&gt; \  --deploy-mode &lt;deploy-mode&gt; \  --conf &lt;key&gt;=&lt;value&gt; \  ......
         </div>
     </a>
     <p class="post-meta">
@@ -402,31 +429,6 @@ Implicit 是 Scala 中一个很重要的特性，开始学习 Scala 之前一直
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/01/15/scala-composition-and-inheritance/">
-        <h2 class="post-title">
-            Scala Composition and Inheritance
-        </h2>
-        <h3 class="post-subtitle">
-            Notes of Programming in Scala
-        </h3>
-        <div class="post-content-preview">
-            parameterless methods &amp;&amp; empty parenthesesparameterless methods
-def width: Int
-empty parentheses
-def width(): Int
-However, it’s still recommended to write the empty parentheses when the inv......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-01-15
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -466,11 +468,11 @@ However, it’s still recommended to write the empty parentheses when the inv...
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
                             
                         
                             
@@ -485,6 +487,8 @@ However, it’s still recommended to write the empty parentheses when the inv...
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             

@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -213,7 +213,7 @@
 <p>与之相对应的是EJB，EJB本身的生命周期机制就迫使你必须使用对你的程序来说没有用的接口，这样就完全是程序为框架服务而不是框架为程序服务了。这样就会产生很多没有用的冗长的垃圾代码。</p>
 <h4 id="注入依赖"><a href="#注入依赖" class="headerlink" title="注入依赖"></a>注入依赖</h4><p>一个类的数据成员可能是另一个类，或者你的成员函数中有其他类作为参数，此时当要实例化当前类，必须首先实例化数据成员或者成员函数中的参数类，这些类就叫做当前类的依赖，简而言之，依赖就是实例化当前类时需要先实例化的类。</p>
 <p>例如如下的一个类:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.knights;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DamselRescuingKnight</span> <span class="keyword">implements</span> <span class="title">Knight</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> RescueDamselQuest quest;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">DamselRescuingKnight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    quest = <span class="keyword">new</span> RescueDamselQuest();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">embarkOnQuest</span><span class="params">()</span> <span class="keyword">throws</span> QuestException </span>&#123;</span><br><span class="line">    quest.embark();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.knights;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DamselRescuingKnight</span> <span class="keyword">implements</span> <span class="title">Knight</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> RescueDamselQuest quest;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">DamselRescuingKnight</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    quest = <span class="keyword">new</span> RescueDamselQuest();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">embarkOnQuest</span><span class="params">()</span> <span class="keyword">throws</span> QuestException </span>&#123;</span><br><span class="line">    quest.embark();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>其中RescueDamselQuest 是数据成员，当前类的构造函数需要实例化RescueDamselQuest ，它就是当前类的一个依赖。</p>
 <p>BTW，再来讲一下什么是内聚和耦合。内聚（cohesion）是一个模块内部各成分之间相关联程度的度量，耦合（Coupling）是模块之间依赖程度的度量。内聚和耦合是密切相关的，与其它模块存在强耦合的模块通常意味着弱内聚，而强内聚的模块通常意味着与其它模块之间存在弱耦合。模块设计追求强内聚，弱耦合。Spring以在XML文件中写bean的形式代替原始Java程序在实例化的时候直接实例化其依赖，这种方式就减小了耦合性，使程序的复用性提高。</p>
 <h4 id="AOP技术"><a href="#AOP技术" class="headerlink" title="AOP技术"></a>AOP技术</h4><p>AOP（aspect-oriented programming）面向切面的编程经常被定义为在一个系统中促进系统各部分和某些非核心功能点分离的技术。一个系统由很多部分组成，而每一个部分负责一个主要的功能，但是每一部分也会需要其他额外的系统功能例如安全性、日志功能和事物管理功能，这些功能是横向切割的功能，因为在一个系统的多个部分中它们都存在。</p>
@@ -232,11 +232,11 @@
 <h4 id="使用环境上下文加载容器"><a href="#使用环境上下文加载容器" class="headerlink" title="使用环境上下文加载容器"></a>使用环境上下文加载容器</h4><p>对于一个Spring应用，我们将所需要的bean定义在XML文件中，而所有的bean是在container中起作用的，所有第一步首先是创建container，我们经常遇到的创建container的方法有以下三种：</p>
 <ul>
 <li><p>classPathXmlApplicationContext：从位于classpath中的xml文件中加载环境上下文定义。举例如下：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ApplicationContext context = <span class="keyword">new</span></span><br><span class="line">ClassPathXmlApplicationContext(<span class="string">"foo.xml"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ApplicationContext context = <span class="keyword">new</span></span><br><span class="line">ClassPathXmlApplicationContext(<span class="string">"foo.xml"</span>);</span><br></pre></td></tr></table></figure>
 <p>ClassPathXmlApplicationContext会默认从classpath的根目录寻找foo.xml</p>
 </li>
 <li><p>FileSystemXmlApplicationContext：从文件系统中的XML文件中加载环境上下文定义。举例如下:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ApplicationContext context = <span class="keyword">new</span></span><br><span class="line">FileSystemXmlApplicationContext(<span class="string">"c:/foo.xml"</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ApplicationContext context = <span class="keyword">new</span></span><br><span class="line">FileSystemXmlApplicationContext(<span class="string">"c:/foo.xml"</span>);</span><br></pre></td></tr></table></figure>
 <p>FileSystemXmlApplicationContext默认从我们的文件系统中寻找foo.xml</p>
 </li>
 <li><p>XmlWebApplicationContext：从web应用包含的XML文件中加载环境上下文定义</p>

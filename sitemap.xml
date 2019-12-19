@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://baixin.ink/2019/12/20/kafka-consumer-poll/</loc>
+    
+    <lastmod>2019-12-19T21:04:56.151Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2018/10/18/ReentrantReadWriteLock/</loc>
+    
+    <lastmod>2019-12-19T15:51:32.732Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://baixin.ink/2016/03/21/regular-expression/</loc>
     
     <lastmod>2019-09-26T23:23:54.485Z</lastmod>
@@ -79,21 +93,7 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/11/29/offer-sword-6/</loc>
-    
-    <lastmod>2019-09-21T18:48:12.970Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://baixin.ink/2018/11/29/offer-sword-7/</loc>
-    
-    <lastmod>2019-09-21T18:48:12.970Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://baixin.ink/2018/11/27/offer-sword-4/</loc>
     
     <lastmod>2019-09-21T18:48:12.970Z</lastmod>
     
@@ -107,7 +107,21 @@
   </url>
   
   <url>
+    <loc>http://baixin.ink/2018/11/27/offer-sword-4/</loc>
+    
+    <lastmod>2019-09-21T18:48:12.970Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://baixin.ink/2018/11/23/offer-sword-3/</loc>
+    
+    <lastmod>2019-09-21T18:48:12.970Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2018/11/29/offer-sword-6/</loc>
     
     <lastmod>2019-09-21T18:48:12.970Z</lastmod>
     
@@ -128,7 +142,14 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2019/01/10/offer-sword-19/</loc>
+    <loc>http://baixin.ink/2019/03/11/offer-sword-25/</loc>
+    
+    <lastmod>2019-09-21T18:48:12.934Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2019/01/11/offer-sword-24/</loc>
     
     <lastmod>2019-09-21T18:48:12.934Z</lastmod>
     
@@ -156,20 +177,6 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2019/03/11/offer-sword-25/</loc>
-    
-    <lastmod>2019-09-21T18:48:12.934Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://baixin.ink/2019/01/11/offer-sword-24/</loc>
-    
-    <lastmod>2019-09-21T18:48:12.934Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://baixin.ink/2019/01/11/offer-sword-23/</loc>
     
     <lastmod>2019-09-21T18:48:12.934Z</lastmod>
@@ -184,28 +191,14 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2019/01/07/offer-sword-10/</loc>
+    <loc>http://baixin.ink/2019/01/10/offer-sword-19/</loc>
     
-    <lastmod>2019-09-21T18:48:12.933Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://baixin.ink/2019/01/08/offer-sword-12/</loc>
-    
-    <lastmod>2019-09-21T18:48:12.933Z</lastmod>
+    <lastmod>2019-09-21T18:48:12.934Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://baixin.ink/2019/01/08/offer-sword-14/</loc>
-    
-    <lastmod>2019-09-21T18:48:12.933Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://baixin.ink/2019/01/09/offer-sword-16/</loc>
+    <loc>http://baixin.ink/2019/01/07/offer-sword-11/</loc>
     
     <lastmod>2019-09-21T18:48:12.933Z</lastmod>
     
@@ -219,7 +212,28 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2019/01/07/offer-sword-11/</loc>
+    <loc>http://baixin.ink/2019/01/09/offer-sword-16/</loc>
+    
+    <lastmod>2019-09-21T18:48:12.933Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2019/01/08/offer-sword-14/</loc>
+    
+    <lastmod>2019-09-21T18:48:12.933Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2019/01/08/offer-sword-12/</loc>
+    
+    <lastmod>2019-09-21T18:48:12.933Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2019/01/07/offer-sword-10/</loc>
     
     <lastmod>2019-09-21T18:48:12.933Z</lastmod>
     
@@ -317,13 +331,6 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/08/02/spark-streaming-kinesis/</loc>
-    
-    <lastmod>2019-05-09T16:17:07.551Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://baixin.ink/2016/03/12/spring-aop-1/</loc>
     
     <lastmod>2019-05-09T16:17:07.551Z</lastmod>
@@ -338,9 +345,23 @@
   </url>
   
   <url>
+    <loc>http://baixin.ink/2018/08/02/spark-streaming-kinesis/</loc>
+    
+    <lastmod>2019-05-09T16:17:07.551Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://baixin.ink/2018/07/26/spark-streaming-guide/</loc>
     
     <lastmod>2019-05-09T16:17:07.550Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2018/04/28/spark-mode/</loc>
+    
+    <lastmod>2019-05-09T16:17:07.549Z</lastmod>
     
   </url>
   
@@ -359,21 +380,14 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/04/28/spark-mode/</loc>
-    
-    <lastmod>2019-05-09T16:17:07.549Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://baixin.ink/2016/01/10/simplify-spring-xml-configuration-3/</loc>
+    <loc>http://baixin.ink/2016/01/10/simplify-spring-xml-configuration-2/</loc>
     
     <lastmod>2019-05-09T16:17:07.548Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://baixin.ink/2016/01/10/simplify-spring-xml-configuration-2/</loc>
+    <loc>http://baixin.ink/2016/01/10/simplify-spring-xml-configuration-3/</loc>
     
     <lastmod>2019-05-09T16:17:07.548Z</lastmod>
     
@@ -408,14 +422,14 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/07/17/scala-basic/</loc>
+    <loc>http://baixin.ink/2018/07/24/scala-breeze/</loc>
     
     <lastmod>2019-05-09T16:17:07.545Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/07/24/scala-breeze/</loc>
+    <loc>http://baixin.ink/2018/07/17/scala-basic/</loc>
     
     <lastmod>2019-05-09T16:17:07.545Z</lastmod>
     
@@ -436,7 +450,7 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2019/01/29/quick-sort/</loc>
+    <loc>http://baixin.ink/2018/06/06/read-spark-source-code-1/</loc>
     
     <lastmod>2019-05-09T16:17:07.543Z</lastmod>
     
@@ -450,7 +464,7 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/06/06/read-spark-source-code-1/</loc>
+    <loc>http://baixin.ink/2019/01/29/quick-sort/</loc>
     
     <lastmod>2019-05-09T16:17:07.543Z</lastmod>
     
@@ -485,13 +499,6 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/02/07/details-of-scala-implicit/</loc>
-    
-    <lastmod>2019-05-09T16:17:07.530Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://baixin.ink/2019/03/03/flink-paper/</loc>
     
     <lastmod>2019-05-09T16:17:07.530Z</lastmod>
@@ -500,6 +507,13 @@
   
   <url>
     <loc>http://baixin.ink/2019/01/29/insertion-sort/</loc>
+    
+    <lastmod>2019-05-09T16:17:07.530Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://baixin.ink/2018/02/07/details-of-scala-implicit/</loc>
     
     <lastmod>2019-05-09T16:17:07.530Z</lastmod>
     
@@ -520,14 +534,14 @@
   </url>
   
   <url>
-    <loc>http://baixin.ink/2019/01/29/bubble-sort/</loc>
+    <loc>http://baixin.ink/2018/04/13/case-classes-and-pattern-matching/</loc>
     
     <lastmod>2019-05-09T16:17:07.526Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://baixin.ink/2018/04/13/case-classes-and-pattern-matching/</loc>
+    <loc>http://baixin.ink/2019/01/29/bubble-sort/</loc>
     
     <lastmod>2019-05-09T16:17:07.526Z</lastmod>
     
@@ -549,13 +563,6 @@
   
   <url>
     <loc>http://baixin.ink/404.html</loc>
-    
-    <lastmod>2019-05-09T16:17:07.524Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://baixin.ink/2018/10/18/ReentrantReadWriteLock/</loc>
     
     <lastmod>2019-05-09T16:17:07.524Z</lastmod>
     

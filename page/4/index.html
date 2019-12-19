@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -184,6 +184,31 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2019/01/08/offer-sword-12/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 12：打印 1 到最大的 n 位数
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数即 999。
+
+这道题目乍一看好像很简单，就是打印数字嘛，其实里面有一个很重要的坑，那就是大数问题，即这里面的数字可能极其大，超过计算机存储整数的最大范围。
+因此我们需要找到一种合适的方式来表达一个大数，最常用也最容易的方法就是用字符串或者数组表示大数，我们这里用数组的方式......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-08
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -314,7 +339,7 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
 用两个栈来实现一个队列，完成队列的Push和Pop操作。 队列中的元素为int类型。
 
 队列特点是先进先出，栈的特点是先进后出，所以我们需要两个栈来达到负负为正的效果，即元素先进入第一个栈，再进入第二个栈，然后再出来，最终的顺序仍然是先进先出。
-import java.util.Stack;public class Solution &#123;    Stack&lt;Integer&g......
+1234567891011121314151617181920212223import java.util.Stack;public class ......
         </div>
     </a>
     <p class="post-meta">
@@ -364,7 +389,7 @@ import java.util.Stack;public class Solution &#123;    Stack&lt;Integer&g......
 输入一个链表的头结点，从尾到头反过来打印出每个结点的值。
 
 想要遍历一个链表，那么必然是从头开始依次遍历，现在要实现的是从尾到头，顺序反过来了，我们可以想一想有没有数据结构跟这种情况很类似呢？从头到尾变成从尾到头，是不是一种典型的后进先出的形式？可以使用栈来轻松地解决这道题。
-/***    public class ListNode &#123;*        int val;*   ......
+12345678910111213141516171819202122232425262728293031/***......
         </div>
     </a>
     <p class="post-meta">
@@ -428,32 +453,6 @@ import java.util.Stack;public class Solution &#123;    Stack&lt;Integer&g......
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/11/23/offer-sword-2/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 2：实现 Singleton 模式
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-题目：设计一个类，我们只能生成该类的一个实例。
-
-什么是 Singleton？单例模式的定义很简单：提供一个全局可以访问的唯一变量。
-那么为什么需要单例模式呢？对于某些类创建时需要消耗很多资源，例如数据库连接、日志类、配置类等全局都需要的并且占用很多资源的类，我们就希望节能减排多次利用，这个时候就应当采用单例模式。
-那么我们如何实现一个类可以被全局访问到并且具有唯一变量呢？首先这个类需要提......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-11-23
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -493,11 +492,11 @@ import java.util.Stack;public class Solution &#123;    Stack&lt;Integer&g......
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
                             
                         
                             
@@ -512,6 +511,8 @@ import java.util.Stack;public class Solution &#123;    Stack&lt;Integer&g......
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             

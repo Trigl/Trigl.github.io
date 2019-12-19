@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -187,6 +187,30 @@
 
 <div class="post-preview">
 
+    <a href="/2016/03/12/spring-aop-1/">
+        <h2 class="post-title">
+            Spring AOP（一）
+        </h2>
+        <h3 class="post-subtitle">
+            什么是 AOP?
+        </h3>
+        <div class="post-content-preview">
+            
+对于一个企业级应用来说，主要处理的是整个核心业务流程，这是我们主要关注的。但是同时一个应用也需要很多非核心但是必不可少的功能，例如应用的安全性，日志，可以说对于一个应用的多个功能来说都需要这些辅助性的功能。现在我们想要这些辅助功能，同时又不想在每一个业务核心功能中都加入一次这些功能，那么是否有什么好的办法？AOP就是答案。
+
+整体理解AOP是aspect-oriented programm......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-03-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2016/01/10/simplify-spring-xml-configuration-3/">
         <h2 class="post-title">
             简化 Spring XML 配置（三）
@@ -198,7 +222,7 @@
             讲解之前首先了解Spring从配置上下文环境到最后注入bean的整个过程
 
 首先是Spring加载上下文环境，即将所有的bean都放入容器中
-ApplicationContext ctx = new ClassPathXmlApplicationContext("com/springinaction/springidol/spring-idol1.xml");Coder coder = (C......
+12ApplicationContext ctx = new ClassPathXmlApplicationContext("com/springinaction/springidol/spring-idol1.xml");Coder coder = ......
         </div>
     </a>
     <p class="post-meta">
@@ -223,7 +247,7 @@ ApplicationContext ctx = new ClassPathXmlApplicationContext("com/springinaction/
 从Spring2.5开始，Spring开始支持使用注解的方式来自动装配bean的属性。这种方式与XML里面配置方式相比，减少了代码量，更加方便快捷。
 
 如果想用注解来配置bean，首先要做的就是在XML文件中添加  &lt;context:annotation-config&gt;元素，在XML开始添加如下代码：
-&lt;?xml version="1.0" encoding="UTF-8......
+1234567891011&lt;?xml version="1.0" en......
         </div>
     </a>
     <p class="post-meta">
@@ -393,11 +417,11 @@ Spring bean 是基础中的基础，这里用一些生动的例子来讲解。
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
                             
                         
                             
@@ -412,6 +436,8 @@ Spring bean 是基础中的基础，这里用一些生动的例子来讲解。
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             

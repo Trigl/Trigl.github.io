@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -260,7 +260,7 @@
 <p>仅仅是每秒写入 12000 条记录其实很简单，Twitter 扩展的挑战并不主要是推文的量，而是在于如何让所有人流畅地看到这些推文，因为每个用户可以关注很多人，同时每个用户也可以被很多人关注。大体上有两种方式可以实现这两个操作：</p>
 <p>方法 1：发推就是将新的推文插入到一个包含全部推文的表中，当一个用户请求刷新它的推特主页时，首先查找他关注的所有用户，找到这些用户的所有推文并且用时间排序。它们在数据库中的表关系如下图，可以用下面的 SQL 来查询</p>
 <p><img src="/img/content/ddia-fig1-2.jpg" alt></p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> tweets.*, users.*</span><br><span class="line"><span class="keyword">FROM</span> tweets</span><br><span class="line"><span class="keyword">JOIN</span> <span class="keyword">users</span> <span class="keyword">ON</span> tweets.send_id = users.id</span><br><span class="line"><span class="keyword">JOIN</span> <span class="keyword">follows</span> <span class="keyword">ON</span> follows.followee_id = users.id</span><br><span class="line"><span class="keyword">WHERE</span> follows.follower_id = <span class="keyword">current_user</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> tweets.*, users.*</span><br><span class="line"><span class="keyword">FROM</span> tweets</span><br><span class="line"><span class="keyword">JOIN</span> <span class="keyword">users</span> <span class="keyword">ON</span> tweets.send_id = users.id</span><br><span class="line"><span class="keyword">JOIN</span> <span class="keyword">follows</span> <span class="keyword">ON</span> follows.followee_id = users.id</span><br><span class="line"><span class="keyword">WHERE</span> follows.follower_id = <span class="keyword">current_user</span></span><br></pre></td></tr></table></figure>
 <p>方法 2：给每个用户维持一个包含要查看推文的缓存，就像用户的邮箱一样。当某个用户发推以后，首先会找到关注该用户的所有人，然后把这条推文插入到每个人自己的推文缓存中，每个用户需要刷推特主页的时候会直接查询对应的缓存，由于是提前计算好的所以速度会很快。</p>
 <p><img src="/img/content/ddia-fig1-3.jpg" alt></p>
 <p>第一种方法需要承受大量用户刷新推特主页带来的负载，所以 Twitter 公司开始使用第二种方法，这个方法比较好的原因是从上图我们可以看到用户发布推文的请求数比用户刷推文的请求数几乎低两个数量级，所以最好是在写入时多做点事情，写入到缓存中，读取的时候就会承受比较小的负载。但是方法 2 的问题是发布一条推文现在就需要做更多的额外工作了，平均每个用户会被 75 个人关注，所以每秒平均 4.6k 的推文发布量就意味着每秒要向用户主页缓存中写入 75 * 4.6k = 345k 的记录。但要明白这里说的是平均值，每个用户的粉丝数差别是很大的，有些用户可能会有三千万的粉丝，这就意味着发布一条推文会写入三千万条数据，而推特尽量保证消息 5 秒內能发送给其关注者，这个挑战就相当大了。</p>
