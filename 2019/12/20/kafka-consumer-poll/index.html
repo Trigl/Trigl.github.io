@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
@@ -225,13 +225,13 @@
 <figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafkaConsumer.subscribe(listOf(TOPIC))</span><br></pre></td></tr></table></figure>
 <p>那么这里内部发生了什么呢？nothing！仅仅是 set 了一些值而已。</p>
 <p>到目前为止，我们仅仅是创建了一个 consumer，订阅了几个 topic，其他什么都没有发生。</p>
-<h2 id="当你第一次拉取数据时发生了什么？"><a href="#当你第一次拉取数据时发生了什么？" class="headerlink" title="当你第一次拉取数据时发生了什么？"></a>当你第一次拉取数据时发生了什么？</h2><p>现在就开始有点意思了！废话不多说，直接撸 Kafka Consumer 的源码（version：2.2.0，可以查看 <a href="https://github.com/apache/kafka/blob/2.2/clients/src/main/java/org/apache/kafka/clients/consumer/KafkaConsumer.java#L1179" target="_blank" rel="noopener">Github</a> 的源码）。出于方便阅读的考虑，这里我仅留下了需要重点关注的部分。</p>
+<h2 id="当你第一次拉取数据时发生了什么？"><a href="#当你第一次拉取数据时发生了什么？" class="headerlink" title="当你第一次拉取数据时发生了什么？"></a>当你第一次拉取数据时发生了什么？</h2><p>现在就开始有点意思了！废话不多说，直接撸 Kafka Consumer 的源码（version：2.2.0，可以查看 <a href="https://github.com/apache/kafka/blob/2.2/clients/src/main/java/org/apache/kafka/clients/consumer/KafkaConsumer.java#L1179" target="_blank" rel="noopener">Github</a>。出于方便阅读的考虑，这里我仅留下了需要重点关注的部分。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> ConsumerRecords&lt;K, V&gt; <span class="title">poll</span><span class="params">(<span class="keyword">final</span> Timer timer, <span class="keyword">final</span> <span class="keyword">boolean</span> includeMetadataInTimeout)</span> </span>&#123;</span><br><span class="line">    acquireAndEnsureOpen();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.subscriptions.hasNoSubscriptionOrUserAssignment()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Consumer is not subscribed to any topics or assigned any partitions"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            client.maybeTriggerWakeup();</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (includeMetadataInTimeout) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!updateAssignmentMetadataIfNeeded(timer)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> ConsumerRecords.empty();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">while</span> (!updateAssignmentMetadataIfNeeded(time.timer(Long.MAX_VALUE))) &#123;</span><br><span class="line">                    log.warn(<span class="string">"Still waiting for metadata"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> Map&lt;TopicPartition, List&lt;ConsumerRecord&lt;K, V&gt;&gt;&gt; records = pollForFetches(timer);</span><br><span class="line">            <span class="keyword">if</span> (!records.isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">if</span> (fetcher.sendFetches() &gt; <span class="number">0</span> || client.hasPendingRequests()) &#123;</span><br><span class="line">                    client.pollNoWakeup();</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">this</span>.interceptors.onConsume(<span class="keyword">new</span> ConsumerRecords&lt;&gt;(records));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">while</span> (timer.notExpired());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> ConsumerRecords.empty();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        release();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>所以这里到底做了什么？具体分析一下：</p>
 <ul>
 <li><strong>Line 2</strong> - 由于 consumer 内部是非线程安全的，所以必须要确保只有一个线程访问 consumer，因此需要在这获取锁。一旦多个线程同时访问这个方法，那么某些就会报错。</li>
 <li><strong>Line 4</strong> - Consumer 验证自己是否有任何订阅信息。如果没有指定任何 topics，那么拉取数据也就变成无稽之谈了。</li>
-<li><strong>Line 8</strong> - 开始拉取记录的循环，直到拉取超时活着接收到了一些记录。</li>
+<li><strong>Line 8</strong> - 开始拉取记录的循环，直到拉取超时或者接收到了一些记录。</li>
 </ul>
 
 
