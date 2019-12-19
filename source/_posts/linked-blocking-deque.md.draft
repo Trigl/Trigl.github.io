@@ -1,0 +1,15 @@
+---
+layout:     post
+title:      "LinkedBlockingDeque 源码解析"
+date:       2019-10-16
+author:     "Ink Bai"
+catalog:    true
+header-style: "text"
+tags:
+    - JDK 源码
+    - 并发
+---
+
+LinkedBlockingDeque 是一个界限可控的基于链表节点的阻塞的双向队列，它的构造函数提供了一个可选的参数用于指定队列的大小，不指定时的默认值是 `Integer#MAX_VALUE`，也就是无界队列。
+
+大多数操作会在常数时间内执行完，除了某些操作如遍历、移除会在线性时间内执行完。

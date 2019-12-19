@@ -1,0 +1,49 @@
+---
+layout:     post
+title:      "一文学会 Java 的 ExecutorService"
+date:       2019-11-1
+author:     "Ink Bai"
+catalog:    true
+header-img: "/img/post/executor-service.jpg"
+tags:
+    - JDK 源码
+    - 并发
+---
+
+## Executor 接口
+简而言之就是用来同步或者异步执行线程的接口。
+
+## ExecutorService 接口
+该接口可以管理线程的终止，并且提供可以产生 `Future` 的方法。
+
+可以对 ExecutorService 进行 shutdown 操作，之后就会拒绝接受新的任务。提供了两个用于 shutdown 的方法：
+
+- `shutdown`：在终止前先执行完已经提交的任务。
+- `shutdownNow`：立刻终止当前正在执行的任务。
+
+#### shutdown
+按照任务执行的顺序顺序终止，不在接受新的任务，这个方法不会等待之前提交的任务执行完毕，如果需要执行完之前的任务再关闭，可以调用 `awaitTermination` 方法。
+
+#### shutdownNow
+杀掉当前正在执行的任务，中断等待的任务，并不能保证完全停止活跃的任务。例如一般线程可以通过 `interrupt` 中断，但是如果线程没有中断机制保证，那就永远不会被正常终止。
+
+#### awaitTermination
+阻塞等待在调用 shutdown 之后所有任务都执行完毕。
+
+#### submit
+两种不同的定义，参数不同：
+
+```java
+<T> Future<T> submit(Callable<T> task);
+
+<T> Future<T> submit(Runnable task, T result);o
+
+Future<?> submit(Runnable task);
+```
+
+都会返回一个 Future，可以通过调用 Future 的 get 方法得到类型为 T 的最终结果，不同的是第一种方式返回的是真实的结果，第二种方式返回的是自定义的结果 result，第三种成功时，get 方法会返回 null。
+#### invokeAll
+执行给定的任务集，返回 Futures 的集合。
+
+#### invokeAny
+执行给定的任务集，有任意一个任务执行完成就返回其结果。
