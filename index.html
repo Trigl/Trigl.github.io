@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -233,32 +233,6 @@ Consumer 使用示例只需以下几步就可以使用 kafka Consumer：
     <p class="post-meta">
         Posted by Ink Bai on
         2019-09-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2019/08/29/netty-introduction/">
-        <h2 class="post-title">
-            高性能网络应用框架 Netty 介绍
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-Netty 是一个高性能网络应用框架，应用很普遍，在 Java 领域 Netty 基本上是网络编程的标配了，所以很有必要深入学习一下。
-
-网络编程的瓶颈在哪？网络编程都是基于 socker 编程，Java 最基本的网络编程模型是 BIO，即阻塞式 I/O，BIO 中所有的读写操作都会阻塞当前线程。
-
-如果客户端和服务端建立了一个连接，但是客户端一直没有请求过来，那么服务端的 read() ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-08-29
     </p>
 
 </div>
@@ -439,6 +413,31 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
 </div>
 <hr>
 
+<div class="post-preview">
+
+    <a href="/2019/03/03/flink-paper/">
+        <h2 class="post-title">
+            Apache Flink 论文学习
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+本文是 Flink 论文 的学习笔记。
+
+基本介绍一般来说，实时计算的结果要求延迟低，但是可能会有一定的误差，而批处理的结果一般会有一定的延迟，但是结果准确。对应到传统的计算框架，就会出现两套逻辑和两套代码来分别实现实时和批处理的计算。
+Flink 将流式计算和批处理统一了起来，首先，所有的数据其实都可以按照流式进行处理，只要我们与一些可持久化且可重新消费的消息队列系统一起使用，如 Apa......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-03-03
+    </p>
+
+</div>
+<hr>
+
 
 
 <!-- Pager -->
@@ -490,8 +489,6 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
                             
                         
                             
-                        
-                            
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
                             
                         
@@ -511,6 +508,8 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
                         
                             
                             <a href="/archive/?tag=Spring" title="Spring" rel="10">Spring</a>
+                            
+                        
                             
                         
                             
