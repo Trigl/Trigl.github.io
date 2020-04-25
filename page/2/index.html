@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
@@ -184,6 +184,55 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2019/03/11/offer-sword-25/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 25：二叉树中和为某一值的路径
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+输入一颗二叉树和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。从树的根结点开始往下一直到叶结点所经过的结点形成一条路径。
+
+用递归来做，处理某个结点时，首先将这个结点放入到代表路径的 list 里面，如果这个结点的值等于 target 值并且还是叶子结点，那么这个路径就是要找的路径，否则继续递归遍历其左右结点，当遍历完左右结点以后，从代表路径的 list 中移除这个结点，也就是代......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-03-11
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2019/03/03/flink-paper/">
+        <h2 class="post-title">
+            Apache Flink 论文学习
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+本文是 Flink 论文 的学习笔记。
+
+基本介绍一般来说，实时计算的结果要求延迟低，但是可能会有一定的误差，而批处理的结果一般会有一定的延迟，但是结果准确。对应到传统的计算框架，就会出现两套逻辑和两套代码来分别实现实时和批处理的计算。
+Flink 将流式计算和批处理统一了起来，首先，所有的数据其实都可以按照流式进行处理，只要我们与一些可持久化且可重新消费的消息队列系统一起使用，如 Apa......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-03-03
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -376,56 +425,6 @@
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/01/11/offer-sword-23/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 23：从上往下打印二叉树
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-从上往下打印出二叉树的每个结点，同一层的结点按照从左到右的顺序打印。
-
-每一次打印一个结点的时候，如果该结点有子结点，则把该结点的子结点放到一个队列的末尾。接下来到队列的头部取出最早进入队列的结点，重复前面的打印操作，直至队列中所有的结点都被打印出来为止。
-代码如下：
-1234567891011121314151617181920212223242526272829303132333435......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-01-11
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2019/01/10/offer-sword-22/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 22：栈的压入、弹出序列
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-输入两个整数序列，第一个序列表示栈的压入顺序，请判断第二个序列是否为该栈的弹出顺序。假设压入栈的所有数字均不相等。例如序列 1、2、3、4、5 是某栈的压栈序列，序列 4、5、3、2、1 是该压栈序列对应的一个弹出序列，但 4、3、5、1、2 就不可能是该压栈序列的弹出序列。
-
-定义一个辅助栈用来模拟入栈出栈的过程。首先一次将压栈序列中的树压入，在此过程中比较弹出栈中的元素和栈顶元素是否相......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-01-10
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -465,7 +464,7 @@
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="4">并发</a>
                             
                         
                             
@@ -482,6 +481,8 @@
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             
@@ -678,7 +679,7 @@
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Ink&#39;s Blog 2019
+                    Copyright &copy; Ink&#39;s Blog 2020
                     <br>
                     Powered by <a href="https://github.com/Trigl/Trigl.github.io">Baixin</a> |
                     Hosted by <a href="https://pages.coding.me">Coding Pages</a>

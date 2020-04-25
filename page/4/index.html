@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
@@ -184,6 +184,56 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2019/01/08/offer-sword-13/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 13：在 O(1) 时间删除链表结点
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+给定单向链表的头指针和一个结点指针，定义一个函数在 O(1) 时间删除该结点。
+
+在单向链表中删除一个结点，最常规的做法无疑是从链表的头结点开始，顺序遍历查找要删除的结点，并在链表中删除该结点，时间复杂度是 O(n)，显然不满足本题的要求。
+之所以需要从头开始查找，是因为我们需要得到将被删除的结点前面一个结点。在单向链表中，结点中没有指向前一个结点的指针，所以只好从链表的头结点开始顺序查找......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-08
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2019/01/08/offer-sword-12/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 12：打印 1 到最大的 n 位数
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。比如输入 3，则打印出 1、2、3 一直到最大的 3 位数即 999。
+
+这道题目乍一看好像很简单，就是打印数字嘛，其实里面有一个很重要的坑，那就是大数问题，即这里面的数字可能极其大，超过计算机存储整数的最大范围。
+因此我们需要找到一种合适的方式来表达一个大数，最常用也最容易的方法就是用字符串或者数组表示大数，我们这里用数组的方式......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-08
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -399,61 +449,6 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/11/23/offer-sword-3/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 3：二维数组中的查找
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-题目：完成一个函数，输入一个二维数组和一个整数，判断数组中是否含有该整数。这个二维数组的结构是，每一行从左到右递增，每一列从上到下递增。
-
-思路数组的结构是从上到下递增从左到右递增，我们可以从右上角开始往左下角移动：
-若当前值与目标值相等，说明这个值存在，over
-
-若当前值比目标值大，由于从上到下递增，所以所在列的值都会比目标值大，左移一列
-
-若当前值比目标值小，由于从左到右递增，所以所......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-11-23
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/11/23/offer-sword-2/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 2：实现 Singleton 模式
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-题目：设计一个类，我们只能生成该类的一个实例。
-
-什么是 Singleton？单例模式的定义很简单：提供一个全局可以访问的唯一变量。
-那么为什么需要单例模式呢？对于某些类创建时需要消耗很多资源，例如数据库连接、日志类、配置类等全局都需要的并且占用很多资源的类，我们就希望节能减排多次利用，这个时候就应当采用单例模式。
-那么我们如何实现一个类可以被全局访问到并且具有唯一变量呢？首先这个类需要提......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-11-23
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -493,7 +488,7 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="4">并发</a>
                             
                         
                             
@@ -510,6 +505,8 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             
@@ -706,7 +703,7 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Ink&#39;s Blog 2019
+                    Copyright &copy; Ink&#39;s Blog 2020
                     <br>
                     Powered by <a href="https://github.com/Trigl/Trigl.github.io">Baixin</a> |
                     Hosted by <a href="https://pages.coding.me">Coding Pages</a>

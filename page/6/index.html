@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
@@ -184,6 +184,59 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2018/07/24/scala-breeze/">
+        <h2 class="post-title">
+            Scala 的矩阵运算
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+本文讲解 Scala 中进行矩阵运算的包 breeze 的一些基础操作。
+
+Breeze 是 Scala 中用于线性代数相关数值运算的开源库。
+安装首先我们使用 SBT 导入：
+1234567891011121314libraryDependencies  ++= Seq(  // Last stable release  &quot;org.scalanlp&quot; %% &quot......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-07-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2018/07/17/scala-basic/">
+        <h2 class="post-title">
+            那些容易漏掉的 Scala 基础
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+最近重读了一下 Scala Cookbook 来巩固基础，记录一些容易忘记的关键内容。
+
+Scala 中方法和函数的区别举个例子吧，下面是一个方法：
+1def towLower(c: Char): Char = (c.toByte + 32).toChar
+下面是与之完全等价的一个函数：
+1val toLower = (c: Char) =&gt; (c.toByte + 32).toCh......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-07-17
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -378,55 +431,6 @@ Case Classcase class 是指在 class 前面加上 case 关键字，下面是一�
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/02/07/details-of-scala-implicit/">
-        <h2 class="post-title">
-            Scala Implicit 详解
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-Implicit 是 Scala 中一个很重要的特性，开始学习 Scala 之前一直以为它和 Java 差不多，然而真的看一些 Scala 的源码时却发现并没有想象中那么简单，所以准备写几篇文章来详解 Scala 中异于 Java 的特性，就从 Implicit 开始吧。
-
-在我看来，Implicit 做的事情也是 Scala 主要做的事情，那就是代码压缩，减少模块代码，talk is c......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-02-07
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/01/15/scala-composition-and-inheritance/">
-        <h2 class="post-title">
-            Scala Composition and Inheritance
-        </h2>
-        <h3 class="post-subtitle">
-            Notes of Programming in Scala
-        </h3>
-        <div class="post-content-preview">
-            parameterless methods &amp;&amp; empty parenthesesparameterless methods
-1def width: Int
-empty parentheses
-1def width(): Int
-However, it’s still recommended to write the empty parentheses when the i......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-01-15
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -466,7 +470,7 @@ However, it’s still recommended to write the empty parentheses when the i.....
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="4">并发</a>
                             
                         
                             
@@ -483,6 +487,8 @@ However, it’s still recommended to write the empty parentheses when the i.....
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             
@@ -679,7 +685,7 @@ However, it’s still recommended to write the empty parentheses when the i.....
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Ink&#39;s Blog 2019
+                    Copyright &copy; Ink&#39;s Blog 2020
                     <br>
                     Powered by <a href="https://github.com/Trigl/Trigl.github.io">Baixin</a> |
                     Hosted by <a href="https://pages.coding.me">Coding Pages</a>

@@ -100,14 +100,14 @@
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
@@ -184,6 +184,61 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2018/11/23/offer-sword-3/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 3：二维数组中的查找
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+题目：完成一个函数，输入一个二维数组和一个整数，判断数组中是否含有该整数。这个二维数组的结构是，每一行从左到右递增，每一列从上到下递增。
+
+思路数组的结构是从上到下递增从左到右递增，我们可以从右上角开始往左下角移动：
+若当前值与目标值相等，说明这个值存在，over
+
+若当前值比目标值大，由于从上到下递增，所以所在列的值都会比目标值大，左移一列
+
+若当前值比目标值小，由于从左到右递增，所以所......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-11-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2018/11/23/offer-sword-2/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 2：实现 Singleton 模式
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+题目：设计一个类，我们只能生成该类的一个实例。
+
+什么是 Singleton？单例模式的定义很简单：提供一个全局可以访问的唯一变量。
+那么为什么需要单例模式呢？对于某些类创建时需要消耗很多资源，例如数据库连接、日志类、配置类等全局都需要的并且占用很多资源的类，我们就希望节能减排多次利用，这个时候就应当采用单例模式。
+那么我们如何实现一个类可以被全局访问到并且具有唯一变量呢？首先这个类需要提......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-11-23
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -402,59 +457,6 @@ Spark Streaming 基本的数据结构是......
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/07/24/scala-breeze/">
-        <h2 class="post-title">
-            Scala 的矩阵运算
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-本文讲解 Scala 中进行矩阵运算的包 breeze 的一些基础操作。
-
-Breeze 是 Scala 中用于线性代数相关数值运算的开源库。
-安装首先我们使用 SBT 导入：
-1234567891011121314libraryDependencies  ++= Seq(  // Last stable release  &quot;org.scalanlp&quot; %% &quot......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-07-24
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/07/17/scala-basic/">
-        <h2 class="post-title">
-            那些容易漏掉的 Scala 基础
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-最近重读了一下 Scala Cookbook 来巩固基础，记录一些容易忘记的关键内容。
-
-Scala 中方法和函数的区别举个例子吧，下面是一个方法：
-1def towLower(c: Char): Char = (c.toByte + 32).toChar
-下面是与之完全等价的一个函数：
-1val toLower = (c: Char) =&gt; (c.toByte + 32).toCh......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-07-17
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -494,7 +496,7 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="3">并发</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="4">并发</a>
                             
                         
                             
@@ -511,6 +513,8 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             
@@ -707,7 +711,7 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
 
                 </ul>
                 <p class="copyright text-muted">
-                    Copyright &copy; Ink&#39;s Blog 2019
+                    Copyright &copy; Ink&#39;s Blog 2020
                     <br>
                     Powered by <a href="https://github.com/Trigl/Trigl.github.io">Baixin</a> |
                     Hosted by <a href="https://pages.coding.me">Coding Pages</a>
