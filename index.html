@@ -187,12 +187,34 @@
 
 <div class="post-preview">
 
+    <a href="/2020/04/28/long-adder/">
+        <h2 class="post-title">
+            LongAdder 源码阅读
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+上一篇讲解了原子类 AtomicInteger 的源码，它可以看作是一个线程安全的计数器，但是如果在高并发情况下 AtomicInteger 的性能就捉襟见肘了，因为在高并发情况下多个线程同时进行 CAS 操作会频繁地失败重试，CPU 损耗很高，这个时候我们就可以使用性能更加高的 LongAdder 来实现计数功能，本文将会深入解析为什么 LongAdder 的性能比 AtomicInte......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2020-04-28
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2020/04/25/juc-atomic/">
         <h2 class="post-title">
             AtomicInteger 源码阅读
         </h2>
         <h3 class="post-subtitle">
-            
+            利用无锁 CAS 来提升性能
         </h3>
         <div class="post-content-preview">
             预备知识：CASAtomicInteger 的核心都是基于 CAS 的，那么 CAS 是什么呢？让我们先从悲观锁和乐观锁说起。
@@ -413,31 +435,6 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/03/21/offer-sword-26/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 26：复杂链表的复制
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-输入一个复杂链表（每个结点中有结点值，以及两个指针，一个指向下一个结点，另一个特殊指针指向任意一个结点），返回结果为复制后复制链表的 head。
-
-首先理解题意，这里说的复杂链表，说的是单链表，链表是一种比较简单的数据结构，但涉及到链表的操作却并不简单，原因就是因为链表里面有很多指针操作，一不小心可能就指错了或者是链表断了。
-其实个人认为在做链表的操作只要弄清楚一点就容易很多，那就是 Ja......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-03-21
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -473,7 +470,7 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="4">并发</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="5">并发</a>
                             
                         
                             
@@ -495,13 +492,9 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
                             
                         
                             
-                        
-                            
                             <a href="/archive/?tag=剑指 Offer" title="剑指 Offer" rel="27">剑指 Offer</a>
                             
                         
-                            
-                            <a href="/archive/?tag=Spark" title="Spark" rel="8">Spark</a>
                             
                         
                             
@@ -509,15 +502,21 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/archive/?tag=JDK 源码" title="JDK 源码" rel="3">JDK 源码</a>
+                            
+                        
+                            
+                            <a href="/archive/?tag=Spark" title="Spark" rel="8">Spark</a>
+                            
+                        
+                            
                             <a href="/archive/?tag=Spring" title="Spring" rel="10">Spring</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
                             
                         
                             

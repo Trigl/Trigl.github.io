@@ -187,6 +187,33 @@
 
 <div class="post-preview">
 
+    <a href="/2019/01/11/offer-sword-24/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 24：二叉搜索树的后序遍历序列
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数组都互不相同。
+
+首先明确二叉搜索树的特点：左边结点小于根结点，右边结点大于根结点。
+然后根据后序遍历我们可以确定最后一个结点是根结点，然后再循环找出左右结点的分界点，继续循环确保右边的数字都大于根结点，最后再递归查看左右两个子结点。
+代码如下：
+1234......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-11
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2019/01/11/offer-sword-23/">
         <h2 class="post-title">
             「剑指 Offer」面试题 23：从上往下打印二叉树
@@ -414,30 +441,6 @@
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/01/08/offer-sword-14/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 14：调整数组顺序使奇数位于偶数前面
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-输入一个整数数组，实现一个函数来调整该数组中数字的顺序，使得所有奇数位于数组的前半部分，所有偶数位于数组的后半部分，并保证奇数和奇数，偶数和偶数之间的相对位置不变。
-
-分析题目要求奇数在前偶数在后，并且重排序之后奇偶原来的顺序不能改变，这就说明我们只能顺序遍历所有的数字，遇到奇偶相邻就左右交换。具体做法就是在向后遍历的过程中用一个变量做为遍历过的奇数的数目，当遍历到的数字是奇数时，首先看一......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-01-08
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -477,7 +480,7 @@
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="4">并发</a>
+                            <a href="/archive/?tag=并发" title="并发" rel="5">并发</a>
                             
                         
                             
@@ -499,13 +502,9 @@
                             
                         
                             
-                        
-                            
                             <a href="/archive/?tag=剑指 Offer" title="剑指 Offer" rel="27">剑指 Offer</a>
                             
                         
-                            
-                            <a href="/archive/?tag=Spark" title="Spark" rel="8">Spark</a>
                             
                         
                             
@@ -513,15 +512,21 @@
                             
                         
                             
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/archive/?tag=JDK 源码" title="JDK 源码" rel="3">JDK 源码</a>
+                            
+                        
+                            
+                            <a href="/archive/?tag=Spark" title="Spark" rel="8">Spark</a>
+                            
+                        
+                            
                             <a href="/archive/?tag=Spring" title="Spring" rel="10">Spring</a>
-                            
-                        
-                            
-                        
-                            
-                        
-                            
-                        
                             
                         
                             
