@@ -187,6 +187,32 @@
 
 <div class="post-preview">
 
+    <a href="/2018/07/31/spark-streaming-checkpoint/">
+        <h2 class="post-title">
+            Spark Streaming Checkpoint
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+一个 Streaming 应用是一个 007 特工，需要保证 7 * 24 小时的持久运转，因此容错性就极其重要，Spark Streaming 通过在一个具有容错性的存储系统如 HDFS 中设置一些检查信息来从错误中恢复。
+
+什么情况下需要设置 checkpoint？首先我们看一下哪些数据会被 checkpoint，主要有两种类型的数据：
+
+元数据：将定义 Streaming 应用如何计......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-07-31
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2018/07/26/spark-streaming-guide/">
         <h2 class="post-title">
             Spark Streaming 初见
@@ -413,28 +439,6 @@ Kinesis 的基本术语Kinesis Data StreamKinesis Data Stream 实时吸收大量
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/04/28/spark-mode/">
-        <h2 class="post-title">
-            Spark client mode 和 cluster mode 的区别
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            在使用spark-submit提交Spark任务一般有以下参数：
-12345678./bin/spark-submit \  --class &lt;main-class&gt; \  --master &lt;master-url&gt; \  --deploy-mode &lt;deploy-mode&gt; \  --conf &lt;key&gt;=&lt;value&gt; \  ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-04-28
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -623,6 +627,10 @@ Kinesis 的基本术语Kinesis Data StreamKinesis Data Stream 实时吸收大量
                         <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
                     
                         <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
                     
                 </ul>
                 
