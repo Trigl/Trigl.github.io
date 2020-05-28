@@ -106,6 +106,14 @@ friends: [
     {
         title: "Throwable",
         href: "https://www.throwable.club/"
+    },
+    {
+        title: "阮一峰的个人网站",
+        href: "http://www.ruanyifeng.com/home.html"
+    },
+    {
+        title: "Javadoop",
+        href: "https://www.javadoop.com/"
     }
 ]
 

@@ -4,7 +4,7 @@ title:      "LongAdder 源码阅读"
 date:       2020-05-13
 author:     "Ink Bai"
 catalog:    true
-header-style: "text"
+header-img: "/img/post/longadder.jpg"
 tags:
     - 并发
     - JDK 源码
