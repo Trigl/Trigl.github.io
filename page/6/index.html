@@ -187,6 +187,32 @@
 
 <div class="post-preview">
 
+    <a href="/2018/08/01/spark-streaming-operations/">
+        <h2 class="post-title">
+            Spark Streaming 常见操作
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+DStream 的转换操作与 RDD 的差不多，简单的像是 map，flatMap，repartition 我们就不讲了，我们讲几个关键特殊的。
+
+DStream 的转换操作UpdateStateByKey 操作顾名思义，UpdateStateByKey 转换允许你在每个批次都可以对每个键更新他们的状态，至于这个 “状态” 到底是什么，就由我们自己定了，所以首先需要定义两个元素：
+
+定义一......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-08-01
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2018/07/31/spark-streaming-checkpoint/">
         <h2 class="post-title">
             Spark Streaming Checkpoint
@@ -413,32 +439,6 @@ Akka GuideActor 模型与线程比较，是一种高层次的抽象。说 “高
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/05/16/collect-data-with-kinesis/">
-        <h2 class="post-title">
-            使用 AWS Kinesis 收集流数据
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-Kinesis 是 AWS 的一项用于收集实时流数据的云服务，类似于 Kafka。Kinesis 收集到的数据可以用于多个方面，例如存到 S3，发到 EMR 作进一步数据分析等等。
-
-Kinesis 的整体架构如下：
-
-Kinesis 的基本术语Kinesis Data StreamKinesis Data Stream 实时吸收大量数据、持久存储数据并使这些数据可供使用。其由多个分片组成......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-05-16
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -494,6 +494,8 @@ Kinesis 的基本术语Kinesis Data StreamKinesis Data Stream 实时吸收大量
                             
                         
                             
+                        
+                            
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
                             
                         
@@ -523,8 +525,6 @@ Kinesis 的基本术语Kinesis Data StreamKinesis Data Stream 实时吸收大量
                         
                             
                             <a href="/archive/?tag=JDK 源码" title="JDK 源码" rel="3">JDK 源码</a>
-                            
-                        
                             
                         
                             

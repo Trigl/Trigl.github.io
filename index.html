@@ -187,6 +187,32 @@
 
 <div class="post-preview">
 
+    <a href="/2020/08/14/kafka-cluster-ha/">
+        <h2 class="post-title">
+            如何实现多个 Kafka 集群的高可用
+        </h2>
+        <h3 class="post-subtitle">
+            基于熔断机制切换主备 Kafka 集群
+        </h3>
+        <div class="post-content-preview">
+            
+熔断机制是网关中经常用到的一种策略，那么它和 Kafka 组合在一起会产生什么化学反应呢，让我们一起来瞧一瞧。
+
+多 Kafka 集群的高可用到底指什么？打开 Kafka 的官网，它首先告诉你 Kafka 能做啥，其中就有高可用。
+
+Kafka 的高可用，通俗理解就是一个 Kafka 集群不会完全挂掉，总是会有那么几个 broker 是可以工作的，在数据量比较小的时候一般 Kafka 自身......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2020-08-14
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2020/05/29/netty-introduction/">
         <h2 class="post-title">
             为什么需要 Netty？
@@ -412,30 +438,6 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/04/06/offer-sword-27/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 27：二叉搜索树与双向链表
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
-
-分析一下题目，二叉搜索树，说明根结点的值大于左结点的值，小于右结点的值。然后说要将二叉搜索树转换成一个排序的双向链表，看到排序，又想起了二叉搜索树的结构特点，自然可以想到用左序遍历的方式遍历二叉树就可以得到排序的结果。最后说明不能创建任何新的结点，就是说不能 new 一个对......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-04-06
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -487,6 +489,8 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
                             
                         
                             
+                        
+                            
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
                             
                         
@@ -516,8 +520,6 @@ Winter is coming.对于工程师来说，度过寒冬的方法一个是抱团取
                         
                             
                             <a href="/archive/?tag=JDK 源码" title="JDK 源码" rel="3">JDK 源码</a>
-                            
-                        
                             
                         
                             
