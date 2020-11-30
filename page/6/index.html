@@ -187,6 +187,32 @@
 
 <div class="post-preview">
 
+    <a href="/2018/08/20/sbt/">
+        <h2 class="post-title">
+            SBT 那些常用的功能
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+使用 Scala 也很久了，SBT 是最方便的构建工具，但是总是会遇到一些 SBT 引起的奇奇怪怪的问题，今天就好好研究一下 SBT 的常见用法，争取通过本文跨过大部分的坑。
+
+SBT 常见命令clean：移除 target 文件夹下生成的所有文件。
+compile：编译 src/main/scala，src/main/java 和项目根目录下的文件。
+run：编译代码然后运行项目中的 m......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-08-20
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2018/08/02/spark-streaming-kinesis/">
         <h2 class="post-title">
             Spark Streaming 集成 AWS Kinesis
@@ -415,31 +441,6 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/06/06/read-spark-source-code-1/">
-        <h2 class="post-title">
-            Spark 源码阅读（I）
-        </h2>
-        <h3 class="post-subtitle">
-            通过 Spark Submit 提交应用流程分析
-        </h3>
-        <div class="post-content-preview">
-            
-提交 Spark 应用的第一步是通过 spark-submit 执行的，本文将会从源码研究整个过程，对源码的详细注释可以查看这里： https://github.com/Trigl/spark
-
-我们用 Spark 自带的 SparkPi 的例子来讲解，我们通过 spark-submit 提交的命令如下：
-123456789./bin/spark-submit --class org.ap......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-06-06
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -479,13 +480,11 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="5">并发</a>
-                            
-                        
-                            
                             <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
                             
                         
+                            
+                            <a href="/archive/?tag=并发" title="并发" rel="6">并发</a>
                             
                         
                             
@@ -498,6 +497,8 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             

@@ -187,6 +187,35 @@
 
 <div class="post-preview">
 
+    <a href="/2020/11/30/java-concurrency-practice/">
+        <h2 class="post-title">
+            「Notes」Java 并发编程实战
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+2020.11.29 开始读，每天读一章，先读一周试试水。
+
+非原子的64位操作Java 内存模型要求，变量的读取和写入操作都必须是原子操作，但对于非 volatile 类型的 long 和 double 变量，JVM 允许将 64 位的读操作或写操作分解为两个 32 位的操作。
+volatile 作用
+编译器和运行时不再重排序
+不会被缓存到寄存器或者对其他处理器不可见的地方
+
+不要在构造......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2020-11-30
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
     <a href="/2020/10/15/swiss-army/">
         <h2 class="post-title">
             系统炸了怎么办？
@@ -413,34 +442,6 @@ Consumer 使用示例只需以下几步就可以使用 kafka Consumer：
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/08/25/effective-java-item-1/">
-        <h2 class="post-title">
-            Effective Java 读书笔记：Item 1
-        </h2>
-        <h3 class="post-subtitle">
-            考虑使用静态工厂方法替换构造方法
-        </h3>
-        <div class="post-content-preview">
-            
-几年前看过 Effective Java 第二版，当时看的是一知半解，就被我放下了，最近发现 Effective Java 都出了第三版了，涵盖到了 Java 9 的内容，准备重新过一遍，顺便撸一点读书笔记吧。
-
-首先来看 Item 1：
-
-考虑使用静态工厂方法替换构造方法
-
-通常我们创建对象的方式是调用类的构造函数，其实还有一种更优雅的方式是通过静态工厂方法创建对象，比如下面的 Bool......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-08-25
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -476,13 +477,11 @@ Consumer 使用示例只需以下几步就可以使用 kafka Consumer：
                     <div class="tags">
                         
                             
-                            <a href="/archive/?tag=并发" title="并发" rel="5">并发</a>
-                            
-                        
-                            
                             <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
                             
                         
+                            
+                            <a href="/archive/?tag=并发" title="并发" rel="6">并发</a>
                             
                         
                             
@@ -495,6 +494,8 @@ Consumer 使用示例只需以下几步就可以使用 kafka Consumer：
                         
                             
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
                             
                         
                             
