@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          使用 Netty 写一个 HTTP Server - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2018/07/13/netty-http-server/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/netty-httpserve.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Netty" title="Netty">Netty</a>
+                        
+                    </div>
+                    <h1>使用 Netty 写一个 HTTP Server</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2018-07-13,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>前一段时间需要写一个 HTTP Server，之前用 Akka 实现了一个，但是 Netty 更能支撑高并发，连 Spark 2.0 也把 Akka 换成了 Netty 进行网络传输，所以现在再撸一个 Netty 的 Server。</p>
+</blockquote>
+<p>闲话少说，直接开搞，首先将 Netty 加入 sbt：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"io.netty"</span> % <span class="string">"netty-all"</span> % <span class="string">"4.1.25.Final"</span></span><br></pre></td></tr></table></figure>
+<p>我们需要定义两个组 <code>bossGroup</code> 和 <code>workerGroup</code>，这个两个组实际上是两个线程组，负责的不同。<code>bossGroup</code> 负责获取客户端连接，接收到之后会将该连接转发到 <code>workerGroup</code> 进行处理。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// if there are multiple `ServerBootstrap`, we should set more than one thread</span></span><br><span class="line"><span class="keyword">val</span> bossGroup = <span class="keyword">new</span> <span class="type">NioEventLoopGroup</span>(<span class="number">1</span>)</span><br><span class="line"><span class="keyword">val</span> workerGroup = <span class="keyword">new</span> <span class="type">NioEventLoopGroup</span>()</span><br></pre></td></tr></table></figure>
+<p>然后通过一个启动服务类 <code>ServerBootstrap</code> 进行初始化启动：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> http = <span class="keyword">new</span> <span class="type">ServerBootstrap</span>()</span><br><span class="line">  .group(bossGroup, workerGroup)</span><br><span class="line">  .channel(classOf[<span class="type">NioServerSocketChannel</span>])</span><br><span class="line">  .childHandler(<span class="keyword">new</span> <span class="type">HttpServerInitializer</span>(writer))</span><br></pre></td></tr></table></figure>
+<p>其中 <code>HttpServerInitializer</code> 是我们自定义实现的一个服务初始化器，继承了 <code>ChannelInitializer</code> 类，这个类通过 <code>ChannelPipieline</code> 设置初始化链，包括超时时间、编解码和处理 HTTP 请求的设置。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HttpServerInitializer</span>(<span class="params">private val writer: <span class="type">EventWriter</span></span>) <span class="keyword">extends</span> <span class="title">ChannelInitializer</span>[<span class="type">SocketChannel</span>] </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> logger = <span class="type">Logger</span>(<span class="keyword">this</span>.getClass)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">initChannel</span></span>(ch: <span class="type">SocketChannel</span>) &#123;</span><br><span class="line">    logger.debug(<span class="string">"Initialize http server channel."</span>)</span><br><span class="line">    ch.pipeline.addLast(</span><br><span class="line">      <span class="keyword">new</span> <span class="type">ReadTimeoutHandler</span>(<span class="number">1</span>),</span><br><span class="line">      <span class="keyword">new</span> <span class="type">HttpRequestDecoder</span>(<span class="number">8192</span>, <span class="number">8192</span>, <span class="number">8192</span>),</span><br><span class="line">      <span class="keyword">new</span> <span class="type">HttpResponseEncoder</span>(),</span><br><span class="line">      <span class="keyword">new</span> <span class="type">HttpServerHandler</span>(writer)</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 <code>HttpServerHandler</code> 就是主要的 HTTP 请求处理类，类似于 Spring 中的拦截器，包含处理请求、转发的相关功能：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HttpServerHandler</span>(<span class="params">private val writer: <span class="type">EventWriter</span></span>)</span></span><br><span class="line"><span class="class">  <span class="keyword">extends</span> <span class="title">SimpleChannelInboundHandler</span>[<span class="type">Object</span>] </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> logger = <span class="type">Logger</span>(<span class="keyword">this</span>.getClass)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">forwardMessage</span></span>(req: <span class="type">HttpRequest</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (req.decoderResult.isSuccess) &#123;</span><br><span class="line">      <span class="keyword">val</span> uri = req.uri</span><br><span class="line">      logger.debug(<span class="string">s"Forward message, url=<span class="subst">$uri</span>"</span>)</span><br><span class="line">      writer.putEvent(<span class="type">System</span>.currentTimeMillis, uri)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      logger.error(<span class="string">s"Request decode failure, result=<span class="subst">$&#123;req.decoderResult&#125;</span>"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">channelReadComplete</span></span>(ctx: <span class="type">ChannelHandlerContext</span>) &#123;</span><br><span class="line">    ctx.flush</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">channelRead0</span></span>(ctx: <span class="type">ChannelHandlerContext</span>, msg: <span class="type">Object</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (msg.isInstanceOf[<span class="type">HttpRequest</span>]) &#123;</span><br><span class="line">      logger.debug(<span class="string">"Flush and finish requests."</span>)</span><br><span class="line">      <span class="keyword">val</span> response = <span class="keyword">new</span> <span class="type">DefaultFullHttpResponse</span>(<span class="type">HttpVersion</span>.<span class="type">HTTP_1_1</span>, <span class="type">HttpResponseStatus</span>.<span class="type">NO_CONTENT</span>, <span class="type">Unpooled</span>.<span class="type">EMPTY_BUFFER</span>)</span><br><span class="line">      ctx.writeAndFlush(response).addListener(<span class="type">ChannelFutureListener</span>.<span class="type">CLOSE</span>)</span><br><span class="line">      forwardMessage(msg.asInstanceOf[<span class="type">HttpRequest</span>])</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">exceptionCaught</span></span>(ctx: <span class="type">ChannelHandlerContext</span>, error: <span class="type">Throwable</span>) &#123;</span><br><span class="line">    logger.error(<span class="string">s"Http handle error, error=<span class="subst">$error</span>"</span>)</span><br><span class="line">    ctx.close</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意这里是通过 <code>channelRead0</code> 处理请求并给客户端返回，我在这里的处理是不论什么内容进来，都给客户端返回一个 <code>NO_CONTENT</code>，而实际的处理会进行转发，这样是为了防止阻塞，首先给客户端返回结果，然后具体的一些耗时操作放在 <code>forwardMessage</code> 内。</p>
+<p>上面的内容就是一些初始化启动类，准备好这些以后我们需要把初始化服务器绑定到服务端口，这个端口用来接收 HTTP 请求：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> f = http.bind(port).sync().channel()</span><br><span class="line">logger.info(<span class="string">s"Start server, port=<span class="subst">$port</span>"</span>)</span><br><span class="line">f.closeFuture().sync()</span><br></pre></td></tr></table></figure>
+<p>如果接收 HTTP 请求的时候出错，我们还需要释放资源：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bossGroup.shutdownGracefully()</span><br><span class="line">workerGroup.shutdownGracefully()</span><br></pre></td></tr></table></figure>
+<p>以上完整实现了一个 HTTP Server，具体的过程是：</p>
+<ol>
+<li>定义两个线程组： <code>bossGroup</code> 和 <code>workerGroup</code></li>
+<li>准备一个继承自 <code>ChannelInitializer</code> 服务处理初始化类，这个类设置超时编解码以及具体处理 HTTP 请求的类</li>
+<li>定义一个服务启动类 <code>ServerBootstrap</code>，设置线程组和 handler</li>
+<li>把服务启动类绑定到某个端口号，HTTP Server 启动</li>
+</ol>
+<p>完整代码见 <a href="https://github.com/Trigl/ripple/tree/master/producer" target="_blank" rel="noopener">producer</a>，我是通过 Netty 的 HTTP Server 接收 GET 请求，处理之后将消息发送到 AWS Kinesis（类似于 Kafka）中。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/06/20/protocol-buffers-tutorial/"
+                              data-toggle="tooltip" data-placement="top" title="Protocol Buffers 了解一下？">
+                              Previous<br><span>Protocol Buffers 了解一下？</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/07/17/scala-basic/"
+                              data-toggle="tooltip" data-placement="top" title="那些容易漏掉的 Scala 基础">
+                              Next<br><span>那些容易漏掉的 Scala 基础</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Netty" title="Netty">Netty</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

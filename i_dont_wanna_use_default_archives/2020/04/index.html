@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/i_dont_wanna_use_default_archives/2020/04/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading" id="tag-heading">
+                    <h1>Ink&#39;s Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Less is more</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <!-- 标签云 -->
+            <div id='tag_cloud' class="tags tags-sup js-tags">
+              <a class="tag-button--all" data-encode="">
+                     ALL<sup>84</sup>
+              </a>
+
+              
+              
+                <a data-encode="%E5%89%91%E6%8C%87%20Offer"
+                  class="tag-button"
+                  title="剑指 Offer" rel="27">
+                  剑指 Offer
+                  <sup>27</sup>
+                </a>
+              
+                <a data-encode="Spring"
+                  class="tag-button"
+                  title="Spring" rel="10">
+                  Spring
+                  <sup>10</sup>
+                </a>
+              
+                <a data-encode="Spark"
+                  class="tag-button"
+                  title="Spark" rel="8">
+                  Spark
+                  <sup>8</sup>
+                </a>
+              
+                <a data-encode="Scala"
+                  class="tag-button"
+                  title="Scala" rel="7">
+                  Scala
+                  <sup>7</sup>
+                </a>
+              
+                <a data-encode="%E7%AE%97%E6%B3%95"
+                  class="tag-button"
+                  title="算法" rel="6">
+                  算法
+                  <sup>6</sup>
+                </a>
+              
+                <a data-encode="%E5%B9%B6%E5%8F%91"
+                  class="tag-button"
+                  title="并发" rel="6">
+                  并发
+                  <sup>6</sup>
+                </a>
+              
+                <a data-encode="%E5%9B%A0%E5%B4%94%E6%96%AF%E6%B1%80"
+                  class="tag-button"
+                  title="因崔斯汀" rel="4">
+                  因崔斯汀
+                  <sup>4</sup>
+                </a>
+              
+                <a data-encode="JDK%20%E6%BA%90%E7%A0%81"
+                  class="tag-button"
+                  title="JDK 源码" rel="3">
+                  JDK 源码
+                  <sup>3</sup>
+                </a>
+              
+                <a data-encode="Netty"
+                  class="tag-button"
+                  title="Netty" rel="2">
+                  Netty
+                  <sup>2</sup>
+                </a>
+              
+                <a data-encode="Kafka"
+                  class="tag-button"
+                  title="Kafka" rel="2">
+                  Kafka
+                  <sup>2</sup>
+                </a>
+              
+                <a data-encode="Effective%20Java"
+                  class="tag-button"
+                  title="Effective Java" rel="2">
+                  Effective Java
+                  <sup>2</sup>
+                </a>
+              
+                <a data-encode="%E5%B0%8F%E5%8F%AE%E5%BD%93%E7%9A%84%E5%8F%A3%E8%A2%8B"
+                  class="tag-button"
+                  title="小叮当的口袋" rel="1">
+                  小叮当的口袋
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="Java%20%E5%9F%BA%E7%A1%80"
+                  class="tag-button"
+                  title="Java 基础" rel="1">
+                  Java 基础
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="DDIA"
+                  class="tag-button"
+                  title="DDIA" rel="1">
+                  DDIA
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="Go"
+                  class="tag-button"
+                  title="Go" rel="1">
+                  Go
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="%E9%9D%A2%E8%AF%95"
+                  class="tag-button"
+                  title="面试" rel="1">
+                  面试
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="%E6%96%B9%E6%B3%95%E8%AE%BA"
+                  class="tag-button"
+                  title="方法论" rel="1">
+                  方法论
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="Flink"
+                  class="tag-button"
+                  title="Flink" rel="1">
+                  Flink
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="AWS"
+                  class="tag-button"
+                  title="AWS" rel="1">
+                  AWS
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="Big%20Data"
+                  class="tag-button"
+                  title="Big Data" rel="1">
+                  Big Data
+                  <sup>1</sup>
+                </a>
+              
+                <a data-encode="Akka"
+                  class="tag-button"
+                  title="Akka" rel="1">
+                  Akka
+                  <sup>1</sup>
+                </a>
+              
+            </div>
+
+            <!-- Article List -->
+            
+
+            
+            <div class="mini-post-list js-result d-none">
+              <section>
+                <span class="fa listing-seperator" id="2020">
+                    <span class="tag-text">2020</span>
+                </span>
+
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%B9%B6%E5%8F%91">
+                    <a href="/2020/11/30/java-concurrency-practice/">
+                      <h2 class="post-title">
+                            「Notes」Java 并发编程实战
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%B0%8F%E5%8F%AE%E5%BD%93%E7%9A%84%E5%8F%A3%E8%A2%8B">
+                    <a href="/2020/10/15/swiss-army/">
+                      <h2 class="post-title">
+                            系统炸了怎么办？
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Kafka">
+                    <a href="/2020/08/14/kafka-cluster-ha/">
+                      <h2 class="post-title">
+                            如何实现多个 Kafka 集群的高可用
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            基于熔断机制切换主备 Kafka 集群
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Netty">
+                    <a href="/2020/05/29/netty-introduction/">
+                      <h2 class="post-title">
+                            为什么需要 Netty？
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%B9%B6%E5%8F%91,JDK%20%E6%BA%90%E7%A0%81">
+                    <a href="/2020/05/13/long-adder/">
+                      <h2 class="post-title">
+                            LongAdder 源码阅读
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%B9%B6%E5%8F%91,JDK%20%E6%BA%90%E7%A0%81">
+                    <a href="/2020/04/25/juc-atomic/">
+                      <h2 class="post-title">
+                            AtomicInteger 源码阅读
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            利用无锁 CAS 来提升性能
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Go">
+                    <a href="/2020/02/14/note-of-go/">
+                      <h2 class="post-title">
+                            Go 语法要点
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            个人笔记
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+              </section>
+
+            </div>
+            
+            <div class="mini-post-list js-result d-none">
+              <section>
+                <span class="fa listing-seperator" id="2019">
+                    <span class="tag-text">2019</span>
+                </span>
+
+                
+                  
+
+                  <div class="post-preview item" data-tags="Kafka">
+                    <a href="/2019/12/20/kafka-consumer-poll/">
+                      <h2 class="post-title">
+                            「译」当调用 Kafka Consumer 的 poll 方法时发生了什么？
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            Kafka Consumer 初始化和首次拉取数据的原理
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%B9%B6%E5%8F%91,JDK%20%E6%BA%90%E7%A0%81">
+                    <a href="/2019/09/24/threadlocal/">
+                      <h2 class="post-title">
+                            ThreadLocal 详解
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Effective%20Java">
+                    <a href="/2019/08/26/effective-java-item-1-plus/">
+                      <h2 class="post-title">
+                            Effective Java 读书笔记：Item 1（续）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            服务提供者框架
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Effective%20Java">
+                    <a href="/2019/08/25/effective-java-item-1/">
+                      <h2 class="post-title">
+                            Effective Java 读书笔记：Item 1
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            考虑使用静态工厂方法替换构造方法
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E6%96%B9%E6%B3%95%E8%AE%BA">
+                    <a href="/2019/05/10/how-to-learn-opensorce-project/">
+                      <h2 class="post-title">
+                            如何学习开源项目？
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/04/06/offer-sword-27/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 27：二叉搜索树与双向链表
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%9B%A0%E5%B4%94%E6%96%AF%E6%B1%80">
+                    <a href="/2019/04/01/talk-about-work/">
+                      <h2 class="post-title">
+                            聊聊这几年的工作经历
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/03/21/offer-sword-26/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 26：复杂链表的复制
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/03/11/offer-sword-25/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 25：二叉树中和为某一值的路径
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Flink">
+                    <a href="/2019/03/03/flink-paper/">
+                      <h2 class="post-title">
+                            Apache Flink 论文学习
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E9%9D%A2%E8%AF%95">
+                    <a href="/2019/02/11/interview-algorithm/">
+                      <h2 class="post-title">
+                            闲来无事刷刷题
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95">
+                    <a href="/2019/01/29/quick-sort/">
+                      <h2 class="post-title">
+                            快速排序
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95">
+                    <a href="/2019/01/29/merge-sort/">
+                      <h2 class="post-title">
+                            归并排序
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95">
+                    <a href="/2019/01/29/shell-sort/">
+                      <h2 class="post-title">
+                            希尔排序
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95">
+                    <a href="/2019/01/29/insertion-sort/">
+                      <h2 class="post-title">
+                            插入排序
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95">
+                    <a href="/2019/01/29/sellection-sort/">
+                      <h2 class="post-title">
+                            选择排序
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E7%AE%97%E6%B3%95">
+                    <a href="/2019/01/29/bubble-sort/">
+                      <h2 class="post-title">
+                            冒泡排序
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/11/offer-sword-24/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 24：二叉搜索树的后序遍历序列
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/11/offer-sword-23/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 23：从上往下打印二叉树
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/10/offer-sword-22/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 22：栈的压入、弹出序列
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/10/offer-sword-21/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 21：包含 min 函数的栈
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/10/offer-sword-20/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 20：顺时针打印矩阵
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/10/offer-sword-19/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 19：二叉树的镜像
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/10/offer-sword-18/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 18：树的子结构
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/09/offer-sword-17/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 17：合并两个排序的链表
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/09/offer-sword-16/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 16：反转链表
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/08/offer-sword-15/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 15：链表中倒数第 k 个结点
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/08/offer-sword-14/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 14：调整数组顺序使奇数位于偶数前面
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/08/offer-sword-13/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 13：在 O(1) 时间删除链表结点
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/08/offer-sword-12/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 12：打印 1 到最大的 n 位数
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/07/offer-sword-11/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 11：数值的整数次方
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/07/offer-sword-10/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 10：二进制中 1 的个数
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/02/offer-sword-9/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 9：斐波那契数列
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2019/01/01/offer-sword-8/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 8：旋转数组的最小数字
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+              </section>
+
+            </div>
+            
+            <div class="mini-post-list js-result d-none">
+              <section>
+                <span class="fa listing-seperator" id="2018">
+                    <span class="tag-text">2018</span>
+                </span>
+
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2018/11/29/offer-sword-7/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 7：用两个栈实现队列
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2018/11/29/offer-sword-6/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 6：重建二叉树
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2018/11/27/offer-sword-5/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 5：从尾到头打印链表
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2018/11/27/offer-sword-4/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 4：替换空格
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2018/11/23/offer-sword-3/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 3：二维数组中的查找
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2018/11/23/offer-sword-2/">
+                      <h2 class="post-title">
+                            「剑指 Offer」面试题 2：实现 Singleton 模式
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%89%91%E6%8C%87%20Offer">
+                    <a href="/2018/11/23/offer-sword/">
+                      <h2 class="post-title">
+                            「剑指 Offer」刷题笔记
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2018/10/24/spark-deploy/">
+                      <h2 class="post-title">
+                            Spark 部署要点
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%B9%B6%E5%8F%91">
+                    <a href="/2018/10/18/ReentrantReadWriteLock/">
+                      <h2 class="post-title">
+                            ReentrantReadWriteLock 使用
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Scala">
+                    <a href="/2018/08/20/sbt/">
+                      <h2 class="post-title">
+                            SBT 那些常用的功能
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2018/08/02/spark-streaming-kinesis/">
+                      <h2 class="post-title">
+                            Spark Streaming 集成 AWS Kinesis
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2018/08/01/spark-streaming-operations/">
+                      <h2 class="post-title">
+                            Spark Streaming 常见操作
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2018/07/31/spark-streaming-checkpoint/">
+                      <h2 class="post-title">
+                            Spark Streaming Checkpoint
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2018/07/26/spark-streaming-guide/">
+                      <h2 class="post-title">
+                            Spark Streaming 初见
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Scala">
+                    <a href="/2018/07/24/scala-breeze/">
+                      <h2 class="post-title">
+                            Scala 的矩阵运算
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Scala">
+                    <a href="/2018/07/17/scala-basic/">
+                      <h2 class="post-title">
+                            那些容易漏掉的 Scala 基础
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Netty">
+                    <a href="/2018/07/13/netty-http-server/">
+                      <h2 class="post-title">
+                            使用 Netty 写一个 HTTP Server
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Scala">
+                    <a href="/2018/06/20/protocol-buffers-tutorial/">
+                      <h2 class="post-title">
+                            Protocol Buffers 了解一下？
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            Scala 中使用 protocol buffer
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="DDIA">
+                    <a href="/2018/06/14/notes-of-ddia-1/">
+                      <h2 class="post-title">
+                            Designing Data-Intensive Applications 读书笔记（I）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            构建可靠的、可扩展和可维护的应用
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2018/06/06/read-spark-source-code-1/">
+                      <h2 class="post-title">
+                            Spark 源码阅读（I）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            通过 Spark Submit 提交应用流程分析
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Akka">
+                    <a href="/2018/05/23/akka-study/">
+                      <h2 class="post-title">
+                            Akka Study
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="AWS">
+                    <a href="/2018/05/16/collect-data-with-kinesis/">
+                      <h2 class="post-title">
+                            使用 AWS Kinesis 收集流数据
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2018/04/28/spark-mode/">
+                      <h2 class="post-title">
+                            Spark client mode 和 cluster mode 的区别
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Scala">
+                    <a href="/2018/04/13/case-classes-and-pattern-matching/">
+                      <h2 class="post-title">
+                            Scala 的 Case Classes 和 Pattern Matching
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Scala">
+                    <a href="/2018/02/07/details-of-scala-implicit/">
+                      <h2 class="post-title">
+                            Scala Implicit 详解
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Scala">
+                    <a href="/2018/01/15/scala-composition-and-inheritance/">
+                      <h2 class="post-title">
+                            Scala Composition and Inheritance
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            Notes of Programming in Scala
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+              </section>
+
+            </div>
+            
+            <div class="mini-post-list js-result d-none">
+              <section>
+                <span class="fa listing-seperator" id="2017">
+                    <span class="tag-text">2017</span>
+                </span>
+
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spark">
+                    <a href="/2017/05/24/realtime-process-with-sparkstreaming/">
+                      <h2 class="post-title">
+                            SparkStreaming + Flume + Kafka 进行实时日志分析
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Big%20Data">
+                    <a href="/2017/04/01/data-warehouse/">
+                      <h2 class="post-title">
+                            数据仓库的架构与设计
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+              </section>
+
+            </div>
+            
+            <div class="mini-post-list js-result d-none">
+              <section>
+                <span class="fa listing-seperator" id="2016">
+                    <span class="tag-text">2016</span>
+                </span>
+
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/07/31/spring-xml-bootstrap-order/">
+                      <h2 class="post-title">
+                            关于 web.xml 中 Spring 配置文件的启动顺序
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%9B%A0%E5%B4%94%E6%96%AF%E6%B1%80">
+                    <a href="/2016/04/02/my-dream/">
+                      <h2 class="post-title">
+                            一个普通程序员的中国梦
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            I have a dream
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%B9%B6%E5%8F%91">
+                    <a href="/2016/04/01/concurrency-basic/">
+                      <h2 class="post-title">
+                            Java 多线程基础
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/03/25/spring-transaction/">
+                      <h2 class="post-title">
+                            Spring 事务管理
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            超级干货讲解 + 实战演练
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Java%20%E5%9F%BA%E7%A1%80">
+                    <a href="/2016/03/21/regular-expression/">
+                      <h2 class="post-title">
+                            Java正则表达式基础
+                        </h2>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/03/17/spring-aop-3/">
+                      <h2 class="post-title">
+                            Spring AOP（三）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            通过 @AspectJ 注解切面
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/03/16/spring-aop-2/">
+                      <h2 class="post-title">
+                            Spring AOP（二）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            在 XML 中配置切面
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/03/12/spring-aop-1/">
+                      <h2 class="post-title">
+                            Spring AOP（一）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            什么是 AOP?
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/01/10/simplify-spring-xml-configuration-3/">
+                      <h2 class="post-title">
+                            简化 Spring XML 配置（三）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            自动寻找 bean
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/01/10/simplify-spring-xml-configuration-2/">
+                      <h2 class="post-title">
+                            简化 Spring XML 配置（二）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            使用注解装配 bean
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%9B%A0%E5%B4%94%E6%96%AF%E6%B1%80">
+                    <a href="/2016/01/09/lines-of-lol/">
+                      <h2 class="post-title">
+                            那些年玩过的英雄联盟
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            无形装逼，最为致命——LOL那些有趣的台词
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/01/07/simplify-spring-xml-configuration-1/">
+                      <h2 class="post-title">
+                            简化 Spring XML 配置（一）
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            自动装配 bean 属性
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2016/01/05/basic-of-spring/">
+                      <h2 class="post-title">
+                            Basic of Spring
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            装配 bean
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+              </section>
+
+            </div>
+            
+            <div class="mini-post-list js-result d-none">
+              <section>
+                <span class="fa listing-seperator" id="2015">
+                    <span class="tag-text">2015</span>
+                </span>
+
+                
+                  
+
+                  <div class="post-preview item" data-tags="%E5%9B%A0%E5%B4%94%E6%96%AF%E6%B1%80">
+                    <a href="/2015/12/27/the-sentimental-swordsman/">
+                      <h2 class="post-title">
+                            那些年迷过的小李飞刀
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            多情剑客无情剑
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+                  
+
+                  <div class="post-preview item" data-tags="Spring">
+                    <a href="/2015/11/25/summary-of-spring/">
+                      <h2 class="post-title">
+                            Summary of Spring
+                        </h2>
+                        
+                        <h3 class="post-subtitle">
+                            《Spring in Action》笔记，总体介绍一下Spring
+                        </h3>
+                        
+                    </a>
+                    <hr>
+                  </div>
+                
+              </section>
+
+            </div>
+            
+
+        </div>
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/page/8/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Ink&#39;s Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Less is more</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        
+
+<!-- USE SIDEBAR -->
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
+
+                <!-- Main Content -->
+
+
+<div class="post-preview">
+
+    <a href="/2016/04/02/my-dream/">
+        <h2 class="post-title">
+            一个普通程序员的中国梦
+        </h2>
+        <h3 class="post-subtitle">
+            I have a dream
+        </h3>
+        <div class="post-content-preview">
+            哈哈，题目有点大，如果我说并不是为了博眼球应该也没人相信。但是成为程序员也快要一年了，心中有很多感慨，也推翻了自己以前的很多看法，所以这里想结合自身谈谈对程序员这个职业的一些看法。
+本人15年毕业于北京某211，专业是信息与计算科学。这个专业是调剂过去的，当时看了以为是学计算机的，想一想计算机也不错，以后可以当个黑客盗个qq号什么也不错。结果去了以后才发现学的都是数学，我各个学科中数学是最差......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-04-02
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/04/01/concurrency-basic/">
+        <h2 class="post-title">
+            Java 多线程基础
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+接触Java有大半年了，一直听说掌握多线程才是真正的Java程序员，由于项目中没有太多并发的东西，所以一直都没有机会接触。最近趁着项目不太忙决定学习一下，我脑袋很笨所以一上来就学习很难的东西会有点吃不消，本文总结了多线程中非常基础的知识，都是一些很简单的栗子，对于高手来说现在就可以右上角了，后续会继续学习，争取早日能结合项目理解多线程吧。
+
+进程和线程的概念简单地说，进程就是一次程序执行，......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-04-01
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/25/spring-transaction/">
+        <h2 class="post-title">
+            Spring 事务管理
+        </h2>
+        <h3 class="post-subtitle">
+            超级干货讲解 + 实战演练
+        </h3>
+        <div class="post-content-preview">
+            写这篇博客之前我首先读了《Spring in action》，之后在网上看了一些关于Spring事务管理的文章，感觉都没有讲全，这里就将书上的和网上关于事务的知识总结一下，参考的文章如下：
+
+Spring事务机制详解Spring事务配置的五种方式Spring中的事务管理实例详解
+
+初步理解理解事务之前，先讲一个你日常生活中最常干的事：取钱。
+比如你去ATM机取1000块钱，大体有两个步骤：首......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-03-25
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/21/regular-expression/">
+        <h2 class="post-title">
+            Java正则表达式基础
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+正则表达式是跨语言的，并没有 Java 语言还是 C 语言的区分，这里除了讲一下正则表达式的基础，另外再讲一下正则表达式在 Java 中的使用，比如与之相关的某些类。
+
+定义正则表达式（regular expression）用于指定字符串的模式，它由一些特殊的字符语法组成，可以匹配某种特定模式的字符串。简单地说，正则表达式就是特定的语法写的一个特殊字符串，然后看我们平时的普通字符串，比如电......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-03-21
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/17/spring-aop-3/">
+        <h2 class="post-title">
+            Spring AOP（三）
+        </h2>
+        <h3 class="post-subtitle">
+            通过 @AspectJ 注解切面
+        </h3>
+        <div class="post-content-preview">
+            
+在Spring AOP（二）中给出了在XML中配置切面的方法，本节学习通过@AspectJ来注解切面。
+
+使用的例子仍然是Spring AOP（二）中的例子，前面讲的已经很详细了，具体原理不再说明，直接上代码
+注解切面XML配置
+12345678910111213&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;beans xmlns="htt......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-03-17
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/16/spring-aop-2/">
+        <h2 class="post-title">
+            Spring AOP（二）
+        </h2>
+        <h3 class="post-subtitle">
+            在 XML 中配置切面
+        </h3>
+        <div class="post-content-preview">
+            
+在Spring AOP（一）中介绍了AOP的基本概念和几个术语，现在学习一下在XML中如何配置AOP。
+
+在XML中AOP的配置元素有以下几种：
+
+
+
+AOP配置元素
+描述
+
+
+
+
+&lt;aop:config&gt;
+顶层的AOP配置元素，大多数的&lt;aop:*&gt;元素必须包含在&lt;aop:config&gt;元素内
+
+
+&lt;aop:aspect&gt;
+定义切面
+
+
+&......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-03-16
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/03/12/spring-aop-1/">
+        <h2 class="post-title">
+            Spring AOP（一）
+        </h2>
+        <h3 class="post-subtitle">
+            什么是 AOP?
+        </h3>
+        <div class="post-content-preview">
+            
+对于一个企业级应用来说，主要处理的是整个核心业务流程，这是我们主要关注的。但是同时一个应用也需要很多非核心但是必不可少的功能，例如应用的安全性，日志，可以说对于一个应用的多个功能来说都需要这些辅助性的功能。现在我们想要这些辅助功能，同时又不想在每一个业务核心功能中都加入一次这些功能，那么是否有什么好的办法？AOP就是答案。
+
+整体理解AOP是aspect-oriented programm......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-03-12
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/01/10/simplify-spring-xml-configuration-3/">
+        <h2 class="post-title">
+            简化 Spring XML 配置（三）
+        </h2>
+        <h3 class="post-subtitle">
+            自动寻找 bean
+        </h3>
+        <div class="post-content-preview">
+            讲解之前首先了解Spring从配置上下文环境到最后注入bean的整个过程
+
+首先是Spring加载上下文环境，即将所有的bean都放入容器中
+12ApplicationContext ctx = new ClassPathXmlApplicationContext("com/springinaction/springidol/spring-idol1.xml");Coder coder = ......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-01-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/01/10/simplify-spring-xml-configuration-2/">
+        <h2 class="post-title">
+            简化 Spring XML 配置（二）
+        </h2>
+        <h3 class="post-subtitle">
+            使用注解装配 bean
+        </h3>
+        <div class="post-content-preview">
+            
+从Spring2.5开始，Spring开始支持使用注解的方式来自动装配bean的属性。这种方式与XML里面配置方式相比，减少了代码量，更加方便快捷。
+
+如果想用注解来配置bean，首先要做的就是在XML文件中添加  &lt;context:annotation-config&gt;元素，在XML开始添加如下代码：
+1234567891011&lt;?xml version="1.0" en......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-01-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/01/09/lines-of-lol/">
+        <h2 class="post-title">
+            那些年玩过的英雄联盟
+        </h2>
+        <h3 class="post-subtitle">
+            无形装逼，最为致命——LOL那些有趣的台词
+        </h3>
+        <div class="post-content-preview">
+            
+玩LOL也很久了，这个游戏浪费我很多时间，但是也带给我很多快乐，这已足够。虽然现在工作没什么时间玩，但是回想起某些英雄的语录感觉还是很有意思，或搞笑、或经典、或哲理，好的游戏让人收获的不仅是游戏本身，也许对我们的生活也是一种启迪。现在就重温以下这些经（zhuang)典(bi)语录吧！
+
+德玛西亚皇子（吕布皮肤贼帅！！！）Protect the faithful!保护忠良！No quarte......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-01-09
+    </p>
+
+</div>
+<hr>
+
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+        <li class="previous">
+            <a href="/page/7/">&larr; Newer Posts</a>
+        </li>
+    
+    
+        <li class="next">
+            <a href="/page/9/">Older Posts &rarr;</a>
+        </li>
+    
+</ul>
+
+
+
+                <!-- 如果开启评论功能 -->
+                
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                            
+                            <a href="/archive/?tag=并发" title="并发" rel="6">并发</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/archive/?tag=Spring" title="Spring" rel="10">Spring</a>
+                            
+                        
+                            
+                            <a href="/archive/?tag=Scala" title="Scala" rel="7">Scala</a>
+                            
+                        
+                            
+                        
+                            
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/archive/?tag=JDK 源码" title="JDK 源码" rel="3">JDK 源码</a>
+                            
+                        
+                            
+                            <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                        
+                            
+                            <a href="/archive/?tag=剑指 Offer" title="剑指 Offer" rel="27">剑指 Offer</a>
+                            
+                        
+                            
+                            <a href="/archive/?tag=Spark" title="Spark" rel="8">Spark</a>
+                            
+                        
+                            
+                        
+                            
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Short About -->
+                <section class="visible-md visible-lg">
+                    <hr><h5><a href="/about/">ABOUT ME</a></h5>
+                    <div class="short-about">
+
+                        
+                            <img src="/img/avatar.jpg" />
+                        
+
+                        
+                            <p>码渣，铲屎官，尤克里里爱好者，小时候的梦想是成为作家，老了以后希望可以当一个厨子 :)</p>
+                        
+
+                        <!-- SNS Link -->
+                        <ul class="list-inline">
+                            
+                            
+                            
+
+                            
+                                <li>
+                                    <a target="_blank" href="http://weibo.com/baixin2world">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://github.com/trigl">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                            
+                                <li>
+                                    <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </li>
+                            
+
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

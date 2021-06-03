@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Scala Implicit 详解 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2018/02/07/details-of-scala-implicit/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/post-bg-implicit.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                    <h1>Scala Implicit 详解</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2018-02-07,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>Implicit 是 Scala 中一个很重要的特性，开始学习 Scala 之前一直以为它和 Java 差不多，然而真的看一些 Scala 的源码时却发现并没有想象中那么简单，所以准备写几篇文章来详解 Scala 中异于 Java 的特性，就从 Implicit 开始吧。</p>
+</blockquote>
+<p>在我看来，Implicit 做的事情也是 Scala 主要做的事情，那就是代码压缩，减少模块代码，talk is cheap，先用一个实例来了解一下 Implicit 的作用。</p>
+<h2 id="一个栗子"><a href="#一个栗子" class="headerlink" title="一个栗子"></a>一个栗子</h2><p>马上就到情人节了，你会如何表达你的爱意呢？</p>
+<p>让我们做一些准备工作，首先要有一个恋人的接口，包含一个表达爱意的函数<code>sendLove</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Lover</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">sendLove</span></span>(love: <span class="type">Love</span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后再来一个爱意接口，爱不能总是在心口难开，而是应当有所行动，所以有一个行动函数<code>takeAction</code>，<code>event</code>是触发爱的事件，这里当然是情人节这件大事了</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Love</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> event: <span class="type">Event</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">val</span> show = takeAction(event)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">takeAction</span></span>(event: <span class="type">Event</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>今年的情人节很尴尬，正好在过年的前一天，所以这一天很多恋人可能都各呆各家各找各妈了，所以这里应当是异地恋，吼吼吼吼让你们虐狗</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RemoteLover</span> <span class="keyword">extends</span> <span class="title">Lover</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> lover: <span class="type">Lover</span> = <span class="keyword">new</span> <span class="type">RemoteLover</span></span><br></pre></td></tr></table></figure>
+<p>OK，准备工作完成，情人节到了，异地恋们来表达一波爱意吧！</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// without implicit</span></span><br><span class="line">lover.sendLove(</span><br><span class="line">  <span class="keyword">new</span> <span class="type">Love</span> &#123;</span><br><span class="line">    <span class="keyword">val</span> event = <span class="type">Event</span>(<span class="string">"Valentine is coming!"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">takeAction</span></span>(event: <span class="type">Event</span>) = &#123;</span><br><span class="line">      println(<span class="string">"Buy a gift!"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>爱你的方式多种多样，但爱你的心却永远不变。可能是送一件礼物聊表心意，也可能是飞奔到你身边给一个拥抱。我并不是在装情圣，我只是想说明，上面代码中，会改变的其实只有这行代码</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println(<span class="string">"Buy a gift!"</span>)</span><br></pre></td></tr></table></figure>
+<p><code>Love</code>及其实现的函数<code>takeAction</code>可以说是固定的模块化代码，如果能缩减成下面这个样子那就太棒了</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lover.sendLove(</span><br><span class="line">  (_: <span class="type">Event</span>) =&gt; println(<span class="string">"Give a hug!"</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>看一下发生了什么。函数<code>sendLove</code>所需要的参数是<code>Love</code>对象：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="type">Love</span> &#123;</span><br><span class="line">  <span class="keyword">val</span> event = <span class="type">Event</span>(<span class="string">"Valentine is coming!"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">takeAction</span></span>(event: <span class="type">Event</span>) = &#123;</span><br><span class="line">    println(<span class="string">"Buy a gift!"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是缩减后其对应的参数变成了一个函数：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(_: <span class="type">Event</span>) =&gt; println(<span class="string">"Give a hug!"</span>)</span><br></pre></td></tr></table></figure>
+<p>不行啊！这样搞参数类型不匹配啊！这时候就该想到类型转换了。如下是一个超简单的例子：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"abc"</span> + <span class="number">123</span></span><br></pre></td></tr></table></figure>
+<p>这里 123 是 Int 转换成了 String，参考这个思路，试着将函数转化成<code>Love</code>：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">function2Love</span></span>(f: <span class="type">Event</span> =&gt; <span class="type">Unit</span>) = <span class="keyword">new</span> <span class="type">Love</span> &#123;</span><br><span class="line">  <span class="keyword">val</span> event = <span class="type">Event</span>(<span class="string">"Valentine is coming!"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">takeAction</span></span>(event: <span class="type">Event</span>): <span class="type">Unit</span> = f(event)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这时原来的代码就可以写成：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lover.sendLove(</span><br><span class="line">  function2Love(</span><br><span class="line">    (_: <span class="type">Event</span>) =&gt; println(<span class="string">"Give a hug!"</span>)</span><br><span class="line">  )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这里我们明确指定函数<code>function2Love</code>进行类型转换，注意上面<code>function2Love</code>的前面使用了 implicit 关键字，这个关键字的作用就是可以隐式将一种类型转换为另一种类型，而不需要明确调用，如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// with implicit</span></span><br><span class="line"><span class="keyword">import</span> <span class="type">Lover</span>.function2Love</span><br><span class="line"></span><br><span class="line">lover.sendLove(</span><br><span class="line">  (_: <span class="type">Event</span>) =&gt; println(<span class="string">"Give a hug!"</span>)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>在这里具体发生了什么呢？首先<code>sendLove</code>需要的参数类型是<code>Love</code>,但是这里的参数却是一个函数。当编译器发现代码中存在不匹配的类型的时候，它不会立即报错，而是选择先抢救一下，抢救的方式就是在当前代码域中找一下有没有 implicit 修饰的代码，然后找到了<code>function2Love</code>这个隐式转换函数，代码编译通过。</p>
+<p>以上就是 Implicit 的一个入门例子，全部代码见 <a href="https://github.com/Trigl/scala-learning/tree/master/src/main/scala/ink/baixin/scalalearning/implicits" target="_blank" rel="noopener">GitHub</a></p>
+<p>一般来说 Implicit 主要用在两个方面：隐式转换和隐式参数，下面分别进行讲解</p>
+<hr>
+<h2 id="隐式转换"><a href="#隐式转换" class="headerlink" title="隐式转换"></a>隐式转换</h2><h4 id="隐式转换到某个期望类型"><a href="#隐式转换到某个期望类型" class="headerlink" title="隐式转换到某个期望类型"></a>隐式转换到某个期望类型</h4><p>任何时候编译器发现了类型 X，但是却需要类型 Y 的时候，它就会寻找一个可以把 X 转换成 Y 的隐式函数。</p>
+<p>例如正常情况下一个 Double 类型是不能转换成 Int 类型，但是我们可以定义一个隐式函数来实现：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">doubleToInt</span></span>(x: <span class="type">Double</span>) = x.toInt</span><br><span class="line">doubleToInt: (x: <span class="type">Double</span>)<span class="type">Int</span></span><br></pre></td></tr></table></figure>
+<p>虽然我在这里举了一个这样的例子，但是这种从 Double 转到 Int 的方式是不推荐的，因为会丢失精度。相反从 Int 转到 Double 就是正常的，而且其底层实现就是用的隐式转换。Scala 有一个<code>scala.Predef</code>对象，默认引入到每一个程序中，就包含了类似这种从“小”数类型向“大”数类型的隐式转换：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">int2double</span></span>(x: <span class="type">Int</span>): <span class="type">Double</span> = x.toDouble</span><br><span class="line"></span><br><span class="line">scala&gt; <span class="keyword">val</span> x: <span class="type">Double</span> = <span class="number">3</span></span><br><span class="line">x: <span class="type">Double</span> = <span class="number">3.0</span></span><br></pre></td></tr></table></figure>
+<h4 id="隐式类"><a href="#隐式类" class="headerlink" title="隐式类"></a>隐式类</h4><p>隐式类是 Scala2.10 新增的，为了更方便地写包装器类。有以下几个要点：</p>
+<ol>
+<li>隐式类不能是 case class，并且构造器必须只有一个参数</li>
+<li>一个隐式类必须在其他 object，class，trait 的内部</li>
+<li>对于一个隐式类，编译器会自动生成一个隐式转换函数，该函数会产生一个隐式类对象</li>
+</ol>
+<p>例如一个矩形类 <code>Rectangle</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span>(<span class="params">width: <span class="type">Int</span>, height: <span class="type">Int</span></span>)</span></span><br></pre></td></tr></table></figure>
+<p>新建一个矩形需要这样：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> rec = <span class="type">Rectangle</span>(<span class="number">3</span>, <span class="number">4</span>)</span><br><span class="line">rec: <span class="type">Rectangle</span> = <span class="type">Rectangle</span>(<span class="number">3</span>,<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>这还是有点麻烦的，如果我们想通过 <code>3 x 4</code> 这种方式就新建一个对象那该怎么办呢，这个时候就要用到隐式类了：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">implicit</span> <span class="class"><span class="keyword">class</span> <span class="title">RectangleMaker</span>(<span class="params">width: <span class="type">Int</span></span>) </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">x</span></span>(height: <span class="type">Int</span>) = <span class="type">Rectangle</span>(width, height)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们再来建立一个矩形：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> easyRec = <span class="number">3</span> x <span class="number">4</span></span><br><span class="line">easyRec: <span class="type">Rectangle</span> = <span class="type">Rectangle</span>(<span class="number">3</span>,<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+<p>这看起来就简单直接多了嘛，那么它是怎么实现的呢？前面我们说了，对于隐式类，编译器会自动生成一个隐式转换函数，如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Automatically generated</span></span><br><span class="line"><span class="keyword">implicit</span> <span class="function"><span class="keyword">def</span> <span class="title">RectangleMaker</span></span>(width: <span class="type">Int</span>) = <span class="keyword">new</span> <span class="type">RectangleMaker</span>(width)</span><br></pre></td></tr></table></figure>
+<p>所以当编译器看到 <code>3 x 4</code> 的时候，首先发现 3 这个 Int 没有 x 函数，然后就找隐式转换，通过上面的隐式转换函数生成了一个<code>RectangleMaker(3)</code>，然后调用<code>RectangleMaker</code>的 x 函数，就产生了一个矩形<code>Rectangle(3,4)</code></p>
+<hr>
+<h2 id="隐式参数"><a href="#隐式参数" class="headerlink" title="隐式参数"></a>隐式参数</h2><p>下面要开始谈隐式参数了，这也是我们最常用到的，隐式参数并不是用于类型转换的，更多的是为了减少代码量，要点如下：</p>
+<ol>
+<li><p>隐式参数是指类或者函数所对应的参数列表，如下面 implicit 所在的参数列表</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">implicit</span> <span class="class"><span class="keyword">class</span> <span class="title">Greet</span>(<span class="params">name: <span class="type">String</span></span>)(<span class="params">implicit hello: <span class="type">Hello</span>, world: <span class="type">World</span></span>)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>implicit 放在参数列表的最前面，不管有几个参数，它们全部都是隐式的</p>
+</li>
+<li><p>定义了隐式参数以后，我们新建一个类或者调用一个函数的时候就可以省略该参数列表了</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> greet = <span class="keyword">new</span> <span class="type">Greet</span>(<span class="string">"Jack"</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>省略参数列表并不是不需要参数列表，我们需要使用 implicit 关键字定义出隐式参数列表中的所有变量，然后使用 import 导入</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">implicit</span> <span class="keyword">val</span> hello = <span class="keyword">new</span> <span class="type">Hello</span></span><br><span class="line"><span class="keyword">implicit</span> <span class="keyword">val</span> world = <span class="keyword">new</span> <span class="type">Wrold</span></span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>上面就是一些基本点，狗年春节马上就要来了，就让我们以此为例来写一个回家的 Demo 吧</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Remote</span>(<span class="params">address: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Home</span>(<span class="params">address: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">Transportation</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">transport</span></span>(name: <span class="type">String</span>)(<span class="keyword">implicit</span> remote: <span class="type">Remote</span>, home: <span class="type">Home</span>) = &#123;</span><br><span class="line">    println(<span class="string">s"To celebrate Spring Festival, go from <span class="subst">$remote</span> to <span class="subst">$home</span>, by <span class="subst">$name</span>"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Address</span> </span>&#123;</span><br><span class="line">  <span class="keyword">implicit</span> <span class="keyword">val</span> remote = <span class="keyword">new</span> <span class="type">Remote</span>(<span class="string">"Shanghai"</span>)</span><br><span class="line">  <span class="keyword">implicit</span> <span class="keyword">val</span> home = <span class="keyword">new</span> <span class="type">Home</span>(<span class="string">"Shanxi"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里定义了起始地址<code>Remote</code> <code>Home</code>，虽然其本质是 String 类型，但是对于隐式参数来说最好还是定义一个专门的类，因为如果直接使用 String 作为隐式变量，由于其太过于普遍编译器可能不太容易找到，或者和其他隐式变量混淆，而专用的类就不用担心这些。<br>还有一个表示交通方式的函数<code>transport</code>，该函数里面用到了隐式参数，最后<code>Address</code>对象定义了我们需要的隐式变量。</p>
+<p>然后，准备回家喽！</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">GoHome</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">import</span> <span class="type">Address</span>._</span><br><span class="line">  <span class="type">Transportation</span>.transport(<span class="string">"airplane"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">To</span> celebrate <span class="type">Spring</span> <span class="type">Festival</span>, go from <span class="type">Remote</span>(<span class="type">Shanghai</span>) to <span class="type">Home</span>(<span class="type">Shanxi</span>), by airplane.</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="上下文绑定"><a href="#上下文绑定" class="headerlink" title="上下文绑定"></a>上下文绑定</h2><p>了解了隐式参数以后，我们可以再看一个有趣的语法糖：上下文绑定 <code>context bound</code></p>
+<p>这里我用 <em>Programming in Scala</em> 中的一个例子来讲解，要求找出一个 List 中所有元素的最大值，首先我们看一下常规的实现了隐式参数的写法：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// with implicit</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxListOrdering</span></span>[<span class="type">T</span>](elements: <span class="type">List</span>[<span class="type">T</span>])</span><br><span class="line">                      (<span class="keyword">implicit</span> ordering: <span class="type">Ordering</span>[<span class="type">T</span>]): <span class="type">T</span> =</span><br><span class="line">  elements <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">List</span>() =&gt;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">IllegalArgumentException</span>(<span class="string">"empty lists!"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">List</span>(x) =&gt; x</span><br><span class="line">    <span class="keyword">case</span> x :: rest =&gt;</span><br><span class="line">      <span class="keyword">val</span> maxRest = maxListOrdering(rest)</span><br><span class="line">      <span class="keyword">if</span> (ordering.gt(x, maxRest)) x</span><br><span class="line">      <span class="keyword">else</span> maxRest</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>这个函数的参数有两个，一个是 T 组成的 List，另一个是隐式参数 Ordering，对于一些常见的 T 类型，例如 Int 或者 String，它们都有一个默认的 Ordering 实现，所以不需要定义其隐式变量就可以实现排序：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">println(maxListOrdering(<span class="type">List</span>(<span class="number">1</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">3</span>)))</span><br></pre></td></tr></table></figure>
+<p>在上面代码中有一行用到了 ordering 参数：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ordering.gt(x, maxRest)) x</span><br></pre></td></tr></table></figure>
+<p>这里 ordering 就是 Ordering[T] 的一个对象，事实上 Scala 标准库中提供了一个方法让编译器可以自己寻找到一个类的隐式变量：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">implicitly</span></span>[<span class="type">T</span>](<span class="keyword">implicit</span> t: <span class="type">T</span>) = t</span><br></pre></td></tr></table></figure>
+<p>例如一个类型 <code>Foo</code>，调用<code>implicitly[Foo]</code>会产生什么结果呢？首先编译器会寻找 Foo 的隐式对象，找到以后调用这个对象的 implicitly 方法，然后返回该对象，所以通过<code>implicitly[Foo]</code>可以返回 Foo 的隐式对象，对应到我们上面举的例子，ordering 是 Ordering[T] 的一个隐式对象，事实上我们也可以通过 <code>implicitly[Ordering[T]]</code>来表示</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (implicitly[<span class="type">Ordering</span>[<span class="type">T</span>]].gt(x, maxRest)) x</span><br></pre></td></tr></table></figure>
+<p>那么现在看来，ordering 既然可以用 implicitly[Ordering[T]] 来代替，那么也就可以省略掉这个参数名了，所谓的上下文绑定就是做这个事情的，语法是 <code>[T: Ordering]</code>，它主要做了两件事：第一，引入了一个参数类型 T；第二，增加了一个隐式参数 Ordering[T]。<br>与之很类似的一个语法是<code>[T &lt;: Ordering[T]]</code>，这个的意思是 T 就是一个 Ordering[T]。<br>现在再来看一下引入上下文绑定后的排序代码：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// context bound</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maxListOrdering</span></span>[<span class="type">T</span>: <span class="type">Ordering</span>](elements: <span class="type">List</span>[<span class="type">T</span>]): <span class="type">T</span> =</span><br><span class="line">  elements <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">List</span>() =&gt;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">IllegalArgumentException</span>(<span class="string">"empty lists!"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">List</span>(x) =&gt; x</span><br><span class="line">    <span class="keyword">case</span> x :: rest =&gt;</span><br><span class="line">      <span class="keyword">val</span> maxRest = maxListOrdering(rest)</span><br><span class="line">      <span class="keyword">if</span> (implicitly[<span class="type">Ordering</span>[<span class="type">T</span>]].gt(x, maxRest)) x</span><br><span class="line">      <span class="keyword">else</span> maxRest</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>implicit 使用起来还是很灵活的，可以将 implicit 关键字标记在变量、函数、类或者对象的定义中。而且记住想要用到隐式，一定要先使用 import 引入 implicit 代码（当然在同一个代码域例如同一个对象下面不需要）。但是也需要注意，如果太过于频繁地使用 implicit，代码可读性就会很低，所以在使用隐式转换之前，先看一看能否用其他方式例如继承、重载来实现，如果都不行并且代码仍然很冗余，那么就可以试试用 implicit 来解决。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/01/15/scala-composition-and-inheritance/"
+                              data-toggle="tooltip" data-placement="top" title="Scala Composition and Inheritance">
+                              Previous<br><span>Scala Composition and Inheritance</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/04/13/case-classes-and-pattern-matching/"
+                              data-toggle="tooltip" data-placement="top" title="Scala 的 Case Classes 和 Pattern Matching">
+                              Next<br><span>Scala 的 Case Classes 和 Pattern Matching</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

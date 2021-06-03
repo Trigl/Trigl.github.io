@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          数据仓库的架构与设计 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2017/04/01/data-warehouse/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/post-bg-data-warehouse.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Big Data" title="Big Data">Big Data</a>
+                        
+                    </div>
+                    <h1>数据仓库的架构与设计</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2017-04-01,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>公司之前的数据都是直接传到Hdfs上进行操作，没有一个数据仓库，趁着最近空出几台服务器，搭了个简陋的数据仓库，这里记录一下数据仓库的一些知识。</p>
+</blockquote>
+<h2 id="什么是数据仓库"><a href="#什么是数据仓库" class="headerlink" title="什么是数据仓库"></a>什么是数据仓库</h2><h4 id="数据仓库的概念"><a href="#数据仓库的概念" class="headerlink" title="数据仓库的概念"></a>数据仓库的概念</h4><p><strong>官方定义</strong></p>
+<p>数据仓库是一个面向主题的、集成的、随时间变化的、但信息本身相对稳定的数据集合，用于对管理决策过程的支持。</p>
+<p>这个定义的确官方，但是却指出了数据仓库的四个特点。</p>
+<p><strong>特点</strong></p>
+<ul>
+<li>面向主题：数据仓库都是基于某个明确主题，仅需要与该主题相关的数据，其他的无关细节数据将被排除掉</li>
+<li>集成的：从不同的数据源采集数据到同一个数据源，此过程会有一些ETL操作</li>
+<li>随时间变化：关键数据隐式或显式的基于时间变化</li>
+<li>信息本身相对稳定：数据装入以后一般只进行查询操作，没有传统数据库的增删改操作</li>
+</ul>
+<p><strong>个人理解</strong></p>
+<p>数据仓库就是整合多个数据源的历史数据进行细粒度的、多维的分析，帮助高层管理者或者业务分析人员做出商业战略决策或商业报表。</p>
+<h4 id="数据仓库的用途"><a href="#数据仓库的用途" class="headerlink" title="数据仓库的用途"></a>数据仓库的用途</h4><ul>
+<li>整合公司所有业务数据，建立统一的数据中心</li>
+<li>产生业务报表，用于作出决策</li>
+<li>为网站运营提供运营上的数据支持</li>
+<li>可以作为各个业务的数据源，形成业务数据互相反馈的良性循环</li>
+<li>分析用户行为数据，通过数据挖掘来降低投入成本，提高投入效果</li>
+<li>开发数据产品，直接或间接地为公司盈利</li>
+<li>…</li>
+</ul>
+<h4 id="数据库和数据仓库的区别"><a href="#数据库和数据仓库的区别" class="headerlink" title="数据库和数据仓库的区别"></a>数据库和数据仓库的区别</h4><table>
+<thead>
+<tr>
+<th>差异项</th>
+<th>数据库</th>
+<th>数据仓库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>特征</td>
+<td>操作处理</td>
+<td>信息处理</td>
+</tr>
+<tr>
+<td>面向</td>
+<td>事务</td>
+<td>分析</td>
+</tr>
+<tr>
+<td>用户</td>
+<td>DBA、开发</td>
+<td>经理、主管、分析人员</td>
+</tr>
+<tr>
+<td>功能</td>
+<td>日常操作</td>
+<td>长期信息需求、决策支持</td>
+</tr>
+<tr>
+<td>DB设计</td>
+<td>基于ER模型，面向应用</td>
+<td>星形/雪花模型，面向主题</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>当前的、最新的</td>
+<td>历史的、跨时间维护</td>
+</tr>
+<tr>
+<td>汇总</td>
+<td>原始的、高度详细</td>
+<td>汇总的、统一的</td>
+</tr>
+<tr>
+<td>视图</td>
+<td>详细、一般关系</td>
+<td>汇总的、多维的</td>
+</tr>
+<tr>
+<td>工作单元</td>
+<td>短的、简单事务</td>
+<td>复杂查询</td>
+</tr>
+<tr>
+<td>访问</td>
+<td>读/写</td>
+<td>大多为读</td>
+</tr>
+<tr>
+<td>关注</td>
+<td>数据进入</td>
+<td>信息输出</td>
+</tr>
+<tr>
+<td>操作</td>
+<td>主键索引操作</td>
+<td>大量的磁盘扫描</td>
+</tr>
+<tr>
+<td>用户数</td>
+<td>数百到数亿</td>
+<td>数百</td>
+</tr>
+<tr>
+<td>DB规模</td>
+<td>GB到TB</td>
+<td><code>&gt;=</code>TB</td>
+</tr>
+<tr>
+<td>优先</td>
+<td>高性能、高可用性</td>
+<td>高灵活性</td>
+</tr>
+<tr>
+<td>度量</td>
+<td>事务吞吐量</td>
+<td>查询吞吐量、响应时间</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="数据仓库的架构"><a href="#数据仓库的架构" class="headerlink" title="数据仓库的架构"></a>数据仓库的架构</h2><h4 id="当前架构"><a href="#当前架构" class="headerlink" title="当前架构"></a>当前架构</h4><p>当前我们的数据仓库架构很low，但是能实现基本功能，如下：</p>
+<p><img src="/img/content/datawarehouse1.jpg" alt="这里写图片描述"></p>
+<p><strong>数据采集</strong></p>
+<p>数据采集层的任务就是把数据从各种数据源中采集和存储到数据存储上，期间有可能会做一些ETL操作。</p>
+<p>数据源种类可以有多种：</p>
+<ul>
+<li>日志：所占份额最大，存储在备份服务器上</li>
+<li>业务数据库：如Mysql、Oracle</li>
+<li>来自HTTP/FTP的数据：合作伙伴提供的接口</li>
+<li>其他数据源：如Excel等需要手工录入的数据</li>
+</ul>
+<p><strong>数据存储与分析</strong></p>
+<p>HDFS是大数据环境下数据仓库/数据平台最完美的数据存储解决方案。</p>
+<p>离线数据分析与计算，也就是对实时性要求不高的部分，Hive是不错的选择。</p>
+<p>使用Hadoop框架自然而然也提供了MapReduce接口，如果真的很乐意开发Java，或者对SQL不熟，那么也可以使用MapReduce来做分析与计算。</p>
+<p>Spark性能比MapReduce好很多，同时使用SparkSQL操作Hive。</p>
+<p><strong>数据共享</strong></p>
+<p>前面使用Hive、MR、Spark、SparkSQL分析和计算的结果，还是在HDFS上，但大多业务和应用不可能直接从HDFS上获取数据，那么就需要一个数据共享的地方，使得各业务和产品能方便的获取数据。</p>
+<p>这里的数据共享，其实指的是前面数据分析与计算后的结果存放的地方，其实就是关系型数据库和NOSQL数据库。</p>
+<p><strong>数据应用</strong></p>
+<p>报表：报表所使用的数据，一般也是已经统计汇总好的，存放于数据共享层。</p>
+<p>接口：接口的数据都是直接查询数据共享层即可得到。</p>
+<p>即席查询：即席查询通常是现有的报表和数据共享层的数据并不能满足需求，需要从数据存储层直接查询。一般都是通过直接操作SQL得到。</p>
+<h4 id="理想架构"><a href="#理想架构" class="headerlink" title="理想架构"></a>理想架构</h4><p>自己的架构这么低级不能误导了读者，所以给出主流公司会用到的一个架构图：</p>
+<p><img src="/img/content/datawarehouse2.jpg" alt="这里写图片描述"></p>
+<p>增加了以下内容：</p>
+<p>数据采集：采用Flume收集日志，采用Sqoop将RDBMS以及NoSQL中的数据同步到HDFS上</p>
+<p>消息系统：可以加入Kafka防止数据丢失</p>
+<p>实时计算：实时计算使用Spark Streaming消费Kafka中收集的日志数据，实时计算结果大多保存在Redis中</p>
+<p>机器学习：使用了Spark MLlib提供的机器学习算法</p>
+<p>多维分析OLAP：使用Kylin作为OLAP引擎</p>
+<p>数据可视化：提供可视化前端页面，方便运营等非开发人员直接查询</p>
+<hr>
+<h2 id="数据仓库多维数据模型的设计"><a href="#数据仓库多维数据模型的设计" class="headerlink" title="数据仓库多维数据模型的设计"></a>数据仓库多维数据模型的设计</h2><h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><p><strong>主题（Subject）</strong></p>
+<p>主题就是指我们所要分析的具体方面。例如：某年某月某地区某机型某款App的安装情况。主题有两个元素：一是各个分析角度（维度），如时间位置；二是要分析的具体量度，该量度一般通过数值体现，如App安装量。</p>
+<p><strong>维（Dimension）</strong></p>
+<p>维是用于从不同角度描述事物特征的，一般维都会有多层（Level：级别），每个Level都会包含一些共有的或特有的属性（Attribute），可以用下图来展示下维的结构和组成：</p>
+<p><img src="/img/content/20170401173726084.jpg" alt="这里写图片描述"></p>
+<p>以时间维为例，时间维一般会包含年、季、月、日这几个Level，每个Level一般都会有ID、NAME、DESCRIPTION这几个公共属性，这几个公共属性不仅适用于时间维，也同样表现在其它各种不同类型的维。</p>
+<p><strong>分层（Hierarchy）</strong></p>
+<p>OLAP需要基于有层级的自上而下的钻取，或者自下而上地聚合。所以我们一般会在维的基础上再次进行分层，维、分层、层级的关系如下图：</p>
+<p><img src="/img/content/20170401173848382.jpg" alt="这里写图片描述"></p>
+<p>每一级之间可能是附属关系（如市属于省、省属于国家），也可能是顺序关系（如天周年），如下图所示：</p>
+<p><img src="/img/content/20170401173945319.jpg" alt="这里写图片描述"></p>
+<p><img src="/img/content/20170401173958210.jpg" alt="这里写图片描述"></p>
+<p><strong>量度</strong></p>
+<p>量度就是我们要分析的具体的技术指标，诸如年销售额之类。它们一般为数值型数据。我们或者将该数据汇总，或者将该数据取次数、独立次数或取最大最小值等，这样的数据称为量度。</p>
+<p><strong>粒度</strong></p>
+<p>数据的细分层度，例如按天分按小时分。</p>
+<p><strong>事实表和维表</strong></p>
+<p>事实表是用来记录分析的内容的全量信息的，包含了每个事件的具体要素，以及具体发生的事情。事实表中存储数字型ID以及度量信息。</p>
+<p>维表则是对事实表中事件的要素的描述信息，就是你观察该事务的角度，是从哪个角度去观察这个内容的。</p>
+<p>事实表和维表通过ID相关联，如图所示：</p>
+<p><img src="/img/content/20170401174227058.jpg" alt="这里写图片描述"></p>
+<p><strong>星形/雪花形/事实星座</strong></p>
+<p>这三者就是数据仓库多维数据模型建模的模式</p>
+<p>上图所示就是一个标准的星形模型。</p>
+<p>雪花形就是在维度下面又细分出维度，这样切分是为了使表结构更加规范化。雪花模式可以减少冗余，但是减少的那点空间和事实表的容量相比实在是微不足道，而且多个表联结操作会降低性能，所以一般不用雪花模式设计数据仓库。</p>
+<p>事实星座模式就是星形模式的集合，包含星形模式，也就包含多个事实表。</p>
+<p><strong>企业级数据仓库/数据集市</strong></p>
+<p>企业级数据仓库：突出大而全，不论是细致数据和聚合数据它全都有，设计时使用事实星座模式</p>
+<p>数据集市：可以看做是企业级数据仓库的一个子集，它是针对某一方面的数据设计的数据仓库，例如为公司的支付业务设计一个单独的数据集市。由于数据集市没有进行企业级的设计和规划，所以长期来看，它本身的集成将会极其复杂。其数据来源有两种，一种是直接从原生数据源得到，另一种是从企业数据仓库得到。设计时使用星形模型</p>
+<h4 id="数据仓库设计步骤"><a href="#数据仓库设计步骤" class="headerlink" title="数据仓库设计步骤"></a>数据仓库设计步骤</h4><p><strong>确定主题</strong><br>主题与业务密切相关，所以设计数仓之前应当充分了解业务有哪些方面的需求，据此确定主题</p>
+<p><strong>确定量度</strong><br>在确定了主题以后，我们将考虑要分析的技术指标，诸如年销售额之类。量度是要统计的指标，必须事先选择恰当，基于不同的量度将直接产生不同的决策结果。</p>
+<p><strong>确定数据粒度</strong><br>考虑到量度的聚合程度不同，我们将采用“最小粒度原则”，即将量度的粒度设置到最小。例如如果知道某些数据细分到天就好了，那么设置其粒度到天；但是如果不确定的话，就将粒度设置为最小，即毫秒级别的。</p>
+<p><strong>确定维度</strong><br>设计各个维度的主键、层次、层级，尽量减少冗余。</p>
+<p><strong>创建事实表</strong><br>事实表中将存在维度代理键和各量度，而不应该存在描述性信息，即符合“瘦高原则”，即要求事实表数据条数尽量多(粒度最小)，而描述性信息尽量少。</p>
+<hr>
+<h2 id="Refer"><a href="#Refer" class="headerlink" title="Refer"></a>Refer</h2><p><a href="http://lxw1234.com/" target="_blank" rel="noopener">http://lxw1234.com/</a><br><a href="https://my.oschina.net/leejun2005/blog/188770" target="_blank" rel="noopener">https://my.oschina.net/leejun2005/blog/188770</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/07/31/spring-xml-bootstrap-order/"
+                              data-toggle="tooltip" data-placement="top" title="关于 web.xml 中 Spring 配置文件的启动顺序">
+                              Previous<br><span>关于 web.xml 中 Spring 配置文件的启动顺序</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2017/05/24/realtime-process-with-sparkstreaming/"
+                              data-toggle="tooltip" data-placement="top" title="SparkStreaming + Flume + Kafka 进行实时日志分析">
+                              Next<br><span>SparkStreaming + Flume + Kafka 进行实时日志分析</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Big Data" title="Big Data">Big Data</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

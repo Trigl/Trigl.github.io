@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Akka Study - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2018/05/23/akka-study/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/winter-akka.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Akka" title="Akka">Akka</a>
+                        
+                    </div>
+                    <h1>Akka Study</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2018-05-23,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>Akka 用于构建高并发、分布式且具有容错机制的事件驱动型的应用，本文是 Scala Cookbook 一书中 Akka 部分内容的总结。</p>
+</blockquote>
+<h2 id="Akka-Guide"><a href="#Akka-Guide" class="headerlink" title="Akka Guide"></a>Akka Guide</h2><p>Actor 模型与线程比较，是一种高层次的抽象。说 “高层次的抽象”这句话，就意味着这个东西简单易用，你不需要考虑太多底层的其他东西。所以如果理解了 Actor 模型的原理，就可以专注解决问题，而不需要把注意力放在像线程、锁和共享数据这样低层次的问题上。</p>
+<p><strong>优势</strong><br>轻量级的事件驱动模型：对相应的消息事件做出异步回应，并且消息是不可变的，因为需要在不同线程之间共享。<br>容错性：Akka 可以用于构造 “自我修复型” 系统。<br>位置透明性：Akka actors 可以跨过多个 JVM 或者 服务器，其被设计为通过纯粹的消息在分布式系统中进行沟通。</p>
+<p>在 Actor 模型中，消息是唯一的沟通方式，你要做任何事情都需要发送消息，不能直接更改 Actor 内部的状态或者使用其内部的资源。</p>
+<p><strong>Actor 模型简介</strong><br>1、Actor 是 actor 系统中的最小单位，就类似对象是 OOP 系统中的最小单位一样。<br>2、也正如一个对象，一个 actor 的状态和行为也是被封装起来的。你不能直接去访问或执行一个 actor 的方法或者是成员对象（field），而只能是向这个 actor 发送一个要求访问其内部状态的消息，正如你不可能有读心术去了解别人心里是怎么想的，而只能问对方你的感受如何。<br>3、每一个 actor 都有一个邮箱用来接收消息，而它们的日常工作就是处理这些消息。<br>4、你与每个 actor 交互的方式就是向其发送一条不可变的消息，这些消息会进入到这个 actor 的邮箱中。<br>5、actor 也有自己的层级关系，类似一个公司的组织结构。一个 actor 会有父 actor 或者子 actor 或者兄弟 actor，正如一个高管会有董事长管他，会有其他高管与之一起合作，也会有自己的下属。这些组织结构就是为了实现一个目的：“代理委派”，让所有 actor 合作起来使系统正常运转。<br>6、最后一点就是 actor 模型的异常处理，当 actor 处理消息时，某些地方可能会出错，可能会抛出一些异常，那么此时怎么处理呢？通常做法是当前 actor 会停止其本身和其子 actor 的所有操作，然后向其父 actor 发送一条通知错误信息的消息，然后父节点根据不同情况做出处理，一般处理方式有以下几种：</p>
+<ol>
+<li>恢复子 actor，所有状态保持不变</li>
+<li>重启子 actor，所有状态清空，从零开始</li>
+<li>终止子 actor （当一个 actor 终止的时候，其邮箱內的消息会进入 dead letter 邮箱）。</li>
+<li>把错误抛给上一级 actor 处理</li>
+</ol>
+<h2 id="Actor-之间如何沟通？"><a href="#Actor-之间如何沟通？" class="headerlink" title="Actor 之间如何沟通？"></a>Actor 之间如何沟通？</h2><p>一个基于 actor 的系统当然会包含很多 actor，那么它们之间是怎么沟通的呢，让通过一个 ping-pong 的例子来了解一下。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> akka.actor.&#123;<span class="type">Actor</span>, <span class="type">ActorRef</span>, <span class="type">ActorSystem</span>, <span class="type">Props</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">PingPongTest</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> system = <span class="type">ActorSystem</span>(<span class="string">"PingPongSystem"</span>)</span><br><span class="line">  <span class="keyword">val</span> pong = system.actorOf(<span class="type">Props</span>[<span class="type">Pong</span>], name = <span class="string">"pong"</span>)</span><br><span class="line">  <span class="keyword">val</span> ping = system.actorOf(<span class="type">Props</span>(<span class="keyword">new</span> <span class="type">Ping</span>(pong)), name = <span class="string">"ping"</span>)</span><br><span class="line">  ping ! <span class="type">StartMessage</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">PingMessage</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">PongMessage</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">StartMessage</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">StopMessage</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">Ping</span>(<span class="params">pong: <span class="type">ActorRef</span></span>) <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> count = <span class="number">0</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">incrementAndPrint</span></span>&#123; count += <span class="number">1</span>; println(<span class="string">"ping"</span>) &#125;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">StartMessage</span> =&gt;</span><br><span class="line">      incrementAndPrint</span><br><span class="line">      pong ! <span class="type">PingMessage</span></span><br><span class="line">    <span class="keyword">case</span> <span class="type">PongMessage</span> =&gt;</span><br><span class="line">      incrementAndPrint</span><br><span class="line">      <span class="keyword">if</span> (count &gt; <span class="number">99</span>) &#123;</span><br><span class="line">        sender ! <span class="type">StopMessage</span></span><br><span class="line">        println(<span class="string">"ping stopped"</span>)</span><br><span class="line">        context.stop(self)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        sender ! <span class="type">PingMessage</span></span><br><span class="line">      &#125;</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; println(<span class="string">"Ping got something unexpected."</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Pong</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">PingMessage</span> =&gt;</span><br><span class="line">      println(<span class="string">" pong"</span>)</span><br><span class="line">      sender ! <span class="type">PongMessage</span></span><br><span class="line">    <span class="keyword">case</span> <span class="type">StopMessage</span> =&gt;</span><br><span class="line">      println(<span class="string">"pong stopped"</span>)</span><br><span class="line">      context.stop(self)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; println(<span class="string">"Pong got something unexpected."</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子做了什么呢？首先创建一个名为 “PingPongSystem” 的 ActorSystem，然后用这个 ActorSystem，然后用这个 分别创建 ping 和 pong actor，然后这两个 actor 之间互相发送消息，输出如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ping</span><br><span class="line"> pong</span><br><span class="line">ping</span><br><span class="line"> pong</span><br><span class="line">...</span><br><span class="line">ping stopped</span><br><span class="line">pong stopped</span><br></pre></td></tr></table></figure>
+<p>每一个基于 actor 模型的应用一般都会有一个 ActorSystem，然后用这个 作为最顶级的 actor，其可以管理所有的子 actor，并可以创造其他 actor。对于普通的 actor，例如 ping 和 pong，它们本身必须可以接受消息并处理，所以每一个 actor 都需要你重写 <code>receive</code> 方法，里面是具体的针对各种消息的处理逻辑。</p>
+<p>那么如何发送消息呢？上面的例子是这样做的：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pong ! <span class="type">PingMessage</span></span><br></pre></td></tr></table></figure>
+<p>意思就是向 <code>pong</code> 这个 actor 发送 <code>PingMessage</code>。</p>
+<p>上面的例子还用到了 <code>sender</code>：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sender ! <span class="type">PingMessage</span></span><br></pre></td></tr></table></figure>
+<p>当一个 actor A 接收到另一个 actor B 的消息时，它同时会接收到这个 actor B 的隐式引用叫 <code>sender</code>，你可以使用这个引用再往这个 actor B 回发一条消息。</p>
+<h2 id="Actor-的生命周期"><a href="#Actor-的生命周期" class="headerlink" title="Actor 的生命周期"></a>Actor 的生命周期</h2><p>除了构造器以外，下面的方法包含了 Actor 的整个生命周期：</p>
+<blockquote>
+<p>receive<br>preStart<br>postStop<br>preRestart<br>postRestart</p>
+</blockquote>
+<p>还是通过一个例子来了解一下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> akka.actor.&#123;<span class="type">Actor</span>, <span class="type">ActorSystem</span>, <span class="type">Props</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">LifecycleDemo</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> system = <span class="type">ActorSystem</span>(<span class="string">"LifecycleDemo"</span>)</span><br><span class="line">  <span class="keyword">val</span> kenny = system.actorOf(<span class="type">Props</span>[<span class="type">Kenny</span>], name = <span class="string">"Kenny"</span>)</span><br><span class="line"></span><br><span class="line">  println(<span class="string">"sending kenny a simple String message"</span>)</span><br><span class="line">  kenny ! <span class="string">"hello"</span></span><br><span class="line">  <span class="type">Thread</span>.sleep(<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">  println(<span class="string">"make kenny restart"</span>)</span><br><span class="line">  kenny ! <span class="type">ForceRestart</span></span><br><span class="line">  <span class="type">Thread</span>.sleep(<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">  println(<span class="string">"stopping kenny"</span>)</span><br><span class="line">  system.stop(kenny)</span><br><span class="line"></span><br><span class="line">  println(<span class="string">"shutting down system"</span>)</span><br><span class="line">  system.terminate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">ForceRestart</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">Kenny</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  println(<span class="string">"entered the Kenny constructor"</span>)</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">preStart</span></span>() &#123; println(<span class="string">"Kenny: preStart"</span>) &#125;</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">postStop</span></span>() &#123; println(<span class="string">"Kenny: postStop"</span>) &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">preRestart</span></span>(reason: <span class="type">Throwable</span>, message: <span class="type">Option</span>[<span class="type">Any</span>]) &#123;</span><br><span class="line">    println(<span class="string">"Kenny: preRestart"</span>)</span><br><span class="line">    println(<span class="string">s" MESSAGE: <span class="subst">$&#123;message.getOrElse("")&#125;</span>"</span>)</span><br><span class="line">    println(<span class="string">s" REASON: <span class="subst">$&#123;reason.getMessage&#125;</span>"</span>)</span><br><span class="line">    <span class="keyword">super</span>.preRestart(reason, message)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">postRestart</span></span>(reason: <span class="type">Throwable</span>) &#123;</span><br><span class="line">    println(<span class="string">"Kenny: postRestart"</span>)</span><br><span class="line">    println(<span class="string">s" REASON: <span class="subst">$&#123;reason.getMessage&#125;</span>"</span>)</span><br><span class="line">    <span class="keyword">super</span>.postRestart(reason)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">receive</span></span>: <span class="type">Receive</span> = &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">ForceRestart</span> =&gt; <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">Exception</span>(<span class="string">"Boom!"</span>)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; println(<span class="string">"Kenny received a message"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">entered the <span class="type">Kenny</span> constructor</span><br><span class="line">sending kenny a simple <span class="type">String</span> message</span><br><span class="line"><span class="type">Kenny</span>: preStart</span><br><span class="line"><span class="type">Kenny</span> received a message</span><br><span class="line">make kenny restart</span><br><span class="line"><span class="type">Kenny</span>: preRestart</span><br><span class="line"> <span class="type">MESSAGE</span>: <span class="type">ForceRestart</span></span><br><span class="line"> <span class="type">REASON</span>: <span class="type">Boom</span>!</span><br><span class="line"><span class="type">Kenny</span>: postStop</span><br><span class="line">entered the <span class="type">Kenny</span> constructor</span><br><span class="line"><span class="type">Kenny</span>: postRestart</span><br><span class="line"> <span class="type">REASON</span>: <span class="type">Boom</span>!</span><br><span class="line"><span class="type">Kenny</span>: preStart</span><br><span class="line">[<span class="type">ERROR</span>] [<span class="number">05</span>/<span class="number">21</span>/<span class="number">2018</span> <span class="number">23</span>:<span class="number">21</span>:<span class="number">39.109</span>] [<span class="type">LifecycleDemo</span>-akka.actor.<span class="keyword">default</span>-dispatcher<span class="number">-4</span>] [akka:<span class="comment">//LifecycleDemo/user/Kenny] Boom!</span></span><br><span class="line">java.lang.<span class="type">Exception</span>: <span class="type">Boom</span>!</span><br><span class="line">	at ink.baixin.akka.example.<span class="type">Kenny</span>$$anonfun$receive$<span class="number">1.</span>applyOrElse(<span class="type">LifecycleDemo</span>.scala:<span class="number">45</span>)</span><br><span class="line">	at akka.actor.<span class="type">Actor</span>.aroundReceive(<span class="type">Actor</span>.scala:<span class="number">517</span>)</span><br><span class="line">	at akka.actor.<span class="type">Actor</span>.aroundReceive$(<span class="type">Actor</span>.scala:<span class="number">515</span>)</span><br><span class="line">	at ink.baixin.akka.example.<span class="type">Kenny</span>.aroundReceive(<span class="type">LifecycleDemo</span>.scala:<span class="number">26</span>)</span><br><span class="line">	at akka.actor.<span class="type">ActorCell</span>.receiveMessage(<span class="type">ActorCell</span>.scala:<span class="number">590</span>)</span><br><span class="line">	at akka.actor.<span class="type">ActorCell</span>.invoke(<span class="type">ActorCell</span>.scala:<span class="number">559</span>)</span><br><span class="line">	at akka.dispatch.<span class="type">Mailbox</span>.processMailbox(<span class="type">Mailbox</span>.scala:<span class="number">257</span>)</span><br><span class="line">	at akka.dispatch.<span class="type">Mailbox</span>.run(<span class="type">Mailbox</span>.scala:<span class="number">224</span>)</span><br><span class="line">	at akka.dispatch.<span class="type">Mailbox</span>.exec(<span class="type">Mailbox</span>.scala:<span class="number">234</span>)</span><br><span class="line">	at akka.dispatch.forkjoin.<span class="type">ForkJoinTask</span>.doExec(<span class="type">ForkJoinTask</span>.java:<span class="number">260</span>)</span><br><span class="line">	at akka.dispatch.forkjoin.<span class="type">ForkJoinPool</span>$<span class="type">WorkQueue</span>.runTask(<span class="type">ForkJoinPool</span>.java:<span class="number">1339</span>)</span><br><span class="line">	at akka.dispatch.forkjoin.<span class="type">ForkJoinPool</span>.runWorker(<span class="type">ForkJoinPool</span>.java:<span class="number">1979</span>)</span><br><span class="line">	at akka.dispatch.forkjoin.<span class="type">ForkJoinWorkerThread</span>.run(<span class="type">ForkJoinWorkerThread</span>.java:<span class="number">107</span>)</span><br><span class="line"></span><br><span class="line">stopping kenny</span><br><span class="line">shutting down system</span><br><span class="line"><span class="type">Kenny</span>: postStop</span><br></pre></td></tr></table></figure>
+<p>让我们来分析一下整个过程：<br>首先创建一个 actor，进入其构造器创建一个 actor 实例；然后启动这个 actor，启动之前会先调用该实例的 <code>preStart</code> 方法；之后我们向这个 actor 发送了一条 String 类型的消息，actor 调用其 <code>receive</code> 方法进行处理；然后我们向这个 actor 发送了 <code>ForceRestart</code> 的消息用于重启，该消息会抛出一个异常，当 actor 检测到异常时，就会启动自动重启机制，调用实例自身的 <code>preRestart</code> 方法，此时会终止该 actor 实例及其所以子 actor 然后调用 <code>postStop</code> 方法；这个时候之前的 actor 实例的生命周期就彻底结束了，会创建一个新的 actor 实例，创建之后调用这个新实例的 <code>postRestart</code> 方法，然后再调用其 <code>preStart</code> 方法，之后新的 actor 就启动了，最后我们通过 ActorSystem 停止了这个 actor 实例，调用该实例的 <code>postStop</code> 方法，这就是上面 actor 经历的完整生命周期。</p>
+<p>可以看到，一个 actor restart 前后实际上是两个不同的实例。</p>
+<h2 id="Start-and-Stop-an-Actor"><a href="#Start-and-Stop-an-Actor" class="headerlink" title="Start and Stop an Actor"></a>Start and Stop an Actor</h2><h4 id="启动-actor"><a href="#启动-actor" class="headerlink" title="启动 actor"></a>启动 actor</h4><p><strong>使用 ActorSystem.actorOf 启动</strong><br>可以使用 ActorSystem 创建其他普通 actor</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> system = <span class="type">ActorSystem</span>(<span class="string">"HelloSystem"</span>)</span><br><span class="line"><span class="comment">// the actor is created and started here</span></span><br><span class="line"><span class="keyword">val</span> helloActor = system.actorOf(<span class="type">Props</span>[<span class="type">HelloActor</span>], name = <span class="string">"helloactor"</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>使用 context.actorOf 启动</strong><br>每一个普通 actor 都有一个隐含的 context 实例，通过这个实例可以启动其它 actor</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> child = context.actorOf(<span class="type">Props</span>[<span class="type">Child</span>], name = <span class="string">"Child"</span>)</span><br><span class="line">  <span class="comment">// more code here ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="停止-actor"><a href="#停止-actor" class="headerlink" title="停止 actor"></a>停止 actor</h4><p><strong>system.stop and context.stop</strong><br>在 ActorSystem 级别，可以使用 ActorSystem 实例去停止一个 actor：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">actorSystem.stop(anActor)</span><br></pre></td></tr></table></figure>
+<p>在一个 actor 内部，可以使用 context 引用停止其子 actor：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.stop(childActor)</span><br></pre></td></tr></table></figure>
+<p>当然一个 actor 也可以停止其自身：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">context.stop(self)</span><br></pre></td></tr></table></figure>
+<p><strong>PoisonPill message</strong><br>也可以通过向 actor 发送停止指令 <code>PoisonPill</code> 来停止它，当这条消息被处理时 actor 就会停止，这条消息也会像普通消息一样出现在邮箱的队列里。<br>下面是一个 <code>PoisonPill</code> 的实例：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> akka.actor.&#123;<span class="type">Actor</span>, <span class="type">ActorSystem</span>, <span class="type">PoisonPill</span>, <span class="type">Props</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">PoisonPillTest</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> system = <span class="type">ActorSystem</span>(<span class="string">"PoisonPillTest"</span>)</span><br><span class="line">  <span class="keyword">val</span> actor = system.actorOf(<span class="type">Props</span>[<span class="type">TestActor</span>], name = <span class="string">"test"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// a simple message</span></span><br><span class="line">  actor ! <span class="string">"before PoisonPill"</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// the PoisonPill</span></span><br><span class="line">  actor ! <span class="type">PoisonPill</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// these messages will not be processed</span></span><br><span class="line">  actor ! <span class="string">"after PoisonPill"</span></span><br><span class="line">  actor ! <span class="string">"hello?!"</span></span><br><span class="line"></span><br><span class="line">  system.terminate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestActor</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= &#123;</span><br><span class="line">    <span class="keyword">case</span> s: <span class="type">String</span> =&gt; println(<span class="string">s"Message Received: <span class="subst">$s</span>"</span>)</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; println(<span class="string">"TestActor got an unknown message"</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">postStop</span></span>(): <span class="type">Unit</span> = &#123;</span><br><span class="line">    println(<span class="string">"TestActor::postStop called"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Message</span> <span class="type">Received</span>: before <span class="type">PoisonPill</span></span><br><span class="line"><span class="type">TestActor</span>::postStop called</span><br></pre></td></tr></table></figure>
+<p>可以看到在 PoisonPill 后面的消息就不会被处理了，对于使用 PoisonPill 来停止 actor 这种方式来说，actor 只会处理其邮箱队列在 PoisonPill 这条消息之前的所有消息，然后就会停止 actor，后面的消息自然不会被处理了。那么后面的消息去了哪里呢？进入到了 ActorSystem 的 deadLetters actor，你可以使用 ActorSystem 的 <code>deadLetters</code> 方法进行访问。<br>与之相对应的，上文中讲的 <code>stop</code> 方法却是会把一个 actor 邮箱队列中所有消息都处理完以后才停止这个 actor。</p>
+<p><strong>gracefulStop</strong><br>正如其名字表面的，如果你可以等待一小会来优雅地终止一个 actor，那么可以使用 <code>gracefulStop</code> 方法，下面是一个例子：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> akka.actor.&#123;<span class="type">Actor</span>, <span class="type">ActorSystem</span>, <span class="type">Props</span>&#125;</span><br><span class="line"><span class="keyword">import</span> akka.pattern.gracefulStop</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> scala.concurrent.&#123;<span class="type">Await</span>, <span class="type">Future</span>&#125;</span><br><span class="line"><span class="keyword">import</span> scala.concurrent.duration._</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">GracefulStopTest</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> system = <span class="type">ActorSystem</span>(<span class="string">"GracefulStopTest"</span>)</span><br><span class="line">  <span class="keyword">val</span> testActor = system.actorOf(<span class="type">Props</span>[<span class="type">TestActor1</span>], name = <span class="string">"TestActor"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// try to stop the actor gracefully</span></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">val</span> stopped: <span class="type">Future</span>[<span class="type">Boolean</span>] = gracefulStop(testActor, <span class="number">2</span> seconds)</span><br><span class="line">    <span class="type">Await</span>.result(stopped, <span class="number">3</span> seconds)</span><br><span class="line">    println(<span class="string">"testActor was stopped"</span>)</span><br><span class="line">  &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> e: <span class="type">Exception</span> =&gt; e.printStackTrace</span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    system.terminate</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TestActor1</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= &#123;</span><br><span class="line">    <span class="keyword">case</span> _ =&gt; println(<span class="string">"TestActor got message"</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">postStop</span> </span>&#123; println(<span class="string">"TestActor: postStop"</span>) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>“Killing” an actor</strong><br>也可以给 actor 发送一条 <code>Kill</code> 的消息来停止它：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">actor ! <span class="type">Kill</span></span><br></pre></td></tr></table></figure>
+<h2 id="actor-的-ask"><a href="#actor-的-ask" class="headerlink" title="actor 的 ask"></a>actor 的 ask</h2><p>actor 有一个 <code>ask</code> 或者 <code>?</code> 方法，这个方法的作用是向 antor 发送消息并等待这个 actor 返回一个结果，返回的结果是一个 <code>Future</code>，而 <code>!</code> 发送消息 actor 并不会返回结果，下面是一个实例：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> akka.actor.&#123;<span class="type">Actor</span>, <span class="type">ActorSystem</span>, <span class="type">Props</span>&#125;</span><br><span class="line"><span class="keyword">import</span> akka.util.<span class="type">Timeout</span></span><br><span class="line"><span class="keyword">import</span> akka.pattern.ask</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> scala.concurrent.&#123;<span class="type">Await</span>, <span class="type">Future</span>&#125;</span><br><span class="line"><span class="keyword">import</span> scala.concurrent.duration._</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">AskTest</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="comment">// create the system and actor</span></span><br><span class="line">  <span class="keyword">val</span> system = <span class="type">ActorSystem</span>(<span class="string">"AskTestSystem"</span>)</span><br><span class="line">  <span class="keyword">val</span> myActor = system.actorOf(<span class="type">Props</span>[<span class="type">AskActor</span>], name = <span class="string">"myActor"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// (1) this is one way to "ask" another actor for information</span></span><br><span class="line">  <span class="keyword">implicit</span> <span class="keyword">val</span> timeout = <span class="type">Timeout</span>(<span class="number">5</span> seconds)</span><br><span class="line">  <span class="keyword">val</span> future = myActor ? <span class="type">AskNameMessage</span></span><br><span class="line">  <span class="keyword">val</span> result = <span class="type">Await</span>.result(future, timeout.duration).asInstanceOf[<span class="type">String</span>]</span><br><span class="line">  println(result)</span><br><span class="line"></span><br><span class="line">  <span class="comment">// (2) a slightly different way to ask another actor for information</span></span><br><span class="line">  <span class="keyword">val</span> future2: <span class="type">Future</span>[<span class="type">String</span>] = ask(myActor, <span class="type">AskNameMessage</span>).mapTo[<span class="type">String</span>]</span><br><span class="line">  <span class="keyword">val</span> result2 = <span class="type">Await</span>.result(future2, <span class="number">1</span> second)</span><br><span class="line">  println(result2)</span><br><span class="line"></span><br><span class="line">  system.terminate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">AskNameMessage</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">AskActor</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">AskNameMessage</span> =&gt;</span><br><span class="line">      <span class="comment">// response to the 'ask' request</span></span><br><span class="line">      sender ! <span class="string">"Fred"</span></span><br><span class="line">    <span class="keyword">case</span> _ =&gt; println(<span class="string">"that was unexpected"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Fred</span></span><br><span class="line"><span class="type">Fred</span></span><br></pre></td></tr></table></figure>
+<p>从上面可以看到，当用 <code>?</code> 或者 <code>ask</code> 向 actor 发送一条消息时，actor 接收到该消息，然后用 <code>sender ! &quot;Fred&quot;</code> 的方法返回一个 <code>Future</code>。</p>
+<h2 id="使用-become-切换-actor-的不同状态"><a href="#使用-become-切换-actor-的不同状态" class="headerlink" title="使用 become 切换 actor 的不同状态"></a>使用 become 切换 actor 的不同状态</h2><p>如果一个 actor 在不同的时间需要对应不同的状态，这样可以进行不同的消息处理，此时可以使用 <code>become</code> 方法切换 actor 的状态，就可以对应到不同的 <code>receive</code> 方法，下面是一个绿巨人变身的例子：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> akka.actor.&#123;<span class="type">Actor</span>, <span class="type">ActorSystem</span>, <span class="type">Props</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">BecomeHulkExample</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> system = <span class="type">ActorSystem</span>(<span class="string">"BecomeHulkExample"</span>)</span><br><span class="line">  <span class="keyword">val</span> davidBanner = system.actorOf(<span class="type">Props</span>[<span class="type">DavidBanner</span>], name = <span class="string">"DavidBanner"</span>)</span><br><span class="line"></span><br><span class="line">  davidBanner ! <span class="type">ActNormalMessage</span> <span class="comment">// init to normalState</span></span><br><span class="line">  davidBanner ! <span class="type">Solution</span></span><br><span class="line">  davidBanner ! <span class="type">BadGuysMakeMeAngry</span></span><br><span class="line">  davidBanner ! <span class="type">Solution</span></span><br><span class="line">  davidBanner ! <span class="type">ActNormalMessage</span></span><br><span class="line">  <span class="type">Thread</span>.sleep(<span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">  system.terminate</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">ActNormalMessage</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">Solution</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">object</span> <span class="title">BadGuysMakeMeAngry</span></span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">class</span> <span class="title">DavidBanner</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>&#123;</span><br><span class="line">  <span class="keyword">import</span> context._</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">angryState</span></span>: <span class="type">Receive</span> = &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Solution</span> =&gt;</span><br><span class="line">      println(<span class="string">"Fight with you!"</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">ActNormalMessage</span> =&gt;</span><br><span class="line">      println(<span class="string">"Phew, I'm back to become David."</span>)</span><br><span class="line">      become(normalState)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">normalState</span></span>: <span class="type">Receive</span> = &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Solution</span> =&gt;</span><br><span class="line">      println(<span class="string">"Looking for solution to my problem ..."</span>)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">BadGuysMakeMeAngry</span> =&gt;</span><br><span class="line">      println(<span class="string">"I'm getting angry ..."</span>)</span><br><span class="line">      become(angryState)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">BadGuysMakeMeAngry</span> =&gt; become(angryState)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">ActNormalMessage</span> =&gt; become(normalState)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Looking</span> <span class="keyword">for</span> solution to my problem ...</span><br><span class="line"><span class="type">I</span><span class="symbol">'m</span> getting angry ...</span><br><span class="line"><span class="type">Fight</span> <span class="keyword">with</span> you!</span><br><span class="line"><span class="type">Phew</span>, <span class="type">I</span><span class="symbol">'m</span> back to become <span class="type">David</span>.</span><br></pre></td></tr></table></figure>
+<p>当使用 <code>become</code> 以后，这个 actor 的 <code>receive</code> 方法就变成了 <code>become</code> 內的 <code>Receive</code>，例如这里最开始接收到 <code>ActNormalMessage</code> 时，这个 actor 的处理逻辑是 <code>receive</code> 方法，但是之后的处理逻辑变成了 <code>normalState</code>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文首先讲了 Actor 模型是什么，Actor 模型的优势，然后详细介绍了 Akka Actor 的一些基本操作，包括建立和启动一个 actor，向 actor 发送消息，切换 actor 的状态，停止 actor 等，相信这些已经足够实现一个简单的基于 actor 模型的系统。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/05/16/collect-data-with-kinesis/"
+                              data-toggle="tooltip" data-placement="top" title="使用 AWS Kinesis 收集流数据">
+                              Previous<br><span>使用 AWS Kinesis 收集流数据</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/06/06/read-spark-source-code-1/"
+                              data-toggle="tooltip" data-placement="top" title="Spark 源码阅读（I）">
+                              Next<br><span>Spark 源码阅读（I）</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Akka" title="Akka">Akka</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

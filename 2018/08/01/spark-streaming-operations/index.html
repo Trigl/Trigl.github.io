@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Spark Streaming 常见操作 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2018/08/01/spark-streaming-operations/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/spark-stream-operations.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Spark" title="Spark">Spark</a>
+                        
+                    </div>
+                    <h1>Spark Streaming 常见操作</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2018-08-01,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>DStream 的转换操作与 RDD 的差不多，简单的像是 map，flatMap，repartition 我们就不讲了，我们讲几个关键特殊的。</p>
+</blockquote>
+<h2 id="DStream-的转换操作"><a href="#DStream-的转换操作" class="headerlink" title="DStream 的转换操作"></a>DStream 的转换操作</h2><h4 id="UpdateStateByKey-操作"><a href="#UpdateStateByKey-操作" class="headerlink" title="UpdateStateByKey 操作"></a>UpdateStateByKey 操作</h4><p>顾名思义，<code>UpdateStateByKey</code> 转换允许你在每个批次都可以对每个键更新他们的状态，至于这个 “状态” 到底是什么，就由我们自己定了，所以首先需要定义两个元素：</p>
+<ul>
+<li>定义一个状态：这个状态可以是任意数据类型</li>
+<li>定义一个更新函数：这个更新函数需要两个参数，一个是前一个批次的状态，另一个是本批次最新值的集合（因为一个 key 可能对应到多个值）</li>
+</ul>
+<p>在每个批次中，Spark 都会将这个函数作用到所有现存的 key 上，不管本批次有没有这个 key 的数据。如果这个更新函数返回了 <code>None</code>，那么这个键值对就会被删除。</p>
+<p>通过一个实例来讲解，还是使用最简单的 WordCount 的例子，我们现在不是要计算每个批次重复单词出现的次数，而是要计算这些重复单词出现过的总次数该怎么办呢？<br>可以通过如下方式实现：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Counts words in UTF8 encoded, '\n' delimited text received from the network every second.</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * Usage: NetworkWordCount &lt;hostname&gt; &lt;port&gt; &lt;checkpoint-directory&gt;</span></span><br><span class="line"><span class="comment">  * &lt;hostname&gt; and &lt;port&gt; describe the TCP server that Spark Streaming would connect to receive data.</span></span><br><span class="line"><span class="comment">  * &lt;checkpoint-directory&gt; directory to HDFS-compatible file system which checkpoint data.</span></span><br><span class="line"><span class="comment">  *</span></span><br><span class="line"><span class="comment">  * To run this on your local machine, you need to first run a Netcat server</span></span><br><span class="line"><span class="comment">  * `$ nc -lk 9999`</span></span><br><span class="line"><span class="comment">  * and then run the example</span></span><br><span class="line"><span class="comment">  * `$ bin/run-example org.apache.spark.examples.streaming.NetworkWordCount localhost 9999 /Users/will/checkpoint/`</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">NetworkWithStateWordCount</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">updateFunction</span></span>(newValues: <span class="type">Seq</span>[<span class="type">Int</span>], runningCount: <span class="type">Option</span>[<span class="type">Int</span>]): <span class="type">Option</span>[<span class="type">Int</span>] = &#123;</span><br><span class="line">    <span class="keyword">val</span> newCount = <span class="keyword">if</span> (!newValues.isEmpty) newValues.size + runningCount.getOrElse(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">else</span> runningCount.getOrElse(<span class="number">0</span>)</span><br><span class="line">    <span class="type">Some</span>(newCount)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]) &#123;</span><br><span class="line">    <span class="keyword">if</span> (args.length &lt; <span class="number">3</span>) &#123;</span><br><span class="line">      <span class="type">System</span>.err.println(<span class="string">"Usage: NetworkWordCount &lt;hostname&gt; &lt;port&gt;"</span>)</span><br><span class="line">      <span class="type">System</span>.exit(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create a local StreamingContext with two working thread and batch interval of 1 second.</span></span><br><span class="line">    <span class="comment">// The master requires 2 cores to prevent a starvation scenario.</span></span><br><span class="line">    <span class="keyword">val</span> sparkConf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setMaster(<span class="string">"local[2]"</span>).setAppName(<span class="string">"NetworkWordCount"</span>)</span><br><span class="line">    <span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(sparkConf, <span class="type">Seconds</span>(<span class="number">1</span>))</span><br><span class="line">    ssc.checkpoint(args(<span class="number">2</span>))</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Create a DStream on target ip:port and count the</span></span><br><span class="line">    <span class="comment">// words in input stream of \n delimited text (eg. generated by 'nc')</span></span><br><span class="line">    <span class="comment">// Note that no duplication in storage level only for running locally.</span></span><br><span class="line">    <span class="comment">// Replication necessary in distributed scenario for fault tolerance.</span></span><br><span class="line">    <span class="keyword">val</span> lines = ssc.socketTextStream(args(<span class="number">0</span>), args(<span class="number">1</span>).toInt, <span class="type">StorageLevel</span>.<span class="type">MEMORY_AND_DISK_SER</span>)</span><br><span class="line">    <span class="comment">// Split each line into words</span></span><br><span class="line">    <span class="keyword">val</span> words = lines.flatMap(_.split(<span class="string">" "</span>))</span><br><span class="line">    <span class="keyword">val</span> wordCounts = words.map(x =&gt; (x, <span class="number">1</span>)).updateStateByKey[<span class="type">Int</span>](updateFunction _)</span><br><span class="line">    wordCounts.print()</span><br><span class="line"></span><br><span class="line">    ssc.start() <span class="comment">// Start the computation</span></span><br><span class="line">    ssc.awaitTermination() <span class="comment">// Wait for the computation to terminate</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-------------------------------------------</span><br><span class="line"><span class="type">Time</span>: <span class="number">1533030262000</span> ms</span><br><span class="line">-------------------------------------------</span><br><span class="line">(ink,<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">-------------------------------------------</span><br><span class="line"><span class="type">Time</span>: <span class="number">1533030263000</span> ms</span><br><span class="line">-------------------------------------------</span><br><span class="line">(ink,<span class="number">3</span>)</span><br><span class="line">(baixin,<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>程序中的更新函数 <code>updateFunction</code> 将会被作用到每个 key，其中参数 <code>newValues</code> 是 1 的集合，<code>runningCount</code> 是这个 key 之前的计数值。注意要使用 <code>updateStateByKey</code> 操作必须设置 checkpoint，如何设置可以见我的另一篇文章：<a href="http://baixin.ink/2018/07/31/spark-streaming-checkpoint/">Spark Streaming Checkpoint</a></p>
+<h4 id="transform-操作"><a href="#transform-操作" class="headerlink" title="transform 操作"></a>transform 操作</h4><p><code>transform</code> 的作用就是弥补 DStream 函数的不足，会将一个 <code>RDD-to-RDD</code> 的函数作用在 DStream 上，这样我们就可以将适用于 RDD 的所有函数都应用在 DStream 上。例如我们想实时过滤掉数据中的广告记录，过滤的基础集是之前提前计算好的广告信息数据，那么可以通过如下方式实现：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> spamInfoRDD = ssc.sparkContext.newAPIHadoopRDD(...) <span class="comment">// RDD containing spam information</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> cleanedDStream = wordCounts.transform &#123; rdd =&gt;</span><br><span class="line">  rdd.join(spamInfoRDD).filter(...) <span class="comment">// join data stream with spam information to do data cleaning</span></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意在每个批次都会调用这个函数，所以在此之间我们可以对这个提前计算的 RDD 进行一些 RDD 操作，例如重分区或者广播等。</p>
+<h4 id="窗口操作"><a href="#窗口操作" class="headerlink" title="窗口操作"></a>窗口操作</h4><p>Spark Streaming 也支持窗口计算，即可以把一个转换作用在滑动的窗口数据上，如下图所示：</p>
+<p><img src="/img/content/streaming-dstream-window.jpg" alt=""></p>
+<p>上图显示的是一个跨度为 3，每次滑动步数为 2 窗口，一个窗口操作必须指定两个参数：</p>
+<ul>
+<li>窗口长度：窗口的持续时间（图中是 3）</li>
+<li>滑动间隔：每次窗口操作之间的间隔（图中是 2）</li>
+</ul>
+<p>这两个参数必须是 Spark Streaming 批处理间隔的倍数（图中是 1）。</p>
+<p>用一个实例来讲解一下，前面的入门例子我们会用 <code>reduceByKey</code> 统计每个批次相同单词的数量，现在我们想每 2 秒统计一次过去 4 秒相同单词的数量应该怎么做呢？需要用到 <code>reduceByKeyAndWindow</code> 操作。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Reduce last 4 seconds of data, every 2 seconds</span></span><br><span class="line"><span class="keyword">val</span> windowedWordCounts = pairs.reduceByKeyAndWindow((a:<span class="type">Int</span>,b:<span class="type">Int</span>) =&gt; (a + b), <span class="type">Seconds</span>(<span class="number">4</span>), <span class="type">Seconds</span>(<span class="number">2</span>))</span><br></pre></td></tr></table></figure>
+<p>这个窗口操作按照键和窗口进行聚合，所以需要的参数是一个聚合函数，一个窗口长度，这里我们设置为 4 s，一个窗口滑动间隔，这里是 2 s，这个函数会每两秒计算一下过去 4 s 内重复单词出现的次数，全部源码看这里：<a href="https://github.com/Trigl/spark-learning/blob/master/src/main/scala/ink/baixin/spark/examples/streaming/WordCountByWindow1.scala" target="_blank" rel="noopener">WordCountByWindow1</a></p>
+<p>下面是一些常用的窗口操作：</p>
+<table>
+<thead>
+<tr>
+<th>转换</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>window(windowLength, slideInterval)</td>
+<td>返回一个新的窗口 DStream。</td>
+</tr>
+<tr>
+<td>countByWindow(windowLength, slideInterval)</td>
+<td>返回滑动窗口中所包含元素的数量。</td>
+</tr>
+<tr>
+<td>reduceByWindow(func, windowLength, slideInterval)</td>
+<td>通过对所有元素依次进行聚合，返回一个包含单个元素的 DStream。从 (K, V) 集合 -&gt; (K, V)</td>
+</tr>
+<tr>
+<td>reduceByKeyAndWindow(func, windowLength, slideInterval, [numTasks])</td>
+<td>(K, V) 集合 -&gt; (K, V) 集合，根据键进行聚合。注意这个函数还有个 <code>numTasks</code> 参数，如果不设置的话并发任务数使用 Spark 默认配置（local 模式是 2，集群模式是 <code>spark.default.parallelism</code> 配置的数目），设置了的话就使用这个值。</td>
+</tr>
+<tr>
+<td>reduceByKeyAndWindow(func, invFunc, windowLength, slideInterval, [numTasks])</td>
+<td>与上面比这个多了一个参数 <code>invFunc</code>，是上面窗口函数的升级版本，特点是可以进行增量计算，这样说了应该也不容易理解，详细解释还是看下面的例子吧</td>
+</tr>
+<tr>
+<td>countByValueAndWindow(windowLength, slideInterval, [numTasks])</td>
+<td>针对的数据类型不是键值对，而是单值，对单个值按照窗口进行计数</td>
+</tr>
+</tbody>
+</table>
+<p>上面第二个 <code>reduceByKeyAndWindow</code> 与第一个类似，只不过多了一个参数 <code>invFunc</code>，也就是 <code>inverse function</code>。顾名思义，第一个参数 <code>func</code> 是指窗口向前移动，新的时间段的数据会被加进来，第二个参数 <code>invFunc</code> 与之相反，老的时间段的数据会被减出去。第一个 <code>reduceByKeyAndWindow</code> 操作是每次都全量计算整个时间窗口内的所有数据，如果窗口时间范围比较大的话相应的吞吐量也会很大。而我们这个改良版的 <code>reduceByKeyAndWindow</code> 操作可以实现增量更新，即每次窗口移动只会把新的加进来和把老的移除，而对没有变化的时间段内的数据不再进行计算，很大地提高了效率，相应的源码在这里：<a href="https://github.com/Trigl/spark-learning/blob/master/src/main/scala/ink/baixin/spark/examples/streaming/WordCountByWindow2.scala" target="_blank" rel="noopener">WordCountByWindow2</a></p>
+<h2 id="DStream-的输出操作"><a href="#DStream-的输出操作" class="headerlink" title="DStream 的输出操作"></a>DStream 的输出操作</h2><h5 id="常见操作"><a href="#常见操作" class="headerlink" title="常见操作"></a>常见操作</h5><table>
+<thead>
+<tr>
+<th>输出操作</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>print()</td>
+<td>在 driver 结点运行，打印每个批次的 DStream 数据的前 10 条记录，一般用于开发的 debug。</td>
+</tr>
+<tr>
+<td>saveAsTextFiles(prefix, [suffix])</td>
+<td>将 DStream 的内容存为文本文件，前缀是文件路径，后缀是文件后缀名称，最后文件的组合形式是 <code>prefix-TIME_IN_MS[.suffix]</code>，如 <code>/user/spark/file-1540540829.txt</code>。</td>
+</tr>
+<tr>
+<td>saveAsObjectFiles(prefix, [suffix])</td>
+<td>将 DStream 内容保存为 Java 对象的序列化文件。</td>
+</tr>
+<tr>
+<td>saveAsHadoopFiles(prefix, [suffix])</td>
+<td>将 DStream 的内容保存为 Hadoop 文件。</td>
+</tr>
+<tr>
+<td>foreachRDD(func)</td>
+<td>最通用的输出操作，它会将一个函数应用在 DStream 形成的每一个 RDD 上。这个函数会将数据输出到外部系统中，例如讲 RDD 保存为文件，或者存到数据库中。注意函数 <code>func</code> 运行在 driver 进程内。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="如何正确使用-foreachRDD？"><a href="#如何正确使用-foreachRDD？" class="headerlink" title="如何正确使用 foreachRDD？"></a>如何正确使用 foreachRDD？</h4><p><code>dstream.foreachRDD</code> 是一种简单但却强大的将数据输出到外部的方法，我们应该避免下面这样的错误。</p>
+<p>首先要将数据输出到外部我们就需要创建一个连接（例如到远程服务器的 TCP 连接），这时我们可能会这样写代码：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dstream.foreachRDD &#123; rdd =&gt;</span><br><span class="line">  <span class="keyword">val</span> connection = createNewConnection()  <span class="comment">// executed at the driver</span></span><br><span class="line">  rdd.foreach &#123; record =&gt;</span><br><span class="line">    connection.send(record) <span class="comment">// executed at the worker</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>foreachRDD</code> 运行在 driver 节点上，而 <code>rdd.foreach</code> 运行在 worker 节点，这就需要将这个连接对象序列化然后从 driver 节点传输到 worker 节点，一般我们不会这样做，因此会报序列化错误 <code>connection object not serializable</code> 或者初始化错误 <code>connection object needs to be initialized at the workers</code> 等等。正确的做法应该是在 worker 节点创建连接对象。</p>
+<p>现在我们改一下代码如下，这样是否正确呢？</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dstream.foreachRDD &#123; rdd =&gt;</span><br><span class="line">  rdd.foreach &#123; record =&gt;</span><br><span class="line">    <span class="keyword">val</span> connection = createNewConnection()</span><br><span class="line">    connection.send(record)</span><br><span class="line">    connection.close()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样也是有问题的，因为这样会为每条 record 都创建一个连接对象，我们知道创建一个连接对象需要消耗时间和资源，因此为每一条记录创建并且销毁连接会导致不必要的高负载并且极大降低系统的吞吐量，更好的解决方式是使用 <code>rdd.foreachPartition</code>，为一个 RDD 分区内的所有记录创建一个单独的连接。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dstream.foreachRDD &#123; rdd =&gt;</span><br><span class="line">  rdd.foreachPartition &#123; partitionOfRecords =&gt;</span><br><span class="line">    <span class="keyword">val</span> connection = createNewConnection()</span><br><span class="line">    partitionOfRecords.foreach(record =&gt; connection.send(record))</span><br><span class="line">    connection.close()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然以上代码还是有可以优化的空间，我们可以使用一个固定连接池来复用连接。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dstream.foreachRDD &#123; rdd =&gt;</span><br><span class="line">  rdd.foreachPartition &#123; partitionOfRecords =&gt;</span><br><span class="line">    <span class="comment">// ConnectionPool is a static, lazily initialized pool of connections</span></span><br><span class="line">    <span class="keyword">val</span> connection = <span class="type">ConnectionPool</span>.getConnection()</span><br><span class="line">    partitionOfRecords.foreach(record =&gt; connection.send(record))</span><br><span class="line">    <span class="type">ConnectionPool</span>.returnConnection(connection)  <span class="comment">// return to the pool for future reuse</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个连接池应当在需要的时候延迟创建并且设置超时时间如果有一段时间不使用的话，这样就可以实现最高效地向外部传输数据。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/07/31/spark-streaming-checkpoint/"
+                              data-toggle="tooltip" data-placement="top" title="Spark Streaming Checkpoint">
+                              Previous<br><span>Spark Streaming Checkpoint</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/08/02/spark-streaming-kinesis/"
+                              data-toggle="tooltip" data-placement="top" title="Spark Streaming 集成 AWS Kinesis">
+                              Next<br><span>Spark Streaming 集成 AWS Kinesis</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Spark" title="Spark">Spark</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

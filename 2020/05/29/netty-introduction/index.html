@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          为什么需要 Netty？ - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2020/05/29/netty-introduction/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/netty.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Netty" title="Netty">Netty</a>
+                        
+                    </div>
+                    <h1>为什么需要 Netty？</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2020-05-29,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>Netty 是一个高性能网络应用框架，应用很普遍，在 Java 领域 Netty 基本上是网络编程的标配了，所以很有必要深入学习一下。</p>
+</blockquote>
+<h2 id="首先思考：如何实现一个网络应用？"><a href="#首先思考：如何实现一个网络应用？" class="headerlink" title="首先思考：如何实现一个网络应用？"></a>首先思考：如何实现一个网络应用？</h2><p>了解一个东西之前，首先要考虑为什么需要这样一个东西。那么为什么我们需要 Netty 呢？</p>
+<p>现在互联网上的绝大多数应用都是网络应用程序，大多数都是标准的 CS 架构，需要进行频繁的网络通信，在真正介绍 Netty 之前，先让我们想一个极其基础的问题：如何实现一个网络应用？</p>
+<h2 id="网络基础"><a href="#网络基础" class="headerlink" title="网络基础"></a>网络基础</h2><p>先回忆一下计算机网络的基础。</p>
+<p>网络会分为很多层，一般有两种模型，一种分七层，一种分四层。但是，不管分几层，理解内在最重要。</p>
+<p>为什么要分层？需要实现一个完整的互联网，整个的内容一定是很庞大的，通过分层可以进行隔离，彼此不影响。每一层都有自己独一无二的功能，并且上层依赖于下层。</p>
+<p>这里把互联网分层五层：</p>
+<p><img src="/img/content/bg2012052902.png" alt=""></p>
+<p>越下面的层越接近硬件，越上面的层越接近人，上层依赖于下层，五层的功能简单来讲就是实体层是一堆硬件，链路层确定 MAC 地址，网络层确定 IP，传输层确定端口号，应用层是直接面向用户的应用。这部分详细内容可以看一下阮一峰写的：<a href="http://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html" target="_blank" rel="noopener">互联网协议入门（一）</a>，我就不班门弄斧了。</p>
+<p>理解了计算机网络的多层结构之后，现在我们要写的网络应用在哪一层呢，对了，就在应用层。其他几层的内容完全不需要我们去操心，一般来说操作系统已经替我们做好了，现在我们从 Java 的角度看看如何在应用层上去写一个网络应用。</p>
+<h2 id="JDK-如何实现网络应用？"><a href="#JDK-如何实现网络应用？" class="headerlink" title="JDK 如何实现网络应用？"></a>JDK 如何实现网络应用？</h2><p>网络分层上层一定是基于下层的，Java 的网络编程是基于其下层：传输层和网络层。</p>
+<p>为什么这么讲呢？网络层的功能，是建立「主机」到「主机」的通信。而一台主机上必然有很多应用，传输层的功能就是实现「端口」到「端口」的通信。只要确定了主机和端口号，我们就能够实现程序之间的交流。Linux 系统把主机+端口，叫做「套接字」（socket），socket 就是通信的基石，提供了进程通信的端点，进程之间通信之前，必须各自创建一个端点，否则是没有办法建立联系并相互通信的。一个完整的 socket 有一个本地唯一的 socket 号，这是由操作系统分配的。</p>
+<p>在 Linux 世界中，「一切皆文件」，socket 通信和读写文件都被当作是 IO 操作，IO 操作有多种处理方式，如同步阻塞式 IO、同步非阻塞式 IO、异步非阻塞式 AIO 等等。基于此，Java 提供了三种类型的 IO 包：</p>
+<ul>
+<li>传统的 java.io 包，基于流模型实现的 BIO</li>
+<li>升级的 java.nio 包，同步非阻塞的 NIO</li>
+<li>改造的 NIO2，引入了异步非阻塞的 AIO</li>
+</ul>
+<p>Java 最基本的网络编程模型是 BIO，即阻塞式 I/O，BIO 中所有的读写操作都会阻塞当前线程。</p>
+<p><img src="/img/content/bio-thread.png" alt=""></p>
+<p>如果客户端和服务端建立了一个连接，但是客户端一直没有请求过来，那么服务端的 read() 就会一直处于阻塞状态。如果服务端处理这个请求时在等待其他资源时阻塞了，那么此时客户端就会一直处于阻塞状态，无法继续发送请求。所以使用 BIO 模型时一般都会为每个 socket 分配一个独立的线程。</p>
+<p>如果并发比较大，我们就需要创建多个线程来处理，为了避免频繁创建、消耗线程，我们可以采用线程池创建线程，但是 socket 和线程的关系的对应关系是不变的。</p>
+<p><img src="/img/content/multi-bio-thread.png" alt=""></p>
+<p>BIO 这样的线程模型适用于 socket 连接不是很多的场景，但是现在的互联网场景，往往需要服务器支撑成百上千万的连接，而创建上百万个线程显然不现实，BIO 无法满足，我们需要的线程模型应该是这样的，NIO 就粉墨登场了：</p>
+<p><img src="/img/content/nio-thread.png" alt=""></p>
+<p>NIO 基于多路复用已经极大提升了性能，为什么不用呢，还是因为存在一些问题的：</p>
+<ul>
+<li>NIO 的类库和 API 繁杂，使用麻烦。你需要熟练掌握 Selector、ServerSocketChannel、SocketChannel、ByteBuffer 等。 需要具备其他的额外技能做铺垫。例如熟悉 Java 多线程编程，因为 NIO 编程涉及到 Reactor 模式，你必须对多线程和网路编程非常熟悉，才能编写出高质量的 NIO 程序。</li>
+<li>可靠性能力缺失，开发工作量和难度都非常大。例如客户端面临断连重连、网络闪断、半包读写、失败缓存、网络拥塞和异常码流的处理等等。 NIO 编程的特点是功能开发相对容易，但是可靠性能力补齐工作量和难度都非常大。</li>
+<li>JDK NIO 的 Bug。例如臭名昭著的 Epoll Bug，它会导致 Selector 空轮询，最终导致 CPU 100%。官方声称在 JDK 1.6 版本的 update 18 修复了该问题，但是直到 JDK 1.7 版本该问题仍旧存在，只不过该 Bug 发生概率降低了一些而已，它并没有被根本解决。</li>
+</ul>
+<h2 id="理解：同步-amp-异步、阻塞-amp-非阻塞"><a href="#理解：同步-amp-异步、阻塞-amp-非阻塞" class="headerlink" title="理解：同步&amp;异步、阻塞&amp;非阻塞"></a>理解：同步&amp;异步、阻塞&amp;非阻塞</h2><p>首先记住一句话：</p>
+<blockquote>
+<p><strong>同步异步是针对调用者说的，阻塞非阻塞是针对被调用者说的</strong></p>
+</blockquote>
+<p>理解不了先背下来，以后把这句话讲出来再想一想就理解了，下面具体进行讲解。</p>
+<ul>
+<li>同步，就是我客户端（c端调用者）调用一个功能，该功能没有结束前，我（c端调用者）死等结果。</li>
+<li>异步，就是我（c端调用者）调用一个功能，不需要知道该功能结果，该功能有结果后通知我（c端调用者）即回调通知。</li>
+<li>阻塞，就是调用我（s端被调用者，函数），我（s端被调用者，函数）没有接收完数据或者没有得到结果之前，我不会返回。</li>
+<li>非阻塞，就是调用我（s端被调用者，函数），我（s端被调用者，函数）立即返回。</li>
+</ul>
+<blockquote>
+<p>同步IO和异步IO的区别就在于：数据访问的时候进程是否阻塞！<br>阻塞IO和非阻塞IO的区别就在于：应用程序的调用是否立即返回！</p>
+</blockquote>
+<h2 id="Netty-是如何设计的？"><a href="#Netty-是如何设计的？" class="headerlink" title="Netty 是如何设计的？"></a>Netty 是如何设计的？</h2><h4 id="Reactor-线程模型"><a href="#Reactor-线程模型" class="headerlink" title="Reactor 线程模型"></a>Reactor 线程模型</h4><p>Netty 是基于 Reactor 线程模型设计的，Reactor 是反应堆的意思，服务器会处理多路的请求，并将这些请求同步分派给对应的单独的处理线程去处理。Reactor 模式也叫 Dispatcher 模式，即通过 IO 多路复用统一监听事件，收到事件后分发（dispatch），是编写高性能网络服务器的必备技术之一。</p>
+<p>Reactor 模型中有两个关键组成：</p>
+<ul>
+<li><strong>Reactor</strong>：Reactor 在一个单独的线程中运行，负责监听和分发事件，分发给适当的线程处理到来的 IO 事件。它就像公司的电话接线员，它接听来自客户的电话并将线路转移到适当的联系人。</li>
+<li><strong>Handlers</strong>：处理程序执行 IO 事件要完成的实际操作，Reactor 通过调度适当的处理程序来响应 IO 事件，处理程序执行非阻塞操作。</li>
+</ul>
+<p><img src="/img/content/221944dt7zeenn88zz8m7e.jpg" alt=""></p>
+<p>取决于 Reactor 的数量和 Handler 线程数的不同，Reactor 模型有 3 个变种：</p>
+<ul>
+<li>单 Reactor 单线程</li>
+<li>单 Reactor 多线程</li>
+<li>主从 Reactor 多线程</li>
+</ul>
+<p>可以这样理解，Reactor 就是一个执行 <code>while (true) { selector.select(); …}</code> 循环的线程，会源源不断地产生新的事件，称作反应堆很贴切。</p>
+<h4 id="Netty-线程模型"><a href="#Netty-线程模型" class="headerlink" title="Netty 线程模型"></a>Netty 线程模型</h4><p>Netty 主要基于主从 Reactor 多线程模型（如下图）做了一定的修改，其中主从 Reactor 多线程模型有多个 Reactor：</p>
+<ul>
+<li>MainReactor 负责客户端的连接请求，并将请求转交给 SubReactor</li>
+<li>SubReactor 负责相应通道的 IO 读写请求</li>
+<li>非 IO 请求（具体逻辑处理）的任务则会直接写入队列，等待 worker threads 进行处理</li>
+</ul>
+<p>这里引用 Doug Lee 大神的 Reactor 介绍：<a href="http://gee.cs.oswego.edu/dl/cpjslides/nio.pdf" target="_blank" rel="noopener">Scalable IO in Java</a> 里面关于主从 Reactor 多线程模型的图：</p>
+<p><img src="/img/content/222227f7qcpolpiiwuipuj.jpg" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文可以算作是 Netty 的入门篇，通过对 JDK 原生网络编程 API 问题的分析和 Netty 架构的基本了解，可以知道为什么 Netty 的性能这么高而且如此流行，后面会对 Netty 的源码进行一些讲解。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/05/13/long-adder/"
+                              data-toggle="tooltip" data-placement="top" title="LongAdder 源码阅读">
+                              Previous<br><span>LongAdder 源码阅读</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2020/08/14/kafka-cluster-ha/"
+                              data-toggle="tooltip" data-placement="top" title="如何实现多个 Kafka 集群的高可用">
+                              Next<br><span>如何实现多个 Kafka 集群的高可用</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Netty" title="Netty">Netty</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

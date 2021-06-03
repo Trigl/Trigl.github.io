@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          那些年玩过的英雄联盟 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2016/01/09/lines-of-lol/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/post-bg-lol.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=因崔斯汀" title="因崔斯汀">因崔斯汀</a>
+                        
+                    </div>
+                    <h1>那些年玩过的英雄联盟</h1>
+                    <h2 class="subheading">无形装逼，最为致命——LOL那些有趣的台词</h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2016-01-09,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>玩LOL也很久了，这个游戏浪费我很多时间，但是也带给我很多快乐，这已足够。虽然现在工作没什么时间玩，但是回想起某些英雄的语录感觉还是很有意思，或搞笑、或经典、或哲理，好的游戏让人收获的不仅是游戏本身，也许对我们的生活也是一种启迪。现在就重温以下这些经（zhuang)典(bi)语录吧！</p>
+</blockquote>
+<h1 id="德玛西亚皇子（吕布皮肤贼帅！！！）"><a href="#德玛西亚皇子（吕布皮肤贼帅！！！）" class="headerlink" title="德玛西亚皇子（吕布皮肤贼帅！！！）"></a>德玛西亚皇子（吕布皮肤贼帅！！！）</h1><p>Protect the faithful!<br>保护忠良！<br>No quarter for the wicked!<br>攘除奸邪！<br>Purge the unjust!<br>消除不公！<br>Find me greater foes!<br>给我找些更强的敌人！<br>Today is a good day to die!<br>视死如归，就在今天！<br>We shall rest when we are dead!<br>战斗之心，至死方休！<br>Ours is but to do and die!<br>我们的使命，就是力战而亡！<br>By my will - this shall be finished.<br>犯我德邦者，虽远必诛！</p>
+<h1 id="疾风剑豪"><a href="#疾风剑豪" class="headerlink" title="疾风剑豪"></a>疾风剑豪</h1><p>Death is like the wind; always by my side.<br>死亡如风，常伴吾身。<br>A sword’s poor company for a long road.<br>长路漫漫，唯剑作伴。<br>My honor left a long time ago.<br>吾之荣耀，离别已久。<br>No-one is promised tomorrow.<br>明日安在，无人能允。<br>Follow the wind, but watch your back.<br>且随疾风前行，身后亦须留心。<br>This blade never gets any lighter.<br>此剑之势，愈斩愈烈。<br>Virtue is no more than a luxury.<br>仁义道德，也是一种奢侈。<br>The road to ruin is shorter than you think.<br>灭亡之路，短的超乎你的想象。<br>Sleep is for the guiltless.<br>无罪之人，方可安睡。<br>Justice. That’s a pretty word.<br>正义，好个冠冕堂皇之词。<br>Hmph. One step ahead of the past.<br>回首往昔，更进一步。<br>A wanderer isn’t always lost.<br>吾虽浪迹天涯，却未迷失本心。<br>Just looking for a road home.<br>我还在寻找回家的路。<br>Never could stay in one place.<br>不可久留于一处。<br>I will follow this path until the end.<br>我将遵循此道，直至终结。<br>Honor is in the heart, not the name.<br>荣耀存于心，而非流于形。<br>I will not forget who I am.<br>吾之初心，永世不忘。<br>Is a leaf’s only purpose to fall?<br>树叶的一生，只是为了归根吧？<br>Hmph dying’s the easy part.<br>汝欲赴死，易如反掌。<br>I alone decide my fate.<br>我命由我，不由天。<br>There is only death… mine, or yours!<br>不是你死，就是我亡！</p>
+<h2 id="赵信"><a href="#赵信" class="headerlink" title="赵信"></a>赵信</h2><p>Press the assault!<br>陷阵之志，有死无生！<br>Here’s a tip…and a spear behind it.<br>一点寒芒先到…随后枪出如龙！<br>The warrior’s spirit is never broken.<br>勇士之魂，从未破灭。<br>Only actions truly speak.<br>只有行动才能说明一切。<br>I may be outnumbered, but not even the odds can stand against me.<br>即使敌众我寡，末将亦能万军丛中取敌将首级！</p>
+<h2 id="剑圣"><a href="#剑圣" class="headerlink" title="剑圣"></a>剑圣</h2><p>Never await victory.<br>绝对不要坐等胜利的到来。<br>The focused mind can pierce through stone.<br>集中起来的意志，可以击穿顽石。<br>Do not let your pride blind you.<br>不要被骄傲，遮蔽了双眼。<br>Anger gives motivation without purpose.<br>愤怒，带来冲动。<br>Form before strength.<br>形势，先于蛮力。<br>Doubt,is the greatest enemy.<br>怀疑是最强大的敌人。<br>A true master is an eternal student.<br>真正的大师永远都怀着一颗学徒的心。</p>
+<h2 id="风女"><a href="#风女" class="headerlink" title="风女"></a>风女</h2><p>Yes, it’s true. For only 2.95 a minute, I’ll leave you breathless.<br>是的，只要998，就能让你爽到不能呼吸。</p>
+<h2 id="老牛"><a href="#老牛" class="headerlink" title="老牛"></a>老牛</h2><p>Nothing can hold me back!<br>没有什么可以把我击退！</p>
+<h2 id="狗头"><a href="#狗头" class="headerlink" title="狗头"></a>狗头</h2><p>The cycle of life and death continues. We will live, they will die.<br>生与死，轮回不止。我们生，他们死。</p>
+<h2 id="安妮"><a href="#安妮" class="headerlink" title="安妮"></a>安妮</h2><p>Beaten by a little girl!<br>你们好犀利，败给小萝莉。</p>
+<h2 id="艾希"><a href="#艾希" class="headerlink" title="艾希"></a>艾希</h2><p>You want some of this?<br>你要来几发么？                                                            </p>
+<h2 id="豹女"><a href="#豹女" class="headerlink" title="豹女"></a>豹女</h2><p>They will fear the wild<br>狂野，将使他们感到畏惧！</p>
+<h2 id="小炮"><a href="#小炮" class="headerlink" title="小炮"></a>小炮</h2><p>I wanna shoot something!<br>我好想射点儿什么！！</p>
+<h2 id="蛮王"><a href="#蛮王" class="headerlink" title="蛮王"></a>蛮王</h2><p>Follow my blade<br>随心而动，随刃而行！</p>
+<h2 id="卡萨丁"><a href="#卡萨丁" class="headerlink" title="卡萨丁"></a>卡萨丁</h2><p>Justice will be served<br>正义将会得到伸张</p>
+<h2 id="卡牌"><a href="#卡牌" class="headerlink" title="卡牌"></a>卡牌</h2><p>The house always wins<br>顺我者昌，逆我者亡！此乃天意！</p>
+<h2 id="卡塔琳娜"><a href="#卡塔琳娜" class="headerlink" title="卡塔琳娜"></a>卡塔琳娜</h2><p>Violence solves everything<br>暴力可以解决一切。<br>Without mercy<br>不要心存怜悯！<br>Keep your friends close, keep the enemy in doubt.<br>与朋友保持亲密，让敌人保持猜疑。</p>
+<h2 id="凯尔"><a href="#凯尔" class="headerlink" title="凯尔"></a>凯尔</h2><p>Into the fray!<br>若想解决纷争，必先陷入纷争<br>An eye for an eye!<br>以眼还眼，以牙还牙！</p>
+<h2 id="乌迪尔"><a href="#乌迪尔" class="headerlink" title="乌迪尔"></a>乌迪尔</h2><p>We will not pity the defenseless<br>我们不会怜悯没有防备的对手   </p>
+<h2 id="飞机"><a href="#飞机" class="headerlink" title="飞机"></a>飞机</h2><p>Lima Oscar Lima<br>大部分人都会打飞机！这对飞机来说很不公平！</p>
+<h2 id="寡妇"><a href="#寡妇" class="headerlink" title="寡妇"></a>寡妇</h2><p>Misery loves company<br>福无双至，祸不单行。</p>
+<h2 id="EZ"><a href="#EZ" class="headerlink" title="EZ"></a>EZ</h2><p>Time for a true display of skill<br>是时候展现真正的技术了！</p>
+<h2 id="女刀"><a href="#女刀" class="headerlink" title="女刀"></a>女刀</h2><p>True will cannot be defeated.<br>真正的意志是不会被击败的！</p>
+<h2 id="天启者"><a href="#天启者" class="headerlink" title="天启者"></a>天启者</h2><p>Peace begins within.<br>和平来自内心。<br>To conquer oneself is to conquer all.<br>击败自己，就能击败一切。<br>Hope is the greatest ally.<br>希望，是最强大的盟友。</p>
+<h2 id="阿卡丽"><a href="#阿卡丽" class="headerlink" title="阿卡丽"></a>阿卡丽</h2><p>Take the sword of honor, balance the chaos in the request.<br>荣誉剑下取,均衡乱中求</p>
+<h2 id="雷欧娜"><a href="#雷欧娜" class="headerlink" title="雷欧娜"></a>雷欧娜</h2><p>The sun always rises.<br>无论刮风还是下雨太阳照常升起。</p>
+<h2 id="瑞文"><a href="#瑞文" class="headerlink" title="瑞文"></a>瑞文</h2><p>What is broken can be reforged!<br>断剑重铸之日其势归来之时！</p>
+<h2 id="劫"><a href="#劫" class="headerlink" title="劫"></a>劫</h2><p>The unseen blade is the deadliest.<br>无形之刃，最为致命<br>Ignorance is fatal.<br>无知者在劫难逃</p>
+<h2 id="盲僧"><a href="#盲僧" class="headerlink" title="盲僧"></a>盲僧</h2><p>Master yourself, master the enemy.<br>控制自己，掌控敌人<br>Your will, my hands.<br>我用双手成就你的梦想<br>Force is meaningless without skill.<br>如果暴力不是为了杀戮 那将毫无意义了</p>
+<h2 id="卡兹克"><a href="#卡兹克" class="headerlink" title="卡兹克"></a>卡兹克</h2><p>改变，就是好事。</p>
+<h2 id="剑魔"><a href="#剑魔" class="headerlink" title="剑魔"></a>剑魔</h2><p>疼痛只是暂时的，而胜利是永远的。<br>犹豫既是死亡。<br>像英雄一样战斗，或者像懦夫一样死去。</p>
+<h2 id="雷恩加尔"><a href="#雷恩加尔" class="headerlink" title="雷恩加尔"></a>雷恩加尔</h2><p>猎杀弱者将使你延续生命,猎杀强者将使你享受人生。</p>
+<h2 id="戴安娜"><a href="#戴安娜" class="headerlink" title="戴安娜"></a>戴安娜</h2><p>太阳不会揭露真相，它的光芒只会让人灼伤和致盲。</p>
+<h2 id="维鲁斯"><a href="#维鲁斯" class="headerlink" title="维鲁斯"></a>维鲁斯</h2><p>The guilty will know agony.<br>罪恶将知道什么是痛苦。<br>Beware a man with nothing to lose.<br>小心那些一无所有的人。<br>Only cowards flee their fate.<br>只有懦夫才会逃避自己的命运。</p>
+<h2 id="婕拉"><a href="#婕拉" class="headerlink" title="婕拉"></a>婕拉</h2><p>世间万物，表里如一者，又有几何？</p>
+<h2 id="基兰"><a href="#基兰" class="headerlink" title="基兰"></a>基兰</h2><p>人生最痛苦的事 莫过于你明知要失去，却还没发生。</p>
+<h2 id="赛恩"><a href="#赛恩" class="headerlink" title="赛恩"></a>赛恩</h2><p>死后能做的最棒的事情是什么?就是碾碎你的敌人，看着他们先你一步而去，并聆听他们怯懦的哭喊。</p>
+<h2 id="阿狸"><a href="#阿狸" class="headerlink" title="阿狸"></a>阿狸</h2><p>慈悲，是人类最美好的奢侈，也是最沉重的负担。</p>
+<h2 id="盖伦"><a href="#盖伦" class="headerlink" title="盖伦"></a>盖伦</h2><p>正义，要么靠法律，要么靠武力！</p>
+<h2 id="诅咒巨魔"><a href="#诅咒巨魔" class="headerlink" title="诅咒巨魔"></a>诅咒巨魔</h2><p>不能力取的，就智取；不能智取的，就力取。</p>
+<h2 id="冰女"><a href="#冰女" class="headerlink" title="冰女"></a>冰女</h2><p>不要错把仁慈当做弱小。</p>
+<h2 id="蔚"><a href="#蔚" class="headerlink" title="蔚"></a>蔚</h2><p>有时候，你需要亲手打开一扇门。</p>
+<h2 id="扎克"><a href="#扎克" class="headerlink" title="扎克"></a>扎克</h2><p>即使你没有脊梁骨，你也要站起来捍卫自己。</p>
+<h2 id="奥巴马"><a href="#奥巴马" class="headerlink" title="奥巴马"></a>奥巴马</h2><p>人固有一死，而有些人则需要一点小小的帮助。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/01/07/simplify-spring-xml-configuration-1/"
+                              data-toggle="tooltip" data-placement="top" title="简化 Spring XML 配置（一）">
+                              Previous<br><span>简化 Spring XML 配置（一）</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/10/simplify-spring-xml-configuration-2/"
+                              data-toggle="tooltip" data-placement="top" title="简化 Spring XML 配置（二）">
+                              Next<br><span>简化 Spring XML 配置（二）</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=因崔斯汀" title="因崔斯汀">因崔斯汀</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

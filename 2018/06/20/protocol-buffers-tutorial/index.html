@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Protocol Buffers 了解一下？ - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2018/06/20/protocol-buffers-tutorial/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/protocol-buffers.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                    <h1>Protocol Buffers 了解一下？</h1>
+                    <h2 class="subheading">Scala 中使用 protocol buffer</h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2018-06-20,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>本文是学习 Protocol Buffers 时做的笔记，内容来自<a href="https://developers.google.com/protocol-buffers/" target="_blank" rel="noopener">官方文档</a>，把其中的精华部分提炼出来做了一个总结。</p>
+</blockquote>
+<h2 id="什么是-protocol-buffers"><a href="#什么是-protocol-buffers" class="headerlink" title="什么是 protocol buffers"></a>什么是 protocol buffers</h2><p>Protocol buffers 是一种跨语言跨平台可扩展的序列化结构化数据的方式，常用于通信协议、数据存储等等。首先会定义数据应当如何构造，然后使用特殊生成的源代码把结构化的数据写入到各个数据流或者读取出来。甚至可以更新数据结构而不会破坏已发布的数据格式。</p>
+<h2 id="如何工作？"><a href="#如何工作？" class="headerlink" title="如何工作？"></a>如何工作？</h2><p>我们可以在 <code>.proto</code> 文件中定义要序列化的数据结构和消息类型，每一个 protocol buffer 都是包含信息的记录，由一系列键值对组成。下面是定义 <code>Person</code> 信息的 <code>.proto</code> 文件的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">message Person &#123;</span><br><span class="line">  required string name &#x3D; 1;</span><br><span class="line">  required int32 id &#x3D; 2;</span><br><span class="line">  optional string email &#x3D; 3;</span><br><span class="line"></span><br><span class="line">  enum PhoneType &#123;</span><br><span class="line">    MOBILE &#x3D; 0;</span><br><span class="line">    HOME &#x3D; 1;</span><br><span class="line">    WORK &#x3D; 2;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  message PhoneNumber &#123;</span><br><span class="line">    required string number &#x3D; 1;</span><br><span class="line">    optional PhoneType type &#x3D; 2 [default &#x3D; HOME];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  repeated PhoneNumber phone &#x3D; 4;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到消息格式很简单，每一个消息类型都有一个或者多个单独的数字化的字段。字段有自己的名字和类型，类型包括数字（整数或浮点数）、boolean、string、byte 甚至其他 protocol buffer 消息类型，这样可以定义分层的数据。而且字段可以加 <code>optional</code>，<code>required</code> 和 <code>repeated</code> 修饰符，关于 <code>.proto</code> 文件格式的具体内容我们后文再讲。</p>
+<p>一旦定义好消息以后，就可以运行 protocol buffer complier，生成你所使用的语言的 <code>.proto</code> 文件的数据实体类。这些类可以提供消息字段的入口（例如 <code>name()</code> 和 <code>set_name()</code>）以及将消息记录序列化为字节或者从字节解析成消息记录的方法。例如，如果你使用的语言是 C++，对上面的例子执行 protocol buffer complier 将会生成一个称为 <code>Person</code> 的类，你可以在你的应用中使用这个类来构成、序列化或者恢复 protocol buffer 的消息记录。你可以写下面这样的代码来序列化消息：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Person person;</span><br><span class="line">person.set_name(<span class="string">"John Doe"</span>);</span><br><span class="line">person.set_id(<span class="number">1234</span>);</span><br><span class="line">person.set_email(<span class="string">"jdoe@example.com"</span>);</span><br><span class="line"><span class="function">fstream <span class="title">output</span><span class="params">(<span class="string">"myfile"</span>, ios::out | ios::binary)</span></span>;</span><br><span class="line">person.SerializeToOstream(&amp;output);</span><br></pre></td></tr></table></figure>
+<p>然后可以再解析出消息：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">fstream <span class="title">input</span><span class="params">(<span class="string">"myfile"</span>, ios::in | ios::binary)</span></span>;</span><br><span class="line">Person person;</span><br><span class="line">person.ParseFromIstream(&amp;input);</span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"Name: "</span> &lt;&lt; person.name() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"E-mail: "</span> &lt;&lt; person.email() &lt;&lt; <span class="built_in">endl</span>;</span><br></pre></td></tr></table></figure>
+<p>可以给消息格式增加新的字段而不会破坏向后兼容性，老的代码在解析的时候会忽略掉新的字段。</p>
+<h2 id="为什么不使用-XML？"><a href="#为什么不使用-XML？" class="headerlink" title="为什么不使用 XML？"></a>为什么不使用 XML？</h2><p>序列化结构化数据时，protocol buffers 比 XML 有更多的优势：</p>
+<ul>
+<li>更简单</li>
+<li>小 3-10 倍</li>
+<li>快 20-100 倍</li>
+<li>更加清晰</li>
+<li>会生成数据实体类，更易于编程</li>
+</ul>
+<p>例如在 XML 中如果想模块化一个具有 <code>name</code> 和 <code>email</code> 的 <code>Person</code>，你需要：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">person</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>John Doe<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">email</span>&gt;</span>jdoe@example.com<span class="tag">&lt;/<span class="name">email</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">person</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而在 protocol buffer 中是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Textual representation of a protocol buffer.</span><br><span class="line"># This is *not* the binary format used on the wire.</span><br><span class="line">person &#123;</span><br><span class="line">  name: &quot;John Doe&quot;</span><br><span class="line">  email: &quot;jdoe@example.com&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当这条消息被编码成 protocol buffer 的二进制格式后（上面代码是文本格式展现，仅仅是为了方便人类阅读、debug 和编辑），大小只有 28 bytes，解析需要 100-200 纳秒。而 XML 版本的大小至少有 69 bytes，需要 5000-10000 纳秒来解析。</p>
+<p>而且操作一个 protocol buffer 也更容易：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cout &lt;&lt; &quot;Name: &quot; &lt;&lt; person.name() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; &quot;E-mail: &quot; &lt;&lt; person.email() &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
+<p>同样地操作放在 XML 上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cout &lt;&lt; &quot;Name: &quot;</span><br><span class="line">     &lt;&lt; person.getElementsByTagName(&quot;name&quot;)-&gt;item(0)-&gt;innerText()</span><br><span class="line">     &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; &quot;E-mail: &quot;</span><br><span class="line">     &lt;&lt; person.getElementsByTagName(&quot;email&quot;)-&gt;item(0)-&gt;innerText()</span><br><span class="line">     &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
+<p>当然，并不是所有的情况下 protocol buffer 都比 XML 好，例如 protocol buffer 并不擅长格式化基于文本的标记语言（如 HTML）。此外，XML 是人类可读和可编辑的，自身可以显示所包含的信息，而 protocol buffer 做不到这一点。</p>
+<h2 id="Scala-中使用-protocol-buffer"><a href="#Scala-中使用-protocol-buffer" class="headerlink" title="Scala 中使用 protocol buffer"></a>Scala 中使用 protocol buffer</h2><p>Protocol buffer 目前还不支持 Scala，但是有开源的 <a href="https://scalapb.github.io" target="_blank" rel="noopener">ScalaPB</a> 可以使用。我们使用一个简单的 “通讯录” 的例子来讲解，这个应用可以从文件中读取和写入联系人信息，通讯录中的每个人都有名字，ID，电子邮箱和电话号码。</p>
+<h4 id="为什么使用-Protocol-Buffers？"><a href="#为什么使用-Protocol-Buffers？" class="headerlink" title="为什么使用 Protocol Buffers？"></a>为什么使用 Protocol Buffers？</h4><p>如何序列化和恢复数据呢？有以下几种方法：</p>
+<ul>
+<li>使用 Java 序列化。Java 默认的序列化方式，但是存在一个众所周知的问题（<em>Effective Java</em> 中提到），并且不是跨语言的。</li>
+<li>你可以发明一些特殊的方式将数据编码成单一字符，例如将 “12:3:-23:67” 编码成数字 4。这种方式简单灵活，但是代码可能是一次性的，无法复用，仅适用于编码非常简单的数据。</li>
+<li>将数据序列化成 XML。优点是可读性好并且兼容大部分语言，缺点也很明显，首先是数据量很大，其次是 XML DOM 树形结构用起来没有类用起来方便。</li>
+</ul>
+<p>综上所诉，protocol buffers，你值得拥有。</p>
+<h4 id="在-SBT-中安装-ScalaPB-插件"><a href="#在-SBT-中安装-ScalaPB-插件" class="headerlink" title="在 SBT 中安装 ScalaPB 插件"></a>在 SBT 中安装 ScalaPB 插件</h4><p>首先创建包含下面内容的文件 <code>project/scalapb.sbt</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">addSbtPlugin(&quot;com.thesamet&quot; % &quot;sbt-protoc&quot; % &quot;0.99.18&quot;)</span><br><span class="line"></span><br><span class="line">libraryDependencies +&#x3D; &quot;com.thesamet.scalapb&quot; %% &quot;compilerplugin&quot; % &quot;0.7.4&quot;</span><br></pre></td></tr></table></figure>
+<p>然后将下面内容加到 <code>build.sbt</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PB.targets in Compile :&#x3D; Seq(</span><br><span class="line">  scalapb.gen() -&gt; (sourceManaged in Compile).value</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; (optional) If you need scalapb&#x2F;scalapb.proto or anything from</span><br><span class="line">&#x2F;&#x2F; google&#x2F;protobuf&#x2F;*.proto</span><br><span class="line">libraryDependencies +&#x3D; &quot;com.thesamet.scalapb&quot; %% &quot;scalapb-runtime&quot; % scalapb.compiler.Version.scalapbVersion % &quot;protobuf&quot;</span><br></pre></td></tr></table></figure>
+<p>ScalaPB 在 <code>src/main/protobuf</code> 文件夹下找 <code>.proto</code> 文件，当然这个可以自定义配置。在 sbt 下运行 <code>compile</code> 将会从 protos 生成 Scala 源文件并且编译。</p>
+<h4 id="定义-Protocol-格式"><a href="#定义-Protocol-格式" class="headerlink" title="定义 Protocol 格式"></a>定义 Protocol 格式</h4><p>创建 “通讯录” 应用的第一步就是写 <code>.proto</code> 文件。定义 <code>.proto</code> 文件很简单，为每一个你想序列化的数据结构添加一个 <code>message</code>，然后在这个 <code>message</code> 下定义字段，每个字段包含名字和类型，如下面就是 “通讯录” 的 <code>models.proto</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">syntax &#x3D; &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">package ink.baixin.scalalearning;</span><br><span class="line"></span><br><span class="line">message Person &#123;</span><br><span class="line">  string name &#x3D; 1;</span><br><span class="line">  int32 id &#x3D; 2;</span><br><span class="line">  string email &#x3D; 3;</span><br><span class="line"></span><br><span class="line">  enum PhoneType &#123;</span><br><span class="line">    MOBILE &#x3D; 0;</span><br><span class="line">    HOME &#x3D; 1;</span><br><span class="line">    WORK &#x3D; 2;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  message PhoneNumber &#123;</span><br><span class="line">    string number &#x3D; 1;</span><br><span class="line">    PhoneType type &#x3D; 2;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  repeated PhoneNumber phones &#x3D; 4;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message AddressBook &#123;</span><br><span class="line">  repeated Person people &#x3D; 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一行显示使用的 protocol buffer 的版本，有 proto2 和 proto3，这两个版本的区别还是很大的，这里我们使用 proto3。proto3 字段默认是 <code>optional</code>，并且不允许添加 <code>optional</code>，所有的字段都不能设置为 <code>required</code>，并且字段不能有默认值。</p>
+<p>然后就是指定 <code>package</code>，自动生成的类所在的包就是 <code>package.base_name</code>，其中 <code>base_name</code> 就是 <code>.proto</code> 文件的名称，所以这个例子中自动生成的类所在的包名就是 <code>ink.baixin.scalalearning.models</code></p>
+<p>接下来显示的就是 message 的定义。一个 message 就是包含一系列类型字段的聚合。许多标准简单数据类型可以作为字段类型，包括 bool、int32、float、double 和 string。你也可以用其他 message 类型作为一个 message 的字段类型，如上面 message <code>Person</code> 包含 <code>PhoneNumber</code> 类型的字段，而 message <code>AddressBook</code> 包含 <code>Person</code> 类型的字段。你也可以在一个 message 中定义另一个 message，如上面 message <code>PhoneNumber</code> 是定义在 message <code>Person</code> 内部的。你也可以使用 <code>enum</code> 类型如果希望某个字段的值是一个预定义值列表中的一个，如上面指定了 <code>PhoneNumber</code> 的 <code>type</code> 是 <code>MOBILE</code>、<code>HOME</code> 或者 <code>WORK</code> 中的一个。</p>
+<p>上面的 <code>=1</code>，<code>=2</code> 是字段用于二进制编码的唯一标记，标记数字 0-15 仅占一个字节的长度，所以应当优先用于那些经常使用的字段或者 <code>repeated</code> 的字段，而超过 15 的标记数字可以用于不那么常用的可选字段。</p>
+<h4 id="编译-protocol-buffer"><a href="#编译-protocol-buffer" class="headerlink" title="编译 protocol buffer"></a>编译 protocol buffer</h4><p>在 sbt 运行 <code>compile</code>，之后会在 <code>$PROJECT_PATH/target/scala-2.1x/src_managed/main</code> 下生成 protoc 编译后的类文件，我们可以使用这些类对 messege 进行相关操作。</p>
+<h4 id="写入并读取-message"><a href="#写入并读取-message" class="headerlink" title="写入并读取 message"></a>写入并读取 message</h4><p>下面我们看一下如何使用 protocol buffer 将 message 写入一个文件，然后再从这个文件读取这些消息。</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">ProtocExample</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> p1 = <span class="type">Person</span>(name = <span class="string">"Ink"</span>, id = <span class="number">0</span>, email = <span class="string">"ink@example.com"</span>)</span><br><span class="line">  <span class="keyword">val</span> p2 = p1.update(</span><br><span class="line">    _.name := <span class="string">"Baixin"</span>,</span><br><span class="line">    _.email := <span class="string">"baixin@example.com"</span></span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">  <span class="keyword">val</span> a = <span class="type">AddressBook</span>(<span class="type">Seq</span>(p1, p2))</span><br><span class="line">  println(a)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">val</span> f = <span class="keyword">new</span> <span class="type">File</span>(<span class="string">"address.txt"</span>)</span><br><span class="line">  f.createNewFile()</span><br><span class="line">  <span class="keyword">val</span> oF = <span class="keyword">new</span> <span class="type">FileOutputStream</span>(f, <span class="literal">false</span>)</span><br><span class="line">  oF.write(a.toByteArray)</span><br><span class="line">  oF.close</span><br><span class="line"></span><br><span class="line">  <span class="keyword">val</span> iF = <span class="keyword">new</span> <span class="type">FileInputStream</span>(f)</span><br><span class="line">  <span class="keyword">val</span> a1 = <span class="type">AddressBook</span>.parseFrom(iF)</span><br><span class="line">  println(a1)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Protocol buffer 在谷歌内部广泛用于数据传输和存储，所以其通用性应该是毋庸置疑的。我们可以在网络传输、数据存储时使用 protocol buffer 来序列化数据，例如把数据写入 HDFS 中或者从 Kafka 读取数据时，都可以把数据使用 protocol buffer 序列化，可以有效减少数据量、降低带宽磁盘等压力。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/06/14/notes-of-ddia-1/"
+                              data-toggle="tooltip" data-placement="top" title="Designing Data-Intensive Applications 读书笔记（I）">
+                              Previous<br><span>Designing Data-Intensive Applications 读书笔记（I）</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/07/13/netty-http-server/"
+                              data-toggle="tooltip" data-placement="top" title="使用 Netty 写一个 HTTP Server">
+                              Next<br><span>使用 Netty 写一个 HTTP Server</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

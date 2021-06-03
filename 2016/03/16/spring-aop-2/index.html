@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Spring AOP（二） - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2016/03/16/spring-aop-2/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/post-bg-spring.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Spring" title="Spring">Spring</a>
+                        
+                    </div>
+                    <h1>Spring AOP（二）</h1>
+                    <h2 class="subheading">在 XML 中配置切面</h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2016-03-16,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>在Spring AOP（一）中介绍了AOP的基本概念和几个术语，现在学习一下在XML中如何配置AOP。</p>
+</blockquote>
+<p>在XML中AOP的配置元素有以下几种：</p>
+<table>
+<thead>
+<tr>
+<th>AOP配置元素</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;aop:config&gt;</code></td>
+<td style="text-align:left">顶层的AOP配置元素，大多数的<code>&lt;aop:*&gt;</code>元素必须包含在<code>&lt;aop:config&gt;</code>元素内</td>
+</tr>
+<tr>
+<td><code>&lt;aop:aspect&gt;</code></td>
+<td style="text-align:left">定义切面</td>
+</tr>
+<tr>
+<td><code>&lt;aop:aspect-autoproxy&gt;</code></td>
+<td style="text-align:left">启用@AspectJ注解驱动的切面</td>
+</tr>
+<tr>
+<td><code>&lt;aop:pointcut&gt;</code></td>
+<td style="text-align:left">定义切点</td>
+</tr>
+<tr>
+<td><code>&lt;aop:advisor&gt;</code></td>
+<td style="text-align:left">定义AOP通知器</td>
+</tr>
+<tr>
+<td><code>&lt;aop:before&gt;</code></td>
+<td style="text-align:left">定义AOP前置通知</td>
+</tr>
+<tr>
+<td><code>&lt;aop:after&gt;</code></td>
+<td style="text-align:left">定义AOP后置通知（不管被通知的方法是否执行成功）</td>
+</tr>
+<tr>
+<td><code>&lt;aop:after-returning&gt;</code></td>
+<td style="text-align:left">定义成功返回后的通知</td>
+</tr>
+<tr>
+<td><code>&lt;aop:after-throwing&gt;</code></td>
+<td style="text-align:left">定义抛出异常后的通知</td>
+</tr>
+<tr>
+<td><code>&lt;aop:around&gt;</code></td>
+<td style="text-align:left">定义AOP环绕通知</td>
+</tr>
+<tr>
+<td><code>&lt;aop:declare-parents&gt;</code></td>
+<td style="text-align:left">为被通知的对象引入额外的接口，并透明地实现</td>
+</tr>
+</tbody>
+</table>
+<p>总之，个人理解AOP就是将切面的功能（通知），通过切点织入程序的执行过程中。下面是AOP术语的配置和关系图：</p>
+<p><img src="/img/content/20160315232929169.jpg" alt="这里写图片描述"></p>
+<p>下面通过一个具体的栗子来学习，这个例子描述的是在一个正在表演的节目（相当于应用中一个正常的业务功能）中加入观众们的反响（相当于切面），要求在表演前观众们入座、手机关机或静音，表演中记录一下表演所用时间，表演后观众们喝彩或不满。</p>
+<p><strong>表演类接口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Performer</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>表演类的一个实现：话剧演出</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Drama</span> <span class="keyword">implements</span> <span class="title">Performer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">			System.out.println(<span class="string">"话剧正在进行中——"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>观众类作为切面</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Audience</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">takeSeats</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 节目开始之前</span></span><br><span class="line">		System.out.println(<span class="string">"演出前——观众开始入座"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">turnOffCellPhones</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 节目开始之前</span></span><br><span class="line">		System.out.println(<span class="string">"演出前——观众关机或静音"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">applaud</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 节目成功结束之后</span></span><br><span class="line">		System.out.println(<span class="string">"成功演出很成功——观众鼓掌：啪啪啪"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">demandRefund</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 节目表演失败之后</span></span><br><span class="line">		System.out.println(<span class="string">"节目演出很失败——切！一点都不好看，我们要求退钱！"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>引入以下几个AOP包：</p>
+<pre><code>&gt;[aopalliance-1.0.jar](http://pan.baidu.com/s/1hryYVo4)
+[aspectjrt-1.7.4.jar](http://pan.baidu.com/s/1skfejZB)
+[aspectjweaver-1.7.4.jar](http://pan.baidu.com/s/1kUqL9f5)
+</code></pre><p>在XML文件中加入包含关于Spring AOP命名空间的内容</p>
+<pre><code><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag"><span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag"><span class="attr">xmlns:aop</span>=<span class="string">"http://www.springframework.org/schema/aop"</span></span></span><br><span class="line"><span class="tag"><span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">http://www.springframework.org/schema/beans/spring-beans-3.0.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">http://www.springframework.org/schema/aop</span></span></span><br><span class="line"><span class="tag"><span class="string">http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</code></pre><hr>
+<h2 id="定义切面"><a href="#定义切面" class="headerlink" title="定义切面"></a>定义切面</h2><p>在XML中通过元素<code>&lt;aop:config&gt;</code>开启AOP配置，使用<code>&lt;aop:aspect&gt;</code>配置切面，如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"audience"</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>ref里面对应audience是切面bean的ID，也就是观众类对应的bean。观众类的bean和话剧表演的bean分别如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"audience"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.aop.Audience"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"drama"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.aop.Drama"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="定义切点"><a href="#定义切点" class="headerlink" title="定义切点"></a>定义切点</h2><h4 id="AspectJ切点表达式语言"><a href="#AspectJ切点表达式语言" class="headerlink" title="AspectJ切点表达式语言"></a>AspectJ切点表达式语言</h4><p>Spring AOP中使用的是AspectJ的切点表达式语言来定义的切点，前面讲过Spring AOP是基于代理的，而AspectJ的某些切点表达式是与基于代理的AOP无关的，因此Spring AOP支持的AspectJ切点指示器仅有有限的几种，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>AspectJ指示器</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>execution{}</td>
+<td>匹配到的连接点的执行方法<br>如：execution(<em> com.springinaction.aop.Performer.perform(..))<br>表达式表示当Performer的perform()方法执行时会触发通知， </em> 表明我们不关心方法返回值的类型， (..) 标识切点选择任意的paly()方法，无论该方法的参数是什么</td>
+</tr>
+<tr>
+<td>args()</td>
+<td>限制连接点匹配参数为指定类型的执行方法<br>如：execution(* com.springinaction.aop.Thinker.thinkOfSomething(String)) and args(thoughts)<br>注意到 thinkOfSomething(String) 有参数类型String，后面跟了一个 args(thoughts) ，这个是 thinkOfSomething() 方法要传给通知的参数，两个AspectJ知识器用and相连接，同样也可以使用or和not，当然我们可以使用&amp;&amp;、 &#124;&#124; 和 ! 来代替and、or和not</td>
+</tr>
+<tr>
+<td>@args()</td>
+<td>限制连接点匹配参数由制定注解标注的执行方法</td>
+</tr>
+<tr>
+<td>this()</td>
+<td>限制连接点匹配AOP代理的Bean引用为指定类型的类</td>
+</tr>
+<tr>
+<td>target()</td>
+<td>限制连接点匹配目标对象为制定类型的类</td>
+</tr>
+<tr>
+<td>within()</td>
+<td>限制连接点匹配特定的类型<br>如：execution(<em> com.springinaction.aop.Performer.perform(..)) &amp;&amp; within(com.springinaction.aop.\</em>)<br> within(com.springinaction.aop.*)表示com.springinaction.aop包下任意类的方法被调用时</td>
+</tr>
+<tr>
+<td>@within()</td>
+<td>限制连接点匹配指定注解所标注的类型（当使用Spring AOP时，方法定义在由指定的注解所标注的类里）</td>
+</tr>
+<tr>
+<td>@annotation</td>
+<td>限制匹配带有指定注解连接点</td>
+</tr>
+<tr>
+<td>bean()</td>
+<td>限制连接点只匹配特定的bean<br>如：execution(* com.springinaction.aop.Performer.perform(..)) adn bean(drama)<br>其中drama是一个类的beanID，这个bean是Performer接口的一个实现。加上了bean(drama)以后就只能匹配这个bean了</td>
+</tr>
+</tbody>
+</table>
+<p>上面的所有指示器中，execution是主要使用的，是必须的；其他的指示器都是限制所匹配的切点。另外，当Spring尝试使用除了上面的AspectJ的其他指示器时，将会抛出IllegalArgumentException异常。</p>
+<h4 id="在XML中配置切点"><a href="#在XML中配置切点" class="headerlink" title="在XML中配置切点"></a>在XML中配置切点</h4><p>使用元素<code>&lt;aop:pointcut&gt;</code>来配置切点，<code>&lt;aop:pointcut&gt;</code>既可以放在<code>&lt;aop:aspect&gt;</code>元素的作用域内，也可以放在<code>&lt;aop:config&gt;</code>元素的作用域下，对应的切点的作用范围就不同了。具体配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:pointcut</span></span></span><br><span class="line"><span class="tag">    <span class="attr">id</span>=<span class="string">"performance"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">expression</span>=<span class="string">"execution(* com.springinaction.aop.Performer.perform(..))"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>id标识这个切点的id，expression里面就是上面讲到的AspectJ切点表达式语言。</p>
+<hr>
+<h2 id="定义通知"><a href="#定义通知" class="headerlink" title="定义通知"></a>定义通知</h2><h4 id="声明前置和后置通知"><a href="#声明前置和后置通知" class="headerlink" title="声明前置和后置通知"></a>声明前置和后置通知</h4><p>分别使用<code>&lt;aop:before&gt;</code>和<code>&lt;aop:after-returning&gt;</code>以及<code>&lt;aop:after-throwing&gt;</code>元素来声明前置通知、返回结果后置通知和抛出异常后置通知，注意这几个元素是放在<code>&lt;aop:aspect&gt;</code>元素的作用域内。具体配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:before</span> <span class="attr">pointcut-ref</span>=<span class="string">"performance"</span> <span class="attr">method</span>=<span class="string">"takeSeats"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:before</span> <span class="attr">pointcut-ref</span>=<span class="string">"performance"</span> <span class="attr">method</span>=<span class="string">"turnOffCellPhones"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:after-returning</span> <span class="attr">pointcut-ref</span>=<span class="string">"performance"</span> <span class="attr">method</span>=<span class="string">"applaud"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">aop:after-throwing</span> <span class="attr">pointcut-ref</span>=<span class="string">"performance"</span> <span class="attr">method</span>=<span class="string">"demandRefund"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>该切面应用了4个不同的通知。两个<code>&lt;aop:before&gt;</code>元素定义了匹配切点的方法执行之前调用前置通知方法——audience Bean的takeSeats()和turnOffCellPhones()方法（由method属性所声明）。<code>&lt;aop:after-returning&gt;</code>元素定义了一个返回后（after-returning）通知，在切点所匹配的方法调用之后再执行applaud()方法。同样，<code>&lt;aop:after-throwing&gt;</code>元素定义了抛出后通知，如果所匹配的方式执行时抛出任何异常，都将调用demandRefund()方法。下图展示了通知逻辑如何编织到业务逻辑中。</p>
+<p><img src="/img/content/20160316013140452.jpg" alt="这里写图片描述"></p>
+<p>下面我们用测试类来测试AOP实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AudienceTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">		<span class="string">"com/springinaction/aop/aop.xml"</span>);</span><br><span class="line">		Performer drama = (Performer)ctx.getBean(<span class="string">"drama"</span>);</span><br><span class="line">		drama.perform();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">演出前——观众开始入座</span><br><span class="line">演出前——观众关机或静音</span><br><span class="line">话剧正在进行中——</span><br><span class="line">......（重复一千次）</span><br><span class="line">成功演出很成功——观众鼓掌：啪啪啪</span><br></pre></td></tr></table></figure>
+<h4 id="声明环绕通知"><a href="#声明环绕通知" class="headerlink" title="声明环绕通知"></a>声明环绕通知</h4><p>前面的前置通知和后置通知分别发生在业务功能的前面和后面，如果想要实现跨越业务功能的整个事件段呢？例如表演节目除了进场关机和结束了鼓掌，我们还希望观众一直关注演出，报告演出的时间。如果通过前置和后置通知来实现的话，我们可以在一个成员变量中保存时间。但是由于Audience是单例，所以会存在线程安全问题。</p>
+<p>环绕通知的作用在这里就体现出来了，它可以在一个方法中实现整个逻辑，即将切点的方法内嵌到环绕通知的方法中去。</p>
+<p><strong>编写环绕通知方法</strong></p>
+<p>下面是我们在观众类Audience中新添加的一个watchPerformance()方法作为AOP环绕通知。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">watchPerformance</span><span class="params">(ProceedingJoinPoint joinpoint)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		System.out.println(<span class="string">"演出前——观众开始入座"</span>);</span><br><span class="line">		System.out.println(<span class="string">"演出前——观众关机或静音"</span>);</span><br><span class="line">		<span class="keyword">long</span> start = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		joinpoint.proceed(); <span class="comment">// 执行被通知的方法</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"成功演出很成功——观众鼓掌：啪啪啪"</span>);</span><br><span class="line">		System.out.println(<span class="string">"演出持续了 "</span> + (end - start) + <span class="string">" milliseconds"</span>);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">		System.out.println(<span class="string">"节目演出很失败——切！一点都不好看，我们要求退钱！"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于这个通知方法，注意它使用了ProceedingJoinPoint作为方法的入参。这个对象能让我们在通知里调用被通知方法。通知方法首先完成它需要做的事情，如果希望把控制权转给被通知的方法，我们可以调用ProceedingJoinPoint的proceed()方法。</p>
+<p><strong>在XML声明环绕通知</strong></p>
+<p>声明环绕通知与声明其他类型的通知没有太大的区别，我们需要做的仅仅是使用<code>&lt;aop:around&gt;</code>元素。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:around</span> <span class="attr">pointcut-ref</span>=<span class="string">"performance"</span> <span class="attr">method</span>=<span class="string">"watchPerformance"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后我们通过测试类测试一下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AudienceTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">		<span class="string">"com/springinaction/aop/aop.xml"</span>);</span><br><span class="line">		Performer drama = (Performer)ctx.getBean(<span class="string">"drama"</span>);</span><br><span class="line">		drama.perform();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">演出前——观众开始入座</span><br><span class="line">演出前——观众关机或静音</span><br><span class="line">话剧正在进行中——</span><br><span class="line">......（重复1000次）</span><br><span class="line">演出很成功——观众鼓掌：啪啪啪</span><br><span class="line">演出持续了 42 milliseconds</span><br></pre></td></tr></table></figure>
+<h4 id="为通知传递参数"><a href="#为通知传递参数" class="headerlink" title="为通知传递参数"></a>为通知传递参数</h4><p>上面的栗子通知和被通知的方法之间虽然实现了有了先后逻辑，但是并没有参数的传递，有时候我们需要校验传递给方法的参数值，这个时候为通知传递参数就非常有用了。</p>
+<p>还是通过一个实例来说明：某位魔术师自称自己继承了其师傅刘半仙的衣钵，可以未卜先知知道他人内心所想；有一个志愿者不服，说要让他猜猜自己到底想了什么。这里就将魔术师作为切面。</p>
+<p><strong>读心术接口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MindReader</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">interceptThoughts</span><span class="params">(String thoughts)</span></span>;</span><br><span class="line"></span><br><span class="line">	<span class="function">String <span class="title">getThoughts</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>魔术师类实现读心术接口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Magician</span> <span class="keyword">implements</span> <span class="title">MindReader</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String thoughts;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">interceptThoughts</span><span class="params">(String thoughts)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"让我猜猜你在想什么？"</span>);</span><br><span class="line">		<span class="keyword">this</span>.thoughts = thoughts;</span><br><span class="line">		System.out.println(<span class="keyword">this</span>.getThoughts());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getThoughts</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.print(<span class="string">"你在想："</span>);</span><br><span class="line">		<span class="keyword">return</span> thoughts;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>思考者接口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Thinker</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">thinkOfSomething</span><span class="params">(String thoughts)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>志愿者类实现思考者接口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Volunteer</span> <span class="keyword">implements</span> <span class="title">Thinker</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String thoughts;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thinkOfSomething</span><span class="params">(String thoughts)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.thoughts = thoughts;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">getThoughts</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> thoughts;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>XML配置</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:config</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspect</span> <span class="attr">ref</span>=<span class="string">"magician"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:pointcut</span></span></span><br><span class="line"><span class="tag">            <span class="attr">id</span>=<span class="string">"thinker"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">expression</span>=<span class="string">"execution(* com.springinaction.aop.Thinker.thinkOfSomething(String))</span></span></span><br><span class="line"><span class="tag"><span class="string">                           and args(thoughts)"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">aop:before</span></span></span><br><span class="line"><span class="tag">            <span class="attr">pointcut-ref</span>=<span class="string">"thinker"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">method</span>=<span class="string">"interceptThoughts"</span></span></span><br><span class="line"><span class="tag">            <span class="attr">arg-names</span>=<span class="string">"thoughts"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">aop:aspect</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">aop:config</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>从XML配置中我们可以看出，实现被通知方法向通知传参的关键有两点：</p>
+<ol>
+<li>切点元素<code>&lt;aop:pointcut&gt;</code>的expression属性中使用了AspectJ切点表达式语言中的args()指示器，在本例中是args(thoughts)，传递的是thinkOfSomething(String thoughts)方法的参数。</li>
+<li>通知元素<code>&lt;aop:before&gt;</code>中加入了 arg-names 属性，这个属性的值就是切点传过来的对应的参数thoughts。</li>
+</ol>
+<p><strong>测试类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MagicianTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">		<span class="string">"com/springinaction/aop/aop.xml"</span>);</span><br><span class="line">		Thinker thinker = (Thinker) ctx.getBean(<span class="string">"volunteer"</span>);</span><br><span class="line">		thinker.thinkOfSomething(<span class="string">"你猜我在想什么？"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>输出结果</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">让我猜猜你在想什么？</span><br><span class="line">你在想：你猜我在想什么？</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="定义引入"><a href="#定义引入" class="headerlink" title="定义引入"></a>定义引入</h2><h4 id="通过切面引入的原理"><a href="#通过切面引入的原理" class="headerlink" title="通过切面引入的原理"></a>通过切面引入的原理</h4><p>讲解引入之前先思考一下我们之前都做到了什么。我们已经通过AOP实现了为目标对象拥有的方法添加了新的功能，这是通过代理实现的，即切面为目标bean创建一个代理，通知发出的方法调用看似发往了目标bean，其实是被代理拦截了，即代理代替目标bean实现原有功能并添加了切面的新功能。</p>
+<p>现在来说引入，什么是引入呢？就是在不改变切入的目标类的基础上为其添加新方法或属性。我们都知道Java不是动态语言，一旦类编译完成了，我们就很难再为该类添加新的功能了，那么所谓的“添加新方法或属性”是不是扯淡呢？是也不是，因为我们无法真的实现可以虚拟一个嘛，但你不说我不说谁知道呢，这就又用到了我们牛逼轰轰的代理。如下图所示：</p>
+<p><img src="/img/content/20160316214542670.jpg" alt="这里写图片描述"></p>
+<p>这里，可以让代理发布一个新的接口，当引入接口的方法被调用时，代理就将此调用委托给了实现新接口的某个其他对象，也就是Bean的实现被拆分到了多个类，而不仅仅是原来的目标切点对应的那一个类。但是在外面看来，所有的功能都是通过切点对应的目标类的Bean实现的。</p>
+<h4 id="XML配置引入"><a href="#XML配置引入" class="headerlink" title="XML配置引入"></a>XML配置引入</h4><p>还是通过一个实例来说明：前面的例子中表演类是一个切点，这里我们加入一个新的辅助表演类，来引入我们想要添加给表演类的方法。</p>
+<p><strong>辅助表演接口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AssistPerformer</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">assist</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>助人为乐者实现辅助表演接口</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GraciousAssist</span> <span class="keyword">implements</span> <span class="title">AssistPerformer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">assist</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"GraciousAssist来助演了——"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>XML配置</strong><br>引入是通过<code>&lt;aop:declare-parents&gt;</code>元素来实现的，这个元素在<code>&lt;aop:aspect&gt;</code>元素的作用域内，它声明了此切面所通知的Bean在它的对象层次结构中拥有新的父类，也就是它的代理拥有了新的父类。具体配置如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:declare-parents</span></span></span><br><span class="line"><span class="tag">    <span class="attr">types-matching</span>=<span class="string">"com.springinaction.aop.Performer+"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">implement-interface</span>=<span class="string">"com.springinaction.aop.AssistPerformer"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">default-impl</span>=<span class="string">"com.springinaction.aop.GraciousAssist"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>具体说明一下<code>&lt;aop:declare-parents&gt;</code>的属性：</p>
+<ul>
+<li>types-matching：Performer接口所实现的子类，也就是对应的目标切点类。</li>
+<li>implement-interface：新加入的接口类。</li>
+<li>default-impl：新加入的接口的默认实现类。</li>
+</ul>
+<p>除了使用default-impl来指定接口的实现外，还可以使用delegate-ref属性来标识：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">aop:declare-parents</span></span></span><br><span class="line"><span class="tag">    <span class="attr">types-matching</span>=<span class="string">"com.springinaction.aop.Performer+"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">implement-interface</span>=<span class="string">"com.springinaction.aop.AssistPerformer"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">delegate-ref</span>=<span class="string">"gracious"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<p>其中“gracious”是新添加的接口的实现类对应Bean的ID：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"gracious"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.aop.GraciousAssist"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>测试类</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.aop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AudienceTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">		<span class="string">"com/springinaction/aop/aop.xml"</span>);</span><br><span class="line">		Performer drama = (Performer)ctx.getBean(<span class="string">"drama"</span>);</span><br><span class="line">		drama.perform();</span><br><span class="line">		AssistPerformer ap = (AssistPerformer) ctx.getBean(<span class="string">"drama"</span>);</span><br><span class="line">		ap.assist();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意一点，我们要实现的是新加入的AssistPerformer 接口的assist()方法，但是我们是通过切点的BeanID，也就是”drama“得到AssistPerformer 的实现的一个实例，这就仿佛是”drama“对应的切点Bean实现了AssistPerformer 接口一样，这就是AOP引入的神奇之处，可以为目标类添加新的方法。</p>
+<p><strong>输出结果</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">演出前——观众开始入座</span><br><span class="line">演出前——观众关机或静音</span><br><span class="line">话剧正在进行中——</span><br><span class="line">......（重复1000次）</span><br><span class="line">演出很成功——观众鼓掌：啪啪啪</span><br><span class="line">演出持续了 42 milliseconds</span><br><span class="line">GraciousAssist来助演了——</span><br></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2016/03/12/spring-aop-1/"
+                              data-toggle="tooltip" data-placement="top" title="Spring AOP（一）">
+                              Previous<br><span>Spring AOP（一）</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/03/17/spring-aop-3/"
+                              data-toggle="tooltip" data-placement="top" title="Spring AOP（三）">
+                              Next<br><span>Spring AOP（三）</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Spring" title="Spring">Spring</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

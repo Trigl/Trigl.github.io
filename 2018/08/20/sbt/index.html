@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          SBT 那些常用的功能 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2018/08/20/sbt/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/sbt.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                    <h1>SBT 那些常用的功能</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2018-08-20,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>使用 Scala 也很久了，SBT 是最方便的构建工具，但是总是会遇到一些 SBT 引起的奇奇怪怪的问题，今天就好好研究一下 SBT 的常见用法，争取通过本文跨过大部分的坑。</p>
+</blockquote>
+<h2 id="SBT-常见命令"><a href="#SBT-常见命令" class="headerlink" title="SBT 常见命令"></a>SBT 常见命令</h2><p><strong>clean</strong>：移除 <code>target</code> 文件夹下生成的所有文件。</p>
+<p><strong>compile</strong>：编译 <code>src/main/scala</code>，<code>src/main/java</code> 和项目根目录下的文件。</p>
+<p><strong>run</strong>：编译代码然后运行项目中的 <code>main</code> 方法，如果有多个，SBT 会要求你选一个。</p>
+<p><strong>package</strong>：将 <code>src/main/scala</code>，<code>src/main/java</code>，<code>src/main/resources</code> 下的文件打包成一个 jar 包。</p>
+<p><strong>test</strong>：编译及运行所有的测试用例。</p>
+<p><strong>doc</strong>：对你的 Scala 源码生成相应的 API 文档。</p>
+<p><strong>reload</strong>：重新加载所有与 sbt build 相关的文件，如 <code>build.sbt</code>，<code>project/*</code>。</p>
+<p><strong>publish</strong>：将你的项目发布到远程仓库。</p>
+<p><strong>publishLocal</strong>：将项目发布到本地 Ivy 仓库。</p>
+<h2 id="如何查看执行的命令的关键输出"><a href="#如何查看执行的命令的关键输出" class="headerlink" title="如何查看执行的命令的关键输出"></a>如何查看执行的命令的关键输出</h2><p>使用 <code>last</code> 命令可以查看最后执行的命令的关键输出，如 <code>warn</code> 或者 <code>error</code> 信息。例如如果使用 <code>compile</code> 进行了编译，输出了一堆日志最后报错了，想要看到哪些部分有问题，就可以使用 <code>last compile</code> 命令打印出来。</p>
+<h2 id="使用-SBT-和-ScalaTest-测试"><a href="#使用-SBT-和-ScalaTest-测试" class="headerlink" title="使用 SBT 和 ScalaTest 测试"></a>使用 SBT 和 ScalaTest 测试</h2><p>首先在 <code>build.sbt</code> 中加入 scalatest 的包：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"org.scalatest"</span> %% <span class="string">"scalatest"</span> % <span class="string">"3.0.5"</span> % <span class="type">Test</span></span><br></pre></td></tr></table></figure>
+<p>然后在 <code>src/main/scala</code> 下创建一个 <code>Hello.scala</code> 的源文件：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ink.baixin.scalalearning.sbt</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">Hello</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  <span class="keyword">val</span> p = <span class="type">Person</span>(<span class="string">"Ink Bai"</span>)</span><br><span class="line">  println(<span class="string">"Hello from "</span> + p.name)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">var name: <span class="type">String</span></span>)</span></span><br></pre></td></tr></table></figure>
+<p>然后在 <code>src/test/scala</code> 下写相应的测试用例：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ink.baixin.scalalearning.sbt</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.scalatest.<span class="type">FunSuite</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloTests</span> <span class="keyword">extends</span> <span class="title">FunSuite</span> </span>&#123;</span><br><span class="line">  test(<span class="string">"the name is set correctly in constructor"</span>) &#123;</span><br><span class="line">    <span class="keyword">val</span> p = <span class="type">Person</span>(<span class="string">"Ink Bai"</span>)</span><br><span class="line">    assert(p.name == <span class="string">"Ink Bai"</span>)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  test(<span class="string">"a Person's name can be changed"</span>) &#123;</span><br><span class="line">    <span class="keyword">val</span> p = <span class="type">Person</span>(<span class="string">"Will"</span>)</span><br><span class="line">    p.name = <span class="string">"William"</span></span><br><span class="line">    assert(p.name == <span class="string">"William"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在就可以使用 sbt 的 <code>test</code> 命令来执行该测试用例了，如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ sbt test</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">[info] <span class="type">HelloTests</span>:</span><br><span class="line">[info] - the name is set correctly in constructor</span><br><span class="line">[info] - a <span class="type">Person</span><span class="symbol">'s</span> name can be changed</span><br><span class="line">[info] <span class="type">Run</span> completed in <span class="number">581</span> milliseconds.</span><br><span class="line">[info] <span class="type">Total</span> number of tests run: <span class="number">2</span></span><br><span class="line">[info] <span class="type">Suites</span>: completed <span class="number">1</span>, aborted <span class="number">0</span></span><br><span class="line">[info] <span class="type">Tests</span>: succeeded <span class="number">2</span>, failed <span class="number">0</span>, canceled <span class="number">0</span>, ignored <span class="number">0</span>, pending <span class="number">0</span></span><br><span class="line">[info] <span class="type">All</span> tests passed.</span><br><span class="line">[success] <span class="type">Total</span> time: <span class="number">6</span> s, completed <span class="type">Aug</span> <span class="number">22</span>, <span class="number">2018</span> <span class="number">11</span>:<span class="number">55</span>:<span class="number">13</span> <span class="type">AM</span></span><br></pre></td></tr></table></figure>
+<h2 id="如何管理依赖包？"><a href="#如何管理依赖包？" class="headerlink" title="如何管理依赖包？"></a>如何管理依赖包？</h2><p>在 <code>build.sbt</code> 中配置行之间必须有空白行来分割，下面是包含一个依赖包的简单但是全面的文件：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">name := <span class="string">"scala-learning"</span></span><br><span class="line"></span><br><span class="line">version := <span class="string">"0.1"</span></span><br><span class="line"></span><br><span class="line">scalaVersion := <span class="string">"2.12.4"</span></span><br><span class="line"></span><br><span class="line">libraryDependencies ++= <span class="string">"org.scalatest"</span> %% <span class="string">"scalatest"</span> % <span class="string">"3.0.5"</span> % <span class="type">Test</span></span><br></pre></td></tr></table></figure>
+<p>如果想要添加多个依赖包，就可以定义一个 <code>Seq</code>：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies ++= <span class="type">Seq</span>(</span><br><span class="line">  <span class="string">"io.netty"</span> % <span class="string">"netty-all"</span> % <span class="string">"4.1.25.Final"</span>,</span><br><span class="line">  <span class="string">"org.apache.calcite"</span> % <span class="string">"calcite-core"</span> % <span class="string">"1.16.0"</span>,</span><br><span class="line">  <span class="string">"org.scalatest"</span> %% <span class="string">"scalatest"</span> % <span class="string">"3.0.5"</span> % <span class="type">Test</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>从上面的例子可以推断出，<code>build.sbt</code> 的入口其实是简单的键值对，其中 <code>name</code>，<code>version</code>，<code>scalaVersion</code> 等就是最常见的 SBT 的键，SBT 通过创建一个很大的 Map 来构建项目。</p>
+<p>这种方式就是管理依赖的方式（直接把 jar 包放到项目的 <code>lib</code> 目录下面的是非管理依赖的方式），可以自动下载管理某个 jar 包需要的其他依赖包。SBT 底层使用 Apache Ivy 来管理依赖，Ivy 也可以用于 Ant 和 Maven，因此你可以通过 SBT 在 Scala 项目中方便地使用 Java 的那些包。</p>
+<p>一般有两种添加依赖包的方式，第一种需要指定 <code>groupID</code>，<code>artifactID</code> 和 <code>revision</code>：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies += groupID % artifactID % revision</span><br></pre></td></tr></table></figure>
+<p>实例如：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies += <span class="string">"org.scalatest"</span> % <span class="string">"scalatest_2.12"</span> % <span class="string">"3.0.5"</span></span><br></pre></td></tr></table></figure>
+<p>第二种多了一个可选的参数 <code>configuration</code>：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies += groupID % artifactID % revision % configuration</span><br></pre></td></tr></table></figure>
+<p>还是上面的例子：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies += <span class="string">"org.scalatest"</span> % <span class="string">"scalatest_2.12"</span> % <span class="string">"3.0.5"</span> % <span class="type">Test</span></span><br></pre></td></tr></table></figure>
+<p>可以看到多了一个 <code>Test</code>，这个说明只是用于 test 的时候，这个配置可以理解为类似于 Maven 中的 scope。如下就是相应的 Maven 配置：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.scalatest&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;scalatest_2<span class="number">.12</span>&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;<span class="number">3.0</span><span class="number">.5</span>&lt;/version&gt;</span><br><span class="line">  &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>可以看到上面的 <code>scalatest_2.12</code> 有个 <code>2.12</code>，这个其实是 Scala 的版本，只有基于 Scala 的 Jar 包才会有这个依赖的 Scala 版本号的信息。而我们在 <code>build.sbt</code> 中是通过 <code>scalaVersion</code> 设置了 Scala 版本的，那么能不能把这个 <code>2.12</code> 省去或者使用 <code>scalaVersion</code> 这个参数设置呢，答案是肯定的，通过下面这种形式即可：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies += groupID %% artifactID % revision % configuration</span><br></pre></td></tr></table></figure>
+<p>细心的读者应该可以看出，第一个 <code>%</code> 变成了 <code>%%</code>，在 <code>groupID</code> 和 <code>artifactID</code> 之间加 <code>%%</code> 之后，<code>artifactID</code> 就不需要指定 Scala 版本了，SBT 会自动将其设置的 Scala 版本添加到这个值的后面，如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">scalaVersion := <span class="string">"2.12.4"</span></span><br><span class="line"></span><br><span class="line">libraryDependencies += <span class="string">"org.scalatest"</span> %% <span class="string">"scalatest"</span> % <span class="string">"3.0.5"</span> % <span class="type">Test</span></span><br></pre></td></tr></table></figure>
+<p>就等价于：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies += <span class="string">"org.scalatest"</span> % <span class="string">"scalatest_2.12"</span> % <span class="string">"3.0.5"</span> % <span class="type">Test</span></span><br></pre></td></tr></table></figure>
+<h2 id="如何给一个项目创建子项目"><a href="#如何给一个项目创建子项目" class="headerlink" title="如何给一个项目创建子项目"></a>如何给一个项目创建子项目</h2><p>首先创建两个子项目，目录结构如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">├── subproject1</span><br><span class="line">│   ├── build.sbt</span><br><span class="line">│   └── src</span><br><span class="line">│       └── main</span><br><span class="line">│           └── scala</span><br><span class="line">│               └── <span class="type">Foo</span>.scala</span><br><span class="line">├── subproject2</span><br><span class="line">│   ├── build.sbt</span><br><span class="line">│   └── src</span><br><span class="line">│       └── main</span><br><span class="line">│           └── scala</span><br><span class="line">│               └── <span class="type">Bar</span>.scala</span><br></pre></td></tr></table></figure>
+<p>其中子项目的 <code>build.sbt</code> 如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// name := "scala-learning subproject2"</span></span><br><span class="line">name := <span class="string">"scala-learning subproject1"</span></span><br><span class="line"></span><br><span class="line">version := <span class="string">"0.1"</span></span><br><span class="line"></span><br><span class="line">scalaVersion := <span class="string">"2.12.4"</span></span><br></pre></td></tr></table></figure>
+<p><code>Foo.scala</code> 如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ink.baixin.scalalearning.subproject1</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Foo</span> (<span class="params">name: <span class="type">String</span></span>)</span></span><br></pre></td></tr></table></figure>
+<p><code>Bar.scala</code> 如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ink.baixin.scalalearning.subproject2</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ink.baixin.scalalearning.subproject1._</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Bar</span>(<span class="params">name: <span class="type">String</span></span>)</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class"><span class="title">object</span> <span class="title">HelloFoo</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  println(<span class="type">Foo</span>(<span class="string">"Hello Foo"</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后再在根目录下的 <code>build.sbt</code> 中增加如下内容：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lazy</span> <span class="keyword">val</span> subproject1 = (project in file(<span class="string">"subproject1"</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">lazy</span> <span class="keyword">val</span> subproject2 = (project in file(<span class="string">"subproject2"</span>)).dependsOn(subproject1)</span><br><span class="line"></span><br><span class="line"><span class="comment">// aggregate: running a task on the aggregate project will also run it on the aggregated projects.</span></span><br><span class="line"><span class="comment">// dependsOn: a project depends on code in another project.</span></span><br><span class="line"><span class="comment">// without dependsOn, you'll get a compiler error: "object bar is not a member of package</span></span><br><span class="line"><span class="comment">// com.alvinalexander".</span></span><br><span class="line"><span class="keyword">lazy</span> <span class="keyword">val</span> root = (project in file(<span class="string">"."</span>))</span><br><span class="line">  .aggregate(subproject1, subproject2)</span><br><span class="line">  .dependsOn(subproject1, subproject2)</span><br></pre></td></tr></table></figure>
+<p>这里可以看到首先定义了 <code>subproject1</code> 和 <code>subproject2</code> 分别代表两个子项目的 SBT，然后定义了 <code>root</code> 作为父目录的 SBT。其中 <code>dependsOn</code> 是指依赖关系，可以直接使用其依赖项目的代码；而 <code>aggregate</code> 是指如果连带关系，如果父项目执行某个任务如 <code>compile</code>，那么两个子项目也会相应执行该任务。</p>
+<p>我们在父项目中写一个对象来测试是否能够实现代码依赖：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ink.baixin.scalalearning.sbt</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ink.baixin.scalalearning.subproject2._</span><br><span class="line"><span class="keyword">import</span> ink.baixin.scalalearning.subproject1._</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">MultipleProjectsExample</span> <span class="keyword">extends</span> <span class="title">App</span> </span>&#123;</span><br><span class="line">  println(<span class="type">Foo</span>(<span class="string">"I'm a Foo"</span>))</span><br><span class="line">  println(<span class="type">Bar</span>(<span class="string">"I'm a Bar"</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Foo</span>(<span class="type">I</span><span class="symbol">'m</span> a <span class="type">Foo</span>)</span><br><span class="line"><span class="type">Bar</span>(<span class="type">I</span><span class="symbol">'m</span> a <span class="type">Bar</span>)</span><br></pre></td></tr></table></figure>
+<p>上面就是在 Scala 中创建多模块项目的例子，实际开发中可能会遇到一些大型项目内部业务比较复杂，模块比较多，那么我们就可以考虑把他们分成几个小部分，分出公共的部分作为一个依赖项目，这样可以使我们的代码更加清晰有条理。</p>
+<h2 id="如何指定一个-Main-Class"><a href="#如何指定一个-Main-Class" class="headerlink" title="如何指定一个 Main Class"></a>如何指定一个 Main Class</h2><p>可以通过添加如下内容来设置 main class：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// set the main class for packaging the main jar</span></span><br><span class="line">mainClass in (<span class="type">Compile</span>, packageBin) := <span class="type">Some</span>(<span class="string">"ink.baixin.scalalearning.sbt.Hello"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// set the main class for the main 'sbt run' task</span></span><br><span class="line">mainClass in (<span class="type">Compile</span>, run) := <span class="type">Some</span>(<span class="string">"ink.baixin.scalalearning.sbt.Hello"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="如何使用-github-中的代码"><a href="#如何使用-github-中的代码" class="headerlink" title="如何使用 github 中的代码"></a>如何使用 github 中的代码</h2><p>现在我们想直接使用一个 github 开源库的代码，可以如下配置：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lazy</span> <span class="keyword">val</span> githubProject = <span class="type">RootProject</span>(uri(<span class="string">"https://github.com/Trigl/akka-learning.git"</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">lazy</span> <span class="keyword">val</span> root = (project in file(<span class="string">"."</span>)).dependsOn(githubProject)</span><br></pre></td></tr></table></figure>
+<p>这样设置以后就可以在代码中直接引用该开源库的代码了。</p>
+<h2 id="如何在-SBT-中设置-Ivy-仓库"><a href="#如何在-SBT-中设置-Ivy-仓库" class="headerlink" title="如何在 SBT 中设置 Ivy 仓库"></a>如何在 SBT 中设置 Ivy 仓库</h2><p>可以在 <code>build.sbt</code> 中使用 <code>resolvers</code> 来添加一个 Ivy 仓库：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resolvers += <span class="string">"repository name"</span> at <span class="string">"location"</span></span><br></pre></td></tr></table></figure>
+<p>示例如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">resolvers += <span class="string">"Java.net Maven2 Repository"</span> at <span class="string">"http://download.java.net/maven/2/"</span></span><br></pre></td></tr></table></figure>
+<p>当然也可以用 <code>Seq</code> 添加多个仓库：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">resolvers ++= <span class="type">Seq</span>(</span><br><span class="line">  <span class="string">"Typesafe"</span> at <span class="string">"http://repo.typesafe.com/typesafe/releases/"</span>,</span><br><span class="line">  <span class="string">"Java.net Maven2 Repository"</span> at <span class="string">"http://download.java.net/maven/2/"</span></span><br><span class="line">  )</span><br></pre></td></tr></table></figure>
+<h2 id="如何设置-SBT-的日志等级"><a href="#如何设置-SBT-的日志等级" class="headerlink" title="如何设置 SBT 的日志等级"></a>如何设置 SBT 的日志等级</h2><p>这个简单，添加如下内容即可：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">logLevel := <span class="type">Level</span>.<span class="type">Info</span></span><br></pre></td></tr></table></figure>
+<h2 id="如何部署一个完整可执行的-Jar-包"><a href="#如何部署一个完整可执行的-Jar-包" class="headerlink" title="如何部署一个完整可执行的 Jar 包"></a>如何部署一个完整可执行的 Jar 包</h2><p>这个问题看起来很 easy 嘛，直接使用 <code>sbt package</code> 不就得了，实际上是不行的，因为 <code>package</code> 命令只会把本项目 <code>src/main/scala</code>，<code>src/main/java</code>，<code>src/main/resources</code> 下的文件打成一个 Jar 包，而有两类重要且必须的内容却不会打包，这两类是：</p>
+<ul>
+<li>项目的依赖包，即在 <code>build.sbt</code> 中定义的那些依赖包。</li>
+<li>用来在分布式环境中执行时所需要的 Scala 的 Jar 包，因为一般分布式环境中是通过 Java 来执行的，这个时候就需要指定 Scala 的包才可以执行 Scala 程序。</li>
+</ul>
+<p>那么针对这个问题如何解决呢，我们推荐的方法就是使用开源工具 <a href="https://github.com/sbt/sbt-assembly" target="_blank" rel="noopener">sbt-assembly</a> 来打包，这个项目会把需要的所有依赖都包含进来，部署一个在分布式环境可执行的 Jar 包。</p>
+<p>那么如何使用呢，首先在 <code>project</code> 目录下面添加文件 <code>assembly.sbt</code>：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addSbtPlugin(<span class="string">"com.eed3si9n"</span> % <span class="string">"sbt-assembly"</span> % <span class="string">"0.14.7"</span>)</span><br></pre></td></tr></table></figure>
+<p>然后执行 <code>sbt assembly</code> 就可以打包了，就是这么简单，当然还可以在 <code>build.sbt</code> 中添加一些更加详细的配置。</p>
+<h2 id="如何发布你的代码"><a href="#如何发布你的代码" class="headerlink" title="如何发布你的代码"></a>如何发布你的代码</h2><p>发布代码可以使用命令 <code>publish</code> 或者 <code>publishLocal</code>，<code>publish</code> 是将项目发布到一个远程仓库，所以需要设置远程仓库的地址，现在我设置一个本机路径作为仓库地址：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// publish project to a remote repository</span></span><br><span class="line">publishTo in <span class="type">ThisBuild</span> := <span class="type">Some</span>(<span class="type">Resolver</span>.file(<span class="string">"file"</span>, <span class="keyword">new</span> <span class="type">File</span>(<span class="string">"/Users/will/tmp"</span>)))</span><br></pre></td></tr></table></figure>
+<p>然后执行 <code>sbt publish</code> 结果如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">[info] 	published scala-learning_2<span class="number">.12</span> to /<span class="type">Users</span>/will/tmp/scala-learning/scala-learning_2<span class="number">.12</span>/<span class="number">0.1</span>.part/scala-learning_2<span class="number">.12</span><span class="number">-0.1</span>.pom</span><br><span class="line">[info] 	published scala-learning_2<span class="number">.12</span> to /<span class="type">Users</span>/will/tmp/scala-learning/scala-learning_2<span class="number">.12</span>/<span class="number">0.1</span>.part/scala-learning_2<span class="number">.12</span><span class="number">-0.1</span>.jar</span><br><span class="line">[info] 	published scala-learning_2<span class="number">.12</span> to /<span class="type">Users</span>/will/tmp/scala-learning/scala-learning_2<span class="number">.12</span>/<span class="number">0.1</span>.part/scala-learning_2<span class="number">.12</span><span class="number">-0.1</span>-sources.jar</span><br><span class="line">[info] 	published scala-learning_2<span class="number">.12</span> to /<span class="type">Users</span>/will/tmp/scala-learning/scala-learning_2<span class="number">.12</span>/<span class="number">0.1</span>.part/scala-learning_2<span class="number">.12</span><span class="number">-0.1</span>-javadoc.jar</span><br><span class="line">[info] 	publish commited: moved /<span class="type">Users</span>/will/tmp/scala-learning/scala-learning_2<span class="number">.12</span>/<span class="number">0.1</span>.part</span><br><span class="line">[info] 		to /<span class="type">Users</span>/will/tmp/scala-learning/scala-learning_2<span class="number">.12</span>/<span class="number">0.1</span></span><br><span class="line">[success] <span class="type">Total</span> time: <span class="number">1</span> s, completed <span class="type">Aug</span> <span class="number">22</span>, <span class="number">2018</span> <span class="number">4</span>:<span class="number">13</span>:<span class="number">46</span> <span class="type">PM</span></span><br></pre></td></tr></table></figure>
+<p>另外一个发布命令是 <code>publishLocal</code>，会将项目发布到本地的 Ivy 仓库，在本机的其他项目中可以直接调用这个包，只要你在其他项目的 <code>build.sbt</code> 中写入这个包的依赖即可，如下；</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">libraryDependencies += <span class="string">"scala-learning"</span> %% <span class="string">"scala-learning"</span> % <span class="string">"0.1"</span></span><br></pre></td></tr></table></figure>
+<h2 id="Refer"><a href="#Refer" class="headerlink" title="Refer"></a>Refer</h2><p><a href="https://book.douban.com/subject/20876182/" target="_blank" rel="noopener">Scala Cookbook</a><br><a href="https://www.scala-sbt.org/1.0/docs/Basic-Def-Examples.html" target="_blank" rel="noopener">build.sbt 示例</a><br><a href="https://github.com/Trigl/scala-learning" target="_blank" rel="noopener">项目源码</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/08/02/spark-streaming-kinesis/"
+                              data-toggle="tooltip" data-placement="top" title="Spark Streaming 集成 AWS Kinesis">
+                              Previous<br><span>Spark Streaming 集成 AWS Kinesis</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/10/18/ReentrantReadWriteLock/"
+                              data-toggle="tooltip" data-placement="top" title="ReentrantReadWriteLock 使用">
+                              Next<br><span>ReentrantReadWriteLock 使用</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

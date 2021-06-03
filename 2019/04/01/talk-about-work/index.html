@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          聊聊这几年的工作经历 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2019/04/01/talk-about-work/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/talk-about-work.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=因崔斯汀" title="因崔斯汀">因崔斯汀</a>
+                        
+                    </div>
+                    <h1>聊聊这几年的工作经历</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2019-04-01,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>从 15 年毕业算起，不知不觉已经快要工作 4 个年头了，不久前刚从上一家公司离职，趁着中间这几天难得的空档期，回忆一下自己这几年的工作经历吧。</p>
+</blockquote>
+<h2 id="关于找工作这件事"><a href="#关于找工作这件事" class="headerlink" title="关于找工作这件事"></a>关于找工作这件事</h2><p>记得刚毕业的时候，找工作那叫一个难字了得。因为我大学鬼使神差的被调剂到了数学专业，这个专业如果不考研的话可能最对口的工作就是数学老师了，而考研的一般都会向金融方向发展，原因嘛你懂得，其实我们学院的学习氛围还是不错的，但还是形成了一个很尴尬的局面：一方面知道数学专业不好找工作，另一方面呢学院内部的学习氛围都是向什么经济学和金融发展，就导致直到工作了一年，我都不知道牛客网、Leetcode 是什么东西。</p>
+<p>毕业之后本着有人要我就干的原则开始做 Java 开发，在新手村首先拿到了 SSM 这个新手套装，然后又学习了一些 Linux 和数据库的一些技能，积累了差不多一两年工作经验的时候去跳槽才发现自己学的都是一些武功招数，各个大厂好像都很看重你的内功：「算法」。</p>
+<p>到了最近，差不多工作快 4 年的时候，明显感觉到工作机会比工作一两年的时候多了很多，虽然也并不是一帆风顺，但是总体上也可以跟一些大厂过过招了。</p>
+<p>回顾自己为数不多的几次跳槽经历，其实并不是工作年限越长找工作就越顺利，因为人总是往高处走的，每一次的跳槽都要求去到一个更好的地方，遇到更多优秀的人，所以跳槽的难度其实也是在逐渐上升的。而且生活并不是电视剧，电视剧里面主角从新手村出发后，一路遇到不同的 boss，虽然 boss 等级越来越高，但是主角也越来越强大越来越游刃有余。然鹅现实生活就不同了，现实是一个充满变数的存在，所以：</p>
+<blockquote>
+<p>找工作也是看运气的。</p>
+</blockquote>
+<p>现实生活中找工作这件事就是能力运气缺一不可，甚至有时候运气的成分比能力都要大，有时候你的能力其实已经达到了，但是就是缺那么一点运气。运气呢是个概率问题，是个不可确定因素，但是好消息就是我们有很多条命，那么多的公司，这家不成换一家，只要能力基本达到了，总会有运气好的时候。这就是所谓的：</p>
+<blockquote>
+<p>运气是给有准备的人的。</p>
+</blockquote>
+<p>另外就是跳槽的时候千万不要裸辞，有个猎头跟我讲过，他那边很优秀的候选人也得需要两个月左右的时间才能找到满意的工作，对于平常人来说这个时间可能是半年，所以如果你不是真的非常牛逼的话，还是老老实实呆在现在的地方，做好打持久战的准备。</p>
+<h2 id="关于技术成长"><a href="#关于技术成长" class="headerlink" title="关于技术成长"></a>关于技术成长</h2><p>如何更好的技术成长是每一个技术人一直在探索的问题，我个人经历了两个阶段的改变。</p>
+<p>第一个阶段是刚毕业的时候，那个时候学东西充满了学院派的作风：把所有接触过的新知识都尽可能详尽地列出其整体技能树，然后循序渐进地按照 <code>写 Demo</code> -&gt; <code>看官方文档</code> -&gt; <code>看相关书籍和博客</code> -&gt; <code>实际生产环境中应用</code> 这个顺序来学习，理想很美好，现实呢，就像我们背英文字典一样，每次都止步于 <code>abandon</code>，😢</p>
+<p>到了现在，学习东西开始有了针对性和选择性，我会深入掌握的知识主要是两种：</p>
+<ol>
+<li><strong>工作中需要的</strong></li>
+<li><strong>自己感兴趣的</strong></li>
+</ol>
+<p>而且每次深入研究一个东西之前都会有一个确切的结果，也就是 <strong>结果导向</strong>。比如在 Spark Streaming 中如何实现数据的 <code>exactly-once</code> 语义，为了实现这个目标去找相应的资料研究，或者通过用 Scala 来写一个网站来学习 Scala。</p>
+<p>总之，之前学习技术的方式，是 <strong>为了学习而学习</strong>。现在学习技术的方式，是</p>
+<blockquote>
+<p>为了达成某一个具体目标而去学习。</p>
+</blockquote>
+<p>学习方式上的另一个转变是从 <strong>全面并且循序渐进的学习整个知识体系</strong> 变成了 <strong>从最初就开始深入挖掘某一点</strong>。</p>
+<p>之前学习的时候的习惯是 demo 代码是 demo 代码，生产环境代码是生产环境代码，最开始只要写出 demo 代码即可，后面随着学习的加深慢慢重构。实际操作下来发现，线上没出问题的话开始写的 demo 代码我并不会专门花时间去重构，线上出了问题我只能花时间去解决这些 demo 代码导致的 bug。</p>
+<p>所以现在研究一个东西，目标一定是 <strong>生产环境可用</strong>，这就要求从你第一眼开始接触这个东西开始就不要妄想只是简单了解一下。当然人的精力是有限的，不可能把所有东西都研究透彻，所以正如我上面所说，深入研究的东西仅仅是其中的一个点而已。</p>
+<p>每次都研究一个点就导致了一个问题，知识没有体系。</p>
+<blockquote>
+<p>所以我们一定要有一个属于自己的技能树，而且这个技能树应该尽量和当前市场要求的技能保持一致，勇于去研究新的技术。</p>
+</blockquote>
+<p>比如我开了一个专门的 git 仓库 <a href="https://github.com/Trigl/i-want-to-learn" target="_blank" rel="noopener">i-want-to-learn</a> 作为知识的输入，用来总结自己的技能，然后通过写博客来输出。输入到输出才能形成一个完整的闭环，点亮真正属于自己的技能树。</p>
+<h2 id="关于职业素养"><a href="#关于职业素养" class="headerlink" title="关于职业素养"></a>关于职业素养</h2><p>最开始我以为工程师是一种简单而又纯粹的动物，只要管好自己的一亩三分地就好了，不会跟其他人有很多交集。而「职业素养」这种看起来就很高大上的词汇，应该属于那些掌握经济命脉的金领阶层中。</p>
+<p>但是随着遇到很多优秀的工程师和更多没那么优秀的工程师以后，我发现职业素养对工程师来说也是重要并且应当有一个标准的。</p>
+<blockquote>
+<p>首先，一个总是有很多问题要问的工程师总是不会太差。</p>
+</blockquote>
+<p>对于新手程序员或者是一个刚来公司的新人来说，有很多未知的东西，有时候他们会问“老鸟”一些很“弱智”的问题。好一点的老鸟呢，告诉他们答案，然后告诉他们下次遇到这种简单的问题先通过什么途径去自己解决一下，对于脾气不好的老鸟呢，可能就直接告诉他们请先读完 <a href="https://book.douban.com/subject/20428922/" target="_blank" rel="noopener">学会提问</a> 再过来问我。</p>
+<p>但不管提的问题是不是很基础，自己有没有先做大量的功课，我觉得一个工程师能够总是对自己的工作提出一些问题，并产生想要弄清楚的好奇心，这就是一种很好的态度。君不见多少新手程序员，老鸟告诉他这个东西只要跑一下这个脚本，然后配置一下这个参数就可以跑了，他们只会把这些配置和步骤牢记于心，但对其中的原理却懒得去弄明白。君不见多少老司机，别人问他这个代码为什么这么写的，他的答案直接就是以前的人就是这么写的啊，你照着写就对了，而不会考虑以前的人的代码有没有错误有没有重构的可能性。</p>
+<p>所以，如果你真的是一个新手，那就大胆去提问吧，不要害怕别人说你这么简单的问题自己怎么不会查一下，也不要怕给别人造成困扰，为了进步脸皮厚点不丢人，但是也不要忘了没事请帮助你的人喝杯咖啡噢。</p>
+<blockquote>
+<p>当然，归根结底，一个工程师最重要的还是解决问题的能力。</p>
+</blockquote>
+<p>虽然爱因斯坦说过，提出一个问题比解决一个问题更重要，但是在工程界这个说法行不通，因为工程界其实就是为了解决各种商业上问题而存在的。所以当一个程序员走过新手村以后，就要努力尝试着去自己解决问题了，毕竟师父领进门修行在个人嘛。</p>
+<p>而问题也有多种解决方法。想当年当熟练掌握谷歌搜索和 <code>ctrl+c/v</code> 以后，我一度以为自己已经是不世出的高手了。直到遇到一个学习某个技术要把最原始的论文找出来读，网络上找不到任何学习资料就直接上去生撸源码都要弄清楚的真大神，才知道原来问题还可以被这样解决。</p>
+<p>解决问题的方法有千万种，如果不知道使用哪一种，那么每一种都试着用一下，然后再试着弄清楚为什么这么解决，总没错。</p>
+<blockquote>
+<p>主动一点，再主动一点，拥抱新世界。</p>
+</blockquote>
+<p>去年新东方的年会火了，其中有一句歌词这样写的：</p>
+<p>「干活的累死累活，有成果那又如何，到头来只不过写 PPT 的」</p>
+<p>所以各位累死累活的程序员们，不要总是守着自己的一亩三分地，以自己是技术人员自居而两耳不闻窗外事。没事向领导汇报汇报工作，既能反映自己做过的工作又能看自己的方向是不是正确，有没有可以改进的地方。</p>
+<p>另一方面，主动去发现问题，主动去承担更多的责任。这块代码是不是可以重构一下呀，这个流程是不是太慢了，能不能引入效率工具啊。主动去找问题找事情，而不只是一个堆砌业务代码的码农。</p>
+<h2 id="关于-ETA"><a href="#关于-ETA" class="headerlink" title="关于 ETA"></a>关于 ETA</h2><p>上面提到了解决问题的能力，但是解决问题呢也是要有期限的，这就是 ETA。可能很多工程师都有过被 PM 强制缩减 ETA 的经历，导致听到 ETA 这个词就眉头一皱菊花一紧。其实我觉得 ETA 是一个非常有意义的东西，不仅对于工作，对于我们人生中的很多事情都有很好的指导意义。额这么说好像也有点绝对，比如感情就不能定 ETA，可能因为我是一个摩羯座，所以任何事情都是结果导向的，没有好处的事情真的是没有动力去做，有时候可能 ETA 带来的压力就是我的动力了哈哈哈哈。</p>
+<p>为什么我说 ETA 很重要呢？首先给解决问题定一个 ETA，说明你真的是把这个事情当作了一个确定的目标，有一个确切的目标是一切的前提。当你问一个人他的梦想或者目标是什么的时候，如何判断他是真的想做还是只是说说而已呢，最简单的就是看他说完这个梦想以后有没有加上一个确切的时间期限。</p>
+<blockquote>
+<p>没有 ETA 的目标都是在做梦。</p>
+</blockquote>
+<p>比如一个人说“想在 30 岁之前年薪百万”一定比说“未来想成为一个架构师”的可信度高。其次，</p>
+<blockquote>
+<p>合理准确地预估 ETA 其实是一件很难的事情，考察你的多个能力。</p>
+</blockquote>
+<p>首先遇到一个问题，你需要快速弄清楚这个问题的前因后果吧，需要你有很强的理解能力吧。某些不是很清楚的点可能还需要询问他人，这也会要求你有一定的沟通能力吧。第三，弄清楚问题以后，能够合理拆分问题，大事化小小事化了，这也是一种很重要的能力。第四，一般不会给你很长的时间去调研然后预估 ETA，而在你差不多能预估出 ETA 的时候，说明你心里已经有了至少一种解决方案，在这么短的时间内能够完成调研和预估时间，这需要很强的学习能力和行动力吧。</p>
+<p>所以 ETA 真的是一个很锻炼人的东西，我们应当试着去改变自己对 ETA 的固有思维。尽管有时候“迫于无奈”，需要多报 ETA，但我们自己还是应该每次都尽可能准确的定一个 ETA 并且制定出给自己的奖罚制度，甚至可以尝试着把 ETA 疗法扩展到生活中的各个方面。</p>
+<h2 id="关于未来"><a href="#关于未来" class="headerlink" title="关于未来"></a>关于未来</h2><p>逼逼了半天，突然想起一句话，「说的比唱的好听」。大道理都懂，还是过不好这一生。其实我并不是一个对技术很狂热的人，甚至有时候觉得技术就应当为业务服务，没有业务场景的支撑再好的技术也毫无意义，当时选择做技术这条路也是因为别的什么都不会。o(TヘTo)。</p>
+<p>但是既然选择了，那就坚持吧。</p>
+<blockquote>
+<p>有时候并不是因为热爱才坚持，而是坚持了才热爱。</p>
+</blockquote>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2019/03/21/offer-sword-26/"
+                              data-toggle="tooltip" data-placement="top" title="「剑指 Offer」面试题 26：复杂链表的复制">
+                              Previous<br><span>「剑指 Offer」面试题 26：复杂链表的复制</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2019/04/06/offer-sword-27/"
+                              data-toggle="tooltip" data-placement="top" title="「剑指 Offer」面试题 27：二叉搜索树与双向链表">
+                              Next<br><span>「剑指 Offer」面试题 27：二叉搜索树与双向链表</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=因崔斯汀" title="因崔斯汀">因崔斯汀</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

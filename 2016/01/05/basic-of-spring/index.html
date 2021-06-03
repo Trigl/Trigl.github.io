@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Basic of Spring - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2016/01/05/basic-of-spring/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/post-bg-spring.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Spring" title="Spring">Spring</a>
+                        
+                    </div>
+                    <h1>Basic of Spring</h1>
+                    <h2 class="subheading">装配 bean</h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2016-01-05,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>Spring bean 是基础中的基础，这里用一些生动的例子来讲解。</p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在讲解Spring配置beans之前首先想一下一部成功的电影都需要哪些成员参与。首先，最重要的是要有导演、编剧、演员和投资人；其次，还有没那么明显的成员，音乐人、特技演员和艺术指导；此外，还有其他很重要但是容易被忽略的人，调音师、服装师、化妆师、宣传员、摄影师、摄影师助手、灯光指导和外卖小哥。一部成功的电影应当是将各个人员合理而且有序的组织起来，然后各自完成他们各自的工作，他们之间会有很多联系，大部分工作也需要很多人员共同完成。</p>
+<p>对应到一个应用中，有很多个对象，这些对象之间只有相互发送消息才能实现功能，在原始的Java程序中，使各个对象产生联系的方法就是不停地new来new去，这就导致了代码复杂化，使其难以复用和实现单元测试。而在Spring里面，一个对象当需要用到另一个对象的时候，它并不负责找到这个对象并且创建它，相反，仅仅给出需要的对象的引用就可以了，具体的对象实例是放在container里面的。</p>
+<p>将一个应用中不同对象联系起来的行为就是依赖注入（dependency injection）的本质，称之为装配（wiring），本文讲解的就是装配beans的方式，这些内容是Spring最常用到的。</p>
+<hr>
+<h2 id="声明bean"><a href="#声明bean" class="headerlink" title="声明bean"></a>声明bean</h2><h4 id="在XML文件中配置Spring"><a href="#在XML文件中配置Spring" class="headerlink" title="在XML文件中配置Spring"></a>在XML文件中配置Spring</h4><p>前文已经说过，容器是Spring的基础，而我们将各个beans创建出来并且将它们联系起来是通过一个或多个XML文件的配置来实现的。当在XML中声明beans的时候，基本元素就是<code>&lt;beans&gt;</code>，一个标准的Spring配置的XML文件如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag"><span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag"><span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Bean declarations go here --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在<code>&lt;beans&gt;</code>里面可以做Spring的相关配置，包括<code>&lt;bean&gt;</code>声明。但是<code>beans</code>并非Spring唯一的命名空间，Spring框架的核心总共有十个配置的命名空间，如下：</p>
+<ul>
+<li>aop：为声明切面以及将用@AspectJ注解的类自动代理为Spring切面提供了配置元素</li>
+<li>beans：声明和装配bean，是Spring最核心也是最原始的命名空间</li>
+<li>context：用来配置Spring应用上下文环境的元素，包括自动检测和装配bean以及注入某些非Spring直接管理的对象的能力。</li>
+<li>jee：提供了与Java EE API的集成，比如JNDI和EJB（原文：Offers integration with Java EE APIs such as JNDI and EJB.）</li>
+<li>jms：为声明消息驱动的POJOs提供了配置元素（不是太懂，原文：Provides configuration elements for declaring message-driven POJOs.）</li>
+<li>lang：可以声明由Groovy，JRuby或者BeanShell脚本实现的bean（原文：Enables declaration of beans that are implemented as Groovy, JRuby, or BeanShell scripts.）</li>
+<li>mvc：可以使用MVC的能力，如面向注解的控制器、视图控制器和拦截器</li>
+<li>oxm：提供Spring的对象到XML的映射</li>
+<li>tx：提供声明的事物配置（原文：Provides for declarative transaction configuration.）</li>
+<li>util：提供各种各样的工具类元素，包括把集合声明为bean、支持属性占位符元素（原文：A miscellaneous selection of utility elements. Includes the ability to declare collections as beans and support for property placeholder elements.）</li>
+</ul>
+<h4 id="声明一个简单的bean"><a href="#声明一个简单的bean" class="headerlink" title="声明一个简单的bean"></a>声明一个简单的bean</h4><p>首先写一个非常实例：用Spring配置一个bean，这个bean指向的类里有一个方法，用来描述一下动作：java学习者在写博客。</p>
+<p><strong>首先写出这个类：Javaer</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Java程序员</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-5下午11:13:16</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Javaer</span> <span class="keyword">implements</span> <span class="title">Coder</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> blogNum = <span class="number">2</span>;<span class="comment">//博客数</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Javaer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Javaer</span><span class="params">(<span class="keyword">int</span> blogNum)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.blogNum = blogNum;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Trigl is writing "</span> +  blogNum + <span class="string">" blogs."</span>);</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>继承的接口：Coder</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Coder接口类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-5下午11:15:27</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Coder</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继承的目的是为了减藕，毋庸多言。</p>
+<p><strong>XML配置bean：spring-idol.xml</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag"><span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag"><span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Bean declarations go here --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"javaer"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.Javaer"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>&lt;bean&gt;</code>是Spring中最基本的配置单元，它会告诉Spring为你创建一个对象。id属性是这个bean的名字，通过它指向Spring容器。class属性说明这个bean对应的类。</p>
+<p>当Spring的容器加载bean的时候，就会使用默认的构造器实例化名为javaer的bean，但是本质上，javaer的创建就是通过以下的Java代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> com.springinaction.springidol.Javaer();</span><br></pre></td></tr></table></figure>
+<p><strong>在main方法中加载加载上下文环境进行测试</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">	<span class="string">"com/springinaction/springidol/spring-idol.xml"</span>);</span><br><span class="line">	Coder coder = (Coder) ctx.getBean(<span class="string">"javaer"</span>);</span><br><span class="line">	coder.perform();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果输出为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Trigl is writing 2 blogs.</span><br></pre></td></tr></table></figure>
+<h4 id="在bean中自定义构造器参数"><a href="#在bean中自定义构造器参数" class="headerlink" title="在bean中自定义构造器参数"></a>在bean中自定义构造器参数</h4><p>我们可以通过自定义一个构造器来创建一个对象，这个操作同样可以在Spring中实现，只要将构造器的参数写进XML的bean配置即可。</p>
+<p>还是举一个实例来说明：用Spring配置一个bean，这个bean指向的类里有一个方法，用来描述一下动作：java学习者在写10篇博客同时还在听歌。（这里加入10和歌曲是为了在构造器中加入一个原始数据类型和一个类作为构造器参数）</p>
+<p><strong>首先写出主体类：SongJavaer</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 听歌的Java程序员</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-6上午12:29:11</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SongJavaer</span> <span class="keyword">extends</span> <span class="title">Javaer</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Song song;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SongJavaer</span><span class="params">(<span class="keyword">int</span> blogNum, Song song)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>(blogNum);</span><br><span class="line">		<span class="keyword">this</span>.song = song;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">super</span>.perform();</span><br><span class="line">		System.out.println(<span class="string">"While listening..."</span>);</span><br><span class="line">		song.play();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于这个例子与上个例子相比多了个听歌这个动作，所以我们新建一个SongJavaer类继承上面的Javaer类，可以看到与上面的例子相比多了个构造方法，这个构造方法的参数一个是int原始数据类型的，一个是类Song，在下面我会给出在XML文件中配置构造器参数的方法。</p>
+<p><strong>Song接口类：Song</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Song接口</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-6上午12:36:05</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Song</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">play</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>再写一个继承Song接口的类：SongJay</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Jay的歌</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-6上午12:37:28</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SongJay</span> <span class="keyword">implements</span> <span class="title">Song</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> String[] LYRICS = &#123;</span><br><span class="line">		<span class="string">"一盏离愁孤灯伫立在窗口"</span>,</span><br><span class="line">		<span class="string">"我在门后假装你人还没走"</span>,</span><br><span class="line">		<span class="string">"旧地如重游月圆更寂寞"</span>,</span><br><span class="line">		<span class="string">"夜半清醒的烛火不忍苛责我"</span>,</span><br><span class="line">		<span class="string">"一壶漂泊浪迹天涯难入喉"</span>,</span><br><span class="line">		<span class="string">"你走之后酒暖回忆思念瘦"</span>,</span><br><span class="line">		<span class="string">"水向东流时间怎么偷"</span>,</span><br><span class="line">		<span class="string">"花开就一次成熟我却错过"</span>,</span><br><span class="line">		<span class="string">"谁在用琵琶弹奏一曲东风破"</span>,</span><br><span class="line">		<span class="string">"岁月在墙上剥落看见小时候"</span>,</span><br><span class="line">		<span class="string">"犹记得那年我们都还很年幼"</span>,</span><br><span class="line">		<span class="string">"而如今琴声幽幽我的等候你没听过"</span>,</span><br><span class="line">		<span class="string">"谁在用琵琶弹奏一曲东风破"</span>,</span><br><span class="line">		<span class="string">"枫叶将故事染色结局我看透"</span>,</span><br><span class="line">		<span class="string">"篱笆外的古道我牵着你走过"</span>,</span><br><span class="line">		<span class="string">"荒烟漫草的年头就连分手都很沉默"</span></span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">play</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; LYRICS.length; i++)&#123;</span><br><span class="line">			System.out.println(LYRICS[i]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>在XML文件spring-idol.xml中配置bean</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"songJavaer"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.SongJavaer"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">"20"</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">ref</span>=<span class="string">"songJay"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"songJay"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.SongJay"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，在<code>&lt;bean&gt;</code>中配置构造器参数是通过<code>&lt;constructor-arg&gt;</code>属性来配置的。其中对于简单的原始数据类型如int、String类型，是通过<code>&lt;constructor-arg&gt;</code>的value属性来传参的；对于具体的类，是通过使用<code>&lt;constructor-arg&gt;</code>的ref属性来传参的，ref中的值等于相应bean的id。</p>
+<p><strong>在main方法中加载上下文环境进行测试</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">			<span class="string">"com/springinaction/springidol/spring-idol.xml"</span>);</span><br><span class="line">	Coder coder = (Coder) ctx.getBean(<span class="string">"songJavaer"</span>);</span><br><span class="line">	coder.perform();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>控制台输出的结果是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Trigl is writing 20 blogs.</span><br><span class="line">While listening...</span><br><span class="line">一盏离愁孤灯伫立在窗口</span><br><span class="line">我在门后假装你人还没走</span><br><span class="line">旧地如重游月圆更寂寞</span><br><span class="line">夜半清醒的烛火不忍苛责我</span><br><span class="line">一壶漂泊浪迹天涯难入喉</span><br><span class="line">你走之后酒暖回忆思念瘦</span><br><span class="line">水向东流时间怎么偷</span><br><span class="line">花开就一次成熟我却错过</span><br><span class="line">谁在用琵琶弹奏一曲东风破</span><br><span class="line">岁月在墙上剥落看见小时候</span><br><span class="line">犹记得那年我们都还很年幼</span><br><span class="line">而如今琴声幽幽我的等候你没听过</span><br><span class="line">谁在用琵琶弹奏一曲东风破</span><br><span class="line">枫叶将故事染色结局我看透</span><br><span class="line">篱笆外的古道我牵着你走过</span><br><span class="line">荒烟漫草的年头就连分手都很沉默</span><br></pre></td></tr></table></figure>
+<p><strong>通过工厂方法创建单实例</strong></p>
+<p>在Spring中可以将一个单实例类配置成为一个bean，如下面的Head</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 工厂方法实现单实例类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-6下午08:46:01</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Head</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Head</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">HeadSingletonHolder</span> </span>&#123;</span><br><span class="line">		<span class="keyword">static</span> Head instance = <span class="keyword">new</span> Head();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Head <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> HeadSingletonHolder.instance;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在XML中的配置为：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"theHead"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.Head"</span> <span class="attr">factory-method</span>=<span class="string">"getInstance"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>单实例类每次创建都是以static的形式，这就保证了每次创建的对象都是一样的。在Spring中的配置是通过<code>&lt;bean&gt;</code>元素中的factory-method属性来配置，里面的值对应于类中的一个static方法getInstance。注意factory-method不仅局限于将一个单实例配置成为bean，对于任何你想要编写一个通过static方法创造类的时候，都可以使用工厂方法。</p>
+<h4 id="Bean的作用域"><a href="#Bean的作用域" class="headerlink" title="Bean的作用域"></a>Bean的作用域</h4><p>所以的Spring的bean都默认是单实例的，即每次Spring分配一个bean以后，总是会产生完全相同的对象。有时候我们不需要单实例，而是需要每次都产生唯一的实例。比如说买票，必须保证每次创建票的bean时候都是唯一的，我们可以通过以下方式来配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"ticket"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.Ticket"</span> <span class="attr">scope</span>=<span class="string">"prototype"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>也就是通过设置<code>&lt;bean&gt;</code>的scope属性值为prototype来保证每次加载的bean都会创造唯一的实例。</p>
+<hr>
+<h2 id="注入bean属性"><a href="#注入bean属性" class="headerlink" title="注入bean属性"></a>注入bean属性</h2><p>上文中讲的是构造器注入的方式，现在讲如何注入bean的属性。bean的属性是什么，其实就是一个类对应的数据成员。当一个类定义了一个数据成员以后，一般就会有对应于这个数据成员的setXXX()和getXXX()方法，而Spring注入bean属性就是通过setter注入的。</p>
+<h4 id="注入简单的值和引用"><a href="#注入简单的值和引用" class="headerlink" title="注入简单的值和引用"></a>注入简单的值和引用</h4><p>仍然先举一个例子：用Spring配置一个bean，给这个bean注入属性，这个bean指向的类里有一个方法，用来描述一下动作：java学习者在写30篇博客同时还在听歌。</p>
+<p><strong>首先还是先写一个主体类：SongJavaer2</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 听歌的编程者</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-6下午11:01:14</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SongJavaer2</span> <span class="keyword">implements</span> <span class="title">Coder</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> blogNum;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setBlogNum</span><span class="params">(<span class="keyword">int</span> blogNum)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.blogNum = blogNum;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> Song song;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSong</span><span class="params">(Song song)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.song = song;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Trigl is writing "</span> +  blogNum + <span class="string">" blogs."</span>);</span><br><span class="line">		System.out.println(<span class="string">"While listening..."</span>);</span><br><span class="line">		song.play();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继承的接口Coder.java见上面，这个类定义了两个数据成员：int类型的blogNum和类Song的对象song，下面我们将实现用Spring将这两个属性注入。</p>
+<p><strong>在XML文件中配置bean</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"songJavaer2"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.SongJavaer2"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"blogNum"</span> <span class="attr">value</span>=<span class="string">"30"</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"song"</span> <span class="attr">ref</span>=<span class="string">"songJay"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"songJay"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.SongJay"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p>可以看到，Spring注入属性是通过<code>&lt;bean&gt;</code>元素的<code>&lt;property&gt;</code>属性来实现的，其中name的值对应所注入的类的数据成员，也即bean的属性。当注入普通的原始数据成员类型如整型、字符型的时候，是用value来赋值的；当注入另一个bean的引用的时候，是用ref来赋值的。</p>
+<p><strong>main方法加载上下文环境进行测试</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">	<span class="string">"com/springinaction/springidol/spring-idol.xml"</span>);</span><br><span class="line">	Coder coder = (Coder) ctx.getBean(<span class="string">"songJavaer2"</span>);</span><br><span class="line">	coder.perform();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>控制台输出结果是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Trigl is writing 30 blogs.</span><br><span class="line">While listening...</span><br><span class="line">一盏离愁孤灯伫立在窗口</span><br><span class="line">我在门后假装你人还没走</span><br><span class="line">旧地如重游月圆更寂寞</span><br><span class="line">夜半清醒的烛火不忍苛责我</span><br><span class="line">一壶漂泊浪迹天涯难入喉</span><br><span class="line">你走之后酒暖回忆思念瘦</span><br><span class="line">水向东流时间怎么偷</span><br><span class="line">花开就一次成熟我却错过</span><br><span class="line">谁在用琵琶弹奏一曲东风破</span><br><span class="line">岁月在墙上剥落看见小时候</span><br><span class="line">犹记得那年我们都还很年幼</span><br><span class="line">而如今琴声幽幽我的等候你没听过</span><br><span class="line">谁在用琵琶弹奏一曲东风破</span><br><span class="line">枫叶将故事染色结局我看透</span><br><span class="line">篱笆外的古道我牵着你走过</span><br><span class="line">荒烟漫草的年头就连分手都很沉默</span><br></pre></td></tr></table></figure>
+<h4 id="注入内部bean"><a href="#注入内部bean" class="headerlink" title="注入内部bean"></a>注入内部bean</h4><p>一般来说，我们注入属性时引用的bean还可以被其他bean所引用，但是如果我们想单独霸占一个bean，即仅被某一个bean所使用，其他bean无法使用，那该怎么办呢？很简单，直接在<code>&lt;property&gt;</code>属性里面写一个<code>&lt;bean&gt;</code>元素即可，但是注意，<code>&lt;bean&gt;</code>元素里面只有class没有id，当然你也可以写一个id，但是这样完全没有必要，因为这个bean不会被其他bean引用，所以定义了id也不可能用到，例子如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"songJavaer2"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.SongJavaer2"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"song"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springinaction.springidol.SongJavaer"</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>而且在构造器注入时也可以这样注入内部bean，如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"songJavaer"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.SongJavaer"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">"org.springinaction.springidol.SongJavaer"</span> /&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">constructor-arg</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="注入集合"><a href="#注入集合" class="headerlink" title="注入集合"></a>注入集合</h4><p>上面我们讲了注入简单的值和引用的bean，还有一种复杂的情况就是需要注入这些值或者bean的集合。一般在类中可以选择作为数据成员的集合性的类有以下几种：数组、java.util.Collection、java.util.Set、java.util.List、java.util.Map、java.util.Properties，对应于Spring在XML文件中配置bean的元素有<code>&lt;list&gt;</code>、<code>&lt;set&gt;</code>、<code>&lt;map&gt;</code>、<code>&lt;props&gt;</code>，具体差别见下表：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">集合配置元素</th>
+<th style="text-align:left">可注入的集合类</th>
+<th style="text-align:left">配置说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>&lt;list&gt;</code></td>
+<td style="text-align:left">数组、Collection、Set、List</td>
+<td style="text-align:left">允许重复的集合</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&lt;set&gt;</code></td>
+<td style="text-align:left">数组、Collection、Set、List</td>
+<td style="text-align:left">不允许重复的集合</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&lt;map&gt;</code></td>
+<td style="text-align:left">Map</td>
+<td style="text-align:left">对应的key和value可以取任何类型</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>&lt;props&gt;</code></td>
+<td style="text-align:left">Properties</td>
+<td style="text-align:left">对应的key和value只可以取String类型</td>
+</tr>
+</tbody>
+</table>
+<p>细节知识仍然是通过例子来讲解：用Spring配置一个bean，给这个bean注入属性，这个属性要求是集合类，这个bean指向的类里有一个方法，用来描述一下动作：java学习者在听一组歌曲。</p>
+<p><strong>首先写主体类SongJavaer3</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 唱歌的编程者</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-6下午11:29:49</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SongJavaer3</span> <span class="keyword">implements</span> <span class="title">Coder</span> </span>&#123;</span><br><span class="line">	<span class="comment">//Collection在XML中对应于&lt;list&gt;或者&lt;set&gt;</span></span><br><span class="line">	<span class="keyword">private</span> Collection&lt;Song&gt; songCollection;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSongCollection</span><span class="params">(Collection&lt;Song&gt; songCollection)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.songCollection = songCollection;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//List在XML中对应于&lt;list&gt;或者&lt;set&gt;</span></span><br><span class="line">	<span class="keyword">private</span> List&lt;Song&gt; songList;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSongList</span><span class="params">(List&lt;Song&gt; songList)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.songList = songList;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//Map在XML中对应于&lt;map&gt;</span></span><br><span class="line">	<span class="keyword">private</span> Map&lt;String,Song&gt; songMap;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSongMap</span><span class="params">(Map&lt;String,Song&gt; songMap)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.songMap = songMap;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//Properties在XML中对应于&lt;props&gt;</span></span><br><span class="line">	<span class="keyword">private</span> Properties songProperties;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSongProperties</span><span class="params">(Properties songProperties)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.songProperties = songProperties;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">perform</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Trigl一边写Java博客一边听歌"</span>);</span><br><span class="line">		System.out.println(<span class="string">"————————我是可爱的分割线————————"</span>);</span><br><span class="line">		System.out.println(<span class="string">"播放songCollection中的歌曲......"</span>);</span><br><span class="line">		System.out.println();</span><br><span class="line">		<span class="keyword">for</span>(Song song : songCollection) &#123;</span><br><span class="line">			song.play();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"————————我是可爱的分割线————————"</span>);</span><br><span class="line">		System.out.println(<span class="string">"播放songList中的歌曲......"</span>);</span><br><span class="line">		System.out.println();</span><br><span class="line">		<span class="keyword">for</span>(Song song : songList) &#123;</span><br><span class="line">			song.play();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"————————我是可爱的分割线————————"</span>);</span><br><span class="line">		System.out.println(<span class="string">"播放songMap中的歌曲......"</span>);</span><br><span class="line">		System.out.println();</span><br><span class="line">		<span class="keyword">for</span>(String key : songMap.keySet()) &#123;</span><br><span class="line">			System.out.print(key + <span class="string">"："</span>);</span><br><span class="line">			Song song = songMap.get(key);</span><br><span class="line">			song.play();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"————————我是可爱的分割线————————"</span>);</span><br><span class="line">		System.out.println(<span class="string">"播放songProperties中的歌曲......"</span>);</span><br><span class="line">		System.out.println();</span><br><span class="line">		<span class="keyword">for</span>(Iterator it = songProperties.keySet().iterator();it.hasNext();)</span><br><span class="line">		&#123;</span><br><span class="line">			String key = (String)it.next();<span class="comment">//key值</span></span><br><span class="line">			System.out.print(key + <span class="string">"："</span>);</span><br><span class="line">			System.out.println(songProperties.getProperty(key));<span class="comment">//通过key得到value</span></span><br><span class="line">			System.out.println();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里写了四个例子，分别为了用于后面讲解四种集合配置元素的使用。</p>
+<p><strong>Song1</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Song1</span> <span class="keyword">implements</span> <span class="title">Song</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">play</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"是他就是他，是他就是他，我们的英雄，小哪吒！......"</span>);</span><br><span class="line">		System.out.println();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Song2</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Song2</span> <span class="keyword">implements</span> <span class="title">Song</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">play</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"让我们荡起双桨，小船儿随风飘荡~......"</span>);</span><br><span class="line">		System.out.println();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>Song3</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Song3</span> <span class="keyword">implements</span> <span class="title">Song</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">play</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"梦里梦到醒不来的梦，梦境里被囚禁的红......"</span>);</span><br><span class="line">		System.out.println();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>XML文件中集合注入元素的具体配置</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"songJavaer3"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.SongJavaer3"</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!-- 通过&lt;list&gt;元素注入，可以显示重复的bean --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"songCollection"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"song1"</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"song2"</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"song3"</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"song3"</span>/&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">&lt;!-- 通过&lt;set&gt;元素注入，不显示重复的bean --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"songList"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"song1"</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"song1"</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ref</span> <span class="attr">bean</span>=<span class="string">"song1"</span>/&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">&lt;!-- 通过&lt;map&gt;元素注入 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"songMap"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">map</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"《哪吒》"</span> <span class="attr">value-ref</span>=<span class="string">"song1"</span> /&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"《让我们荡起双桨》"</span> <span class="attr">value-ref</span>=<span class="string">"song2"</span> /&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"《红玫瑰》"</span> <span class="attr">value-ref</span>=<span class="string">"song3"</span> /&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">map</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">&lt;!-- 通过&lt;props&gt;元素注入 --&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"songProperties"</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">props</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">"《哪吒》"</span>&gt;</span>是他就是他，是他就是他，我们的英雄，小哪吒！......<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">"《让我们荡起双桨》"</span>&gt;</span>让我们荡起双桨，小船儿随风飘荡~......<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">prop</span> <span class="attr">key</span>=<span class="string">"《红玫瑰》"</span>&gt;</span>梦里梦到醒不来的梦，梦境里被囚禁的红......<span class="tag">&lt;/<span class="name">prop</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">props</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"song1"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.Song1"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"song2"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.Song2"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"song3"</span> <span class="attr">class</span>=<span class="string">"com.springinaction.springidol.Song3"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>&lt;map&gt;</code>有四个属性值，如下：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>指明map的键，取String</td>
+</tr>
+<tr>
+<td>key-ref</td>
+<td>指明map的键，取bean的引用（id）</td>
+</tr>
+<tr>
+<td>value</td>
+<td>指明map的值，取String</td>
+</tr>
+<tr>
+<td>value-ref</td>
+<td>指明map的值，取bean的引用（id）</td>
+</tr>
+</tbody>
+</table>
+<p><strong>main方法中进行测试</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.springinaction.springidol;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用来测试的main函数</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 白鑫</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2016-1-6下午11:36:08</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(</span><br><span class="line">		<span class="string">"com/springinaction/springidol/spring-idol.xml"</span>);</span><br><span class="line">		Coder coder = (Coder) ctx.getBean(<span class="string">"songJavaer3"</span>);</span><br><span class="line">		coder.perform();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>控制台输出为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Trigl一边写Java博客一边听歌</span><br><span class="line">————————我是可爱的分割线————————</span><br><span class="line">播放songCollection中的歌曲......</span><br><span class="line"></span><br><span class="line">是他就是他，是他就是他，我们的英雄，小哪吒！......</span><br><span class="line"></span><br><span class="line">让我们荡起双桨，小船儿随风飘荡~......</span><br><span class="line"></span><br><span class="line">梦里梦到醒不来的梦，梦境里被囚禁的红......</span><br><span class="line"></span><br><span class="line">梦里梦到醒不来的梦，梦境里被囚禁的红......</span><br><span class="line"></span><br><span class="line">————————我是可爱的分割线————————</span><br><span class="line">播放songList中的歌曲......</span><br><span class="line"></span><br><span class="line">是他就是他，是他就是他，我们的英雄，小哪吒！......</span><br><span class="line"></span><br><span class="line">————————我是可爱的分割线————————</span><br><span class="line">播放songMap中的歌曲......</span><br><span class="line"></span><br><span class="line">《哪吒》：是他就是他，是他就是他，我们的英雄，小哪吒！......</span><br><span class="line"></span><br><span class="line">《让我们荡起双桨》：让我们荡起双桨，小船儿随风飘荡~......</span><br><span class="line"></span><br><span class="line">《红玫瑰》：梦里梦到醒不来的梦，梦境里被囚禁的红......</span><br><span class="line"></span><br><span class="line">————————我是可爱的分割线————————</span><br><span class="line">播放songProperties中的歌曲......</span><br><span class="line"></span><br><span class="line">《让我们荡起双桨》：让我们荡起双桨，小船儿随风飘荡~......</span><br><span class="line"></span><br><span class="line">《哪吒》：是他就是他，是他就是他，我们的英雄，小哪吒！......</span><br><span class="line"></span><br><span class="line">《红玫瑰》：梦里梦到醒不来的梦，梦境里被囚禁的红......</span><br></pre></td></tr></table></figure>
+<h4 id="注入空"><a href="#注入空" class="headerlink" title="注入空"></a>注入空</h4><p>是的少年，你没有听错，的确是注入空或者说是null。第一个原因是为了初始化属性的值，另一个原因是覆盖自动装配的值，配置方式如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"someNonNullProperty"</span>&gt;</span><span class="tag">&lt;<span class="name">null</span>/&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2015/12/27/the-sentimental-swordsman/"
+                              data-toggle="tooltip" data-placement="top" title="那些年迷过的小李飞刀">
+                              Previous<br><span>那些年迷过的小李飞刀</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2016/01/07/simplify-spring-xml-configuration-1/"
+                              data-toggle="tooltip" data-placement="top" title="简化 Spring XML 配置（一）">
+                              Next<br><span>简化 Spring XML 配置（一）</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Spring" title="Spring">Spring</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

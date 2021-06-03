@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          SparkStreaming + Flume + Kafka 进行实时日志分析 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2017/05/24/realtime-process-with-sparkstreaming/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/post-bg-sparkstreaming.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Spark" title="Spark">Spark</a>
+                        
+                    </div>
+                    <h1>SparkStreaming + Flume + Kafka 进行实时日志分析</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2017-05-24,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>每个公司想要进行数据分析或数据挖掘，收集日志、ETL都是第一步的，今天就讲一下如何实时地（准实时，每分钟分析一次）收集日志，处理日志，把处理后的记录存入Hive中，并附上完整实战代码</p>
+</blockquote>
+<h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p>思考一下，正常情况下我们会如何收集并分析日志呢？</p>
+<p>首先，业务日志会通过Nginx（或者其他方式，我们是使用Nginx写入日志）每分钟写入到磁盘中，现在我们想要使用Spark分析日志，就需要先将磁盘中的文件上传到HDFS上，然后Spark处理，最后存入Hive表中，如图所示：</p>
+<p><img src="/img/content/nginx2hive.jpg" alt="这里写图片描述"></p>
+<p>我们之前就是使用这种方式每天分析一次日志，但是这样有几个缺点：</p>
+<p>首先我们的日志是通过Nginx每分钟存成一个文件，这样一天的文件数很多，不利于后续的分析任务，所以先要把一天的所有日志文件合并起来</p>
+<p>合并起来以后需要把该文件从磁盘传到Hdfs上，但是我们的日志服务器并不在Hadoop集群内，所以没办法直接传到Hdfs上，需要首先把文件从日志服务器传输到Hadoop集群所在的服务器，然后再上传到Hdfs</p>
+<p>最后也是最重要的，滞后一天分析数据已经不能满足我们新的业务需求了，最好能控制在一个小时的滞后时间</p>
+<p>可以看出来我们以前收集分析日志的方式还是比较原始的，而且比较耗时，很多时间浪费在了网络传输上面，如果日志量大的话还有丢失数据的可能性，所以在此基础上改进了一下架构：</p>
+<p><img src="/img/content/flume2spark.jpg" alt="这里写图片描述"></p>
+<p>整个过程就是，Flume会实时监控写入日志的磁盘，只要有新的日志写入，Flume就会将日志以消息的形式传递给Kafka，然后Spark Streaming实时消费消息传入Hive</p>
+<p>那么Flume是什么呢，它为什么可以监控一个磁盘文件呢？简而言之，Flume是用来收集、汇聚并且移动大量日志文件的开源框架，所以很适合这种实时收集日志并且传递日志的场景</p>
+<p>Kafka是一个消息系统，Flume收集的日志可以移动到Kafka消息队列中，然后就可以被多处消费了，而且可以保证不丢失数据</p>
+<p>通过这套架构，收集到的日志可以及时被Flume发现传到Kafka，通过Kafka我们可以把日志用到各个地方，同一份日志可以存入Hdfs中，也可以离线进行分析，还可以实时计算，而且可以保证安全性，基本可以达到实时的要求</p>
+<p>整个流程已经清晰了，下面各个突破，我们开始动手实现整套系统</p>
+<hr>
+<h2 id="实战演练"><a href="#实战演练" class="headerlink" title="实战演练"></a>实战演练</h2><h4 id="安装Kafka"><a href="#安装Kafka" class="headerlink" title="安装Kafka"></a>安装Kafka</h4><p>下载安装Kafka以及一些基本命令请传送到这里：<em><a href="http://blog.csdn.net/trigl/article/details/72581735" target="_blank" rel="noopener">Kafka安装与简介</a></em></p>
+<p>安装好以后新建名为launcher_click的topic：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;kafka-topics.sh --create --zookeeper hxf:2181,cfg:2181,jqs:2181,jxf:2181,sxtb:2181 --replication-factor 2 --partitions 2 --topic launcher_click</span><br></pre></td></tr></table></figure>
+<p>查看一下该topic：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;kafka-topics.sh --describe --zookeeper hxf:2181,cfg:2181,jqs:2181,jxf:2181,sxtb:2181 --topic launcher_click</span><br></pre></td></tr></table></figure>
+<p><img src="/img/content/showtopic.jpg" alt="这里写图片描述"></p>
+<h4 id="安装Flume"><a href="#安装Flume" class="headerlink" title="安装Flume"></a>安装Flume</h4><p><strong>下载解压</strong></p>
+<p>下载地址： <a href="https://flume.apache.org/download.html" target="_blank" rel="noopener">https://flume.apache.org/download.html</a><br>注意进入下载地址页面，使用清华大学的那个地址，否则会很慢</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http:&#x2F;&#x2F;apache.fayea.com&#x2F;flume&#x2F;1.7.0&#x2F;apache-flume-1.7.0-bin.tar.gz</span><br><span class="line">tar -xvf apache-flume-1.7.0-bin.tar.gz</span><br></pre></td></tr></table></figure>
+<p><strong>修改配置文件</strong></p>
+<p>进入flume目录，修改conf/flume-env.sh</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME&#x3D;&#x2F;data&#x2F;install&#x2F;jdk</span><br><span class="line">export JAVA_OPTS&#x3D;&quot;-Xms1000m -Xmx2000m -Dcom.sun.management.jmxremote&quot;</span><br></pre></td></tr></table></figure>
+<p>  添加配置文件：conf/flume_launcherclick.conf</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"># logser可以看做是flume服务的名称，每个flume都由sources、channels和sinks三部分组成</span><br><span class="line"># sources可以看做是数据源头、channels是中间转存的渠道、sinks是数据后面的去向</span><br><span class="line">logser.sources &#x3D; src_launcherclick</span><br><span class="line">logser.sinks &#x3D; kfk_launcherclick</span><br><span class="line">logser.channels &#x3D; ch_launcherclick</span><br><span class="line"></span><br><span class="line"># source</span><br><span class="line"># 源头类型是TAILDIR，就可以实时监控以追加形式写入文件的日志</span><br><span class="line">logser.sources.src_launcherclick.type &#x3D; TAILDIR</span><br><span class="line"># positionFile记录所有监控的文件信息</span><br><span class="line">logser.sources.src_launcherclick.positionFile &#x3D; &#x2F;data&#x2F;install&#x2F;flume&#x2F;position&#x2F;launcherclick&#x2F;taildir_position.json</span><br><span class="line"># 监控的文件组</span><br><span class="line">logser.sources.src_launcherclick.filegroups &#x3D; f1</span><br><span class="line"># 文件组包含的具体文件，也就是我们监控的文件</span><br><span class="line">logser.sources.src_launcherclick.filegroups.f1 &#x3D; &#x2F;data&#x2F;launcher&#x2F;stat_app&#x2F;.*</span><br><span class="line"></span><br><span class="line"># interceptor</span><br><span class="line"># 写kafka的topic即可</span><br><span class="line">logser.sources.src_launcherclick.interceptors &#x3D; i1 i2</span><br><span class="line">logser.sources.src_launcherclick.interceptors.i1.type&#x3D;static</span><br><span class="line">logser.sources.src_launcherclick.interceptors.i1.key &#x3D; type</span><br><span class="line">logser.sources.src_launcherclick.interceptors.i1.value &#x3D; launcher_click</span><br><span class="line">logser.sources.src_launcherclick.interceptors.i2.type&#x3D;static</span><br><span class="line">logser.sources.src_launcherclick.interceptors.i2.key &#x3D; topic</span><br><span class="line">logser.sources.src_launcherclick.interceptors.i2.value &#x3D; launcher_click</span><br><span class="line"></span><br><span class="line"># channel</span><br><span class="line">logser.channels.ch_launcherclick.type &#x3D; memory</span><br><span class="line">logser.channels.ch_launcherclick.capacity &#x3D; 10000</span><br><span class="line">logser.channels.ch_launcherclick.transactionCapacity &#x3D; 1000</span><br><span class="line"></span><br><span class="line"># kfk sink</span><br><span class="line"># 指定sink类型是Kafka，说明日志最后要发送到Kafka</span><br><span class="line">logser.sinks.kfk_launcherclick.type &#x3D; org.apache.flume.sink.kafka.KafkaSink</span><br><span class="line"># Kafka broker</span><br><span class="line">logser.sinks.kfk_launcherclick.brokerList &#x3D; 10.0.0.80:9092,10.0.0.140:9092</span><br><span class="line"></span><br><span class="line"># Bind the source and sink to the channel</span><br><span class="line">logser.sources.src_launcherclick.channels &#x3D; ch_launcherclick</span><br><span class="line">logser.sinks.kfk_launcherclick.channel &#x3D; ch_launcherclick</span><br></pre></td></tr></table></figure>
+<p><strong>启动</strong></p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup bin&#x2F;flume-ng agent --conf conf&#x2F; --conf-file conf&#x2F;flume_launcherclick.conf --name logser -Dflume.root.logger&#x3D;INFO,console &gt;&gt; logs&#x2F;flume_launcherclick.log &amp;</span><br></pre></td></tr></table></figure>
+<p>  此时Kafka和Flume都已经启动了，从配置可以看到Flume的监控文件是 <code>/data/launcher/stat_app/.*</code>，所以只要该目录下文件内容有增加就会发送到Kafka，大家可以自己追加一些测试日志到这个目录的文件下，然后开一个Kafka Consumer看一下Kafka是否接收到消息，这里我们完成SparkStreaming以后再看测试结果。</p>
+<h4 id="SparkStreaming编程"><a href="#SparkStreaming编程" class="headerlink" title="SparkStreaming编程"></a>SparkStreaming编程</h4><p>SparkStreaming是Spark用来处理实时流的，能够实时到秒级，我们这里不需要这么实时，是每分钟执行一次日志分析程序，主要代码如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]) &#123;</span><br><span class="line"></span><br><span class="line">  <span class="type">Logger</span>.getLogger(<span class="string">"org.apache.spark"</span>).setLevel(<span class="type">Level</span>.<span class="type">WARN</span>)</span><br><span class="line">  <span class="type">System</span>.setProperty(<span class="string">"spark.serializer"</span>, <span class="string">"org.apache.spark.serializer.KryoSerializer"</span>)</span><br><span class="line">  <span class="keyword">val</span> sparkConf = <span class="keyword">new</span> <span class="type">SparkConf</span>().setAppName(<span class="string">"LauncherStreaming"</span>)</span><br><span class="line"></span><br><span class="line">  <span class="comment">//每60秒一个批次</span></span><br><span class="line">  <span class="keyword">val</span> ssc = <span class="keyword">new</span> <span class="type">StreamingContext</span>(sparkConf, <span class="type">Seconds</span>(<span class="number">60</span>))</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 从Kafka中读取数据</span></span><br><span class="line">  <span class="keyword">val</span> kafkaStream = <span class="type">KafkaUtils</span>.createStream(</span><br><span class="line">    ssc,</span><br><span class="line">    <span class="string">"hxf:2181,cfg:2181,jqs:2181,jxf:2181,sxtb:2181"</span>, <span class="comment">// Kafka集群使用的zookeeper</span></span><br><span class="line">    <span class="string">"launcher-streaming"</span>, <span class="comment">// 该消费者使用的group.id</span></span><br><span class="line">    <span class="type">Map</span>[<span class="type">String</span>, <span class="type">Int</span>](<span class="string">"launcher_click"</span> -&gt; <span class="number">0</span>, <span class="string">"launcher_click"</span> -&gt; <span class="number">1</span>), <span class="comment">// 日志在Kafka中的topic及其分区</span></span><br><span class="line">    <span class="type">StorageLevel</span>.<span class="type">MEMORY_AND_DISK_SER</span>).map(_._2) <span class="comment">// 获取日志内容</span></span><br><span class="line"></span><br><span class="line">  kafkaStream.foreachRDD((rdd: <span class="type">RDD</span>[<span class="type">String</span>], time: <span class="type">Time</span>) =&gt; &#123;</span><br><span class="line">    <span class="keyword">val</span> result = rdd.map(log =&gt; parseLog(log)) <span class="comment">// 分析处理原始日志</span></span><br><span class="line">      .filter(t =&gt; <span class="type">StringUtils</span>.isNotBlank(t._1) &amp;&amp; <span class="type">StringUtils</span>.isNotBlank(t._2))</span><br><span class="line">    <span class="comment">// 存入hdfs</span></span><br><span class="line">    result.saveAsHadoopFile(<span class="type">HDFS_DIR</span>, classOf[<span class="type">String</span>], classOf[<span class="type">String</span>], classOf[<span class="type">LauncherMultipleTextOutputFormat</span>[<span class="type">String</span>, <span class="type">String</span>]])</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line">  ssc.start()</span><br><span class="line">  <span class="comment">// 等待实时流</span></span><br><span class="line">  ssc.awaitTermination()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>篇目有限，完整代码访问我的 <em><a href="https://github.com/Trigl/SparkLearning/blob/master/src/main/scala/com/trigl/spark/streaming/LauncherStreaming.scala" target="_blank" rel="noopener">github</a></em></p>
+<p>然后打包上传到master运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup &#x2F;data&#x2F;install&#x2F;spark-2.0.0-bin-hadoop2.7&#x2F;bin&#x2F;spark-submit  --master spark:&#x2F;&#x2F;hxf:7077  --executor-memory 1G --total-executor-cores 4   --class com.analysis.main.LauncherStreaming --jars &#x2F;home&#x2F;hadoop&#x2F;jar&#x2F;kafka-clients-0.10.0.0.jar,&#x2F;home&#x2F;hadoop&#x2F;jar&#x2F;metrics-core-2.2.0.jar,&#x2F;home&#x2F;hadoop&#x2F;jar&#x2F;zkclient-0.3.jar,&#x2F;home&#x2F;hadoop&#x2F;jar&#x2F;spark-streaming-kafka-0-8_2.11-2.0.0.jar,&#x2F;home&#x2F;hadoop&#x2F;jar&#x2F;kafka_2.11-0.8.2.1.jar  &#x2F;home&#x2F;hadoop&#x2F;jar&#x2F;SparkLearning.jar  &gt;&gt; &#x2F;home&#x2F;hadoop&#x2F;logs&#x2F;LauncherDM.log &amp;</span><br></pre></td></tr></table></figure>
+<p>然后开始测试，往Flume监控目录/data/launcher/stat_app/.*写日志，原始日志内容类似下面这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">118.120.102.3|1495608541.238|UEsDBBQACAgIACB2uEoAAAAAAAAAAAAAAAABAAAAMGWUbW7bMAyGb6NfnUFRFEWhJ+gBdgBZVjpjjp04brMAO*yY2DKa9Y+B1+DnQ1LCztoITgK4wPGHfNUhmKGUPOn3DyP*zdOxSWM3T33XXMqy9OP7xXTZiTC1xlL0HgMEi+BfHoooBEGKr3fPpYy5jMse4Xzupus4TKkrs4kZOhI51CgWWKxsUQBRPMDr1*w5Hcuc0LiUEFBwdXQxAARXHb3+QXlOfzya0uZWOGwlEwBDwLD5oJBVFHsEEPF2U0EUToyr8k4tg9v8AkRrIcKmxGsU2eqQIM45dKuKFICo5oveEqOjh2JAIITImyIJqBk3JS4qh7Wby*TroxnL9ZKHXrsyWeBQoMXaEgXUKh6mOQ1l7NLc*Hwz8aDpAtndLFJEetkVc6S9V*bg+RFiKMvnTv6ahuGUTmWexqEfi3Elezx0botJrCCQn5jfCzWaqaUOqNpFYO23ckYl5GOlx4rLQuUllh27SsjZyLQTUn4K+3uVczlOi+7uuMzTYLoibeIspk71DtKuJC+7T5qXPg9lLddaZs6+Lolnj7ANW0dBGKOn72m3cbQJI2Kq4*C6Xhz9E5Pzeeg*i2l1IAJtpReILNq6DY4peFjHeO5vffPZd2UyejEJ28Puo0sI*2*5ojvhfNcquWomFMVp02Pz++M6Nach3e6XR5wOlrdSg4T7RkgtQAuC6HYl2sc62i6dUq*om+HWjvdHAPSk8hYkegHraxC8PwPons73XZeozDfXmaRzzzaD2XI4fX0QX*8BUEsHCKeftc48AgAAmQQAAA&#x3D;&#x3D;</span><br></pre></td></tr></table></figure>
+<p>查看HDFS的对应目录是否有内容：</p>
+<p><img src="/img/content/hdfsdir.jpg" alt="这里写图片描述"></p>
+<p>HDFS存储的分析后的日志内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">99000945863664;864698037273329|119.176.140.248|1495594615129|2017-05-24 10:56:55|xiaomi|redmi4x|com.jingdong.app.mall&amp;0ae359b6&amp;1495534579412&amp;1;com.autonavi.minimap&amp;279f562f&amp;1495534597934,1495534616627&amp;2;com.android.contacts&amp;91586932&amp;1495538267103,1495540527138,1495576834653,1495583404117,1495591231535&amp;5</span><br></pre></td></tr></table></figure>
+<p>SparkStreaming任务状态如下：</p>
+<p><img src="/img/content/sparkjob.jpg" alt="这里写图片描述"></p>
+<p>可以看到的确是每分钟执行一次</p>
+<hr>
+<h2 id="Refer"><a href="#Refer" class="headerlink" title="Refer"></a>Refer</h2><p><a href="http://blog.xiaoxiaomo.com/2016/05/22/Flume-%E9%9B%86%E7%BE%A4%E5%8F%8A%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/" target="_blank" rel="noopener">Flume–集群及项目实战</a><br><a href="http://lxw1234.com/archives/2015/11/552.htm" target="_blank" rel="noopener">SparkSQL结合SparkStreaming，使用SQL完成实时计算中的数据统计</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2017/04/01/data-warehouse/"
+                              data-toggle="tooltip" data-placement="top" title="数据仓库的架构与设计">
+                              Previous<br><span>数据仓库的架构与设计</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/01/15/scala-composition-and-inheritance/"
+                              data-toggle="tooltip" data-placement="top" title="Scala Composition and Inheritance">
+                              Next<br><span>Scala Composition and Inheritance</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Spark" title="Spark">Spark</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

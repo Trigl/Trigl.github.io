@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Scala 的 Case Classes 和 Pattern Matching - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2018/04/13/case-classes-and-pattern-matching/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/pattern-matching.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                    <h1>Scala 的 Case Classes 和 Pattern Matching</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2018-04-13,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>本文将讲解 Scala 中无处不在的 case class 和 pattern matching，为什么要放在一起讲呢，因为 case class 一般就是和模式匹配一起使用，习惯了用这套组合拳以后就再也不想写 Java 代码了，use less code to show more!</p>
+</blockquote>
+<h2 id="Case-Class"><a href="#Case-Class" class="headerlink" title="Case Class"></a>Case Class</h2><p>case class 是指在 class 前面加上 case 关键字，下面是一个例子：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Animal</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Dog</span>(<span class="params">name: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">Animal</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Cat</span>(<span class="params">name: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">Animal</span></span></span><br></pre></td></tr></table></figure>
+<p>case class 和普通 class 相比有以下几个不同的地方：</p>
+<p>有一个以该类名为方法名的工厂方法用于实例化这个类，这样的好处是直接写该类名就可以新建一个对象，而不需要在前面加上 <code>new</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; <span class="keyword">val</span> dog = <span class="type">Dog</span>(<span class="string">"Zeus"</span>)</span><br><span class="line">dog: <span class="type">Dog</span> = <span class="type">Dog</span>(<span class="type">Zeus</span>)</span><br></pre></td></tr></table></figure>
+<p>类的参数列表中的变量声明会默认加上 <code>val</code>，所以这些参数就是类的成员变量，可以直接调用</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; dog.name</span><br><span class="line">res0: <span class="type">String</span> = <span class="type">Zeus</span></span><br></pre></td></tr></table></figure>
+<p>编译器会自动在类中添加 <code>toString</code>, <code>hashCode</code>, <code>equals</code> 方法</p>
+<p>编译器会添加一个 <code>copy</code> 方法用于对你的类进行复制修改</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; dog.copy(name = <span class="string">"Simba"</span>)</span><br><span class="line">res1: <span class="type">Dog</span> = <span class="type">Dog</span>(<span class="type">Simba</span>)</span><br></pre></td></tr></table></figure>
+<p>事实上最大的优势还是可以支持 pattern matching</p>
+<h2 id="pattern-matching"><a href="#pattern-matching" class="headerlink" title="pattern matching"></a>pattern matching</h2><h4 id="模式匹配的格式"><a href="#模式匹配的格式" class="headerlink" title="模式匹配的格式"></a>模式匹配的格式</h4><p>基本格式如下，<code>selector</code> 是指所要匹配的那个变量，下面对应多个可能性，<code>pattern</code> 就是具体对应的类别，比如某个 case class，expression，每个 <code>pattern</code> 前必须加 <code>case</code> 关键字，箭头后面对应相应的表达式</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">selector <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> pattern1 =&gt; expression1</span><br><span class="line">  <span class="keyword">case</span> pattern2 =&gt; expression2</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是一个简单例子</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">behavior</span></span>(animal: <span class="type">Animal</span>) = animal <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Dog</span>(name) =&gt; println(<span class="string">"wangwangwang!"</span>)</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Cat</span>(name) =&gt; println(<span class="string">"miaomiaomiao~"</span>)</span><br><span class="line">  <span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; behavior(animal)</span><br><span class="line">wangwangwang!</span><br></pre></td></tr></table></figure>
+<p>注意两点：</p>
+<ol>
+<li>match 后所接表达式按照其书写顺序进行判断</li>
+<li>match 后的多个选择中，每次都有且仅有一个会被选择，也就是必须保证所有的可能性都存在，即使添加一个默认选项什么也不做，否则会抛出 <code>MatchError</code> 的异常</li>
+</ol>
+<h4 id="模式匹配的类型"><a href="#模式匹配的类型" class="headerlink" title="模式匹配的类型"></a>模式匹配的类型</h4><p><strong>通配符匹配</strong><br>通配符匹配是指使用 <code>_</code> 进行匹配，会匹配到任何对象，一般通配符匹配会用于模式匹配的默认结果，另一个用法就是当你不关心匹配的内容时，可以使用一个 <code>_</code> 来代替一个需要命名的变量，示例如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">animal <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Dog</span>(_) =&gt; println(<span class="string">"wangwangwang!"</span>)</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Cat</span>(_) =&gt; println(<span class="string">"miaomiaomiao~"</span>)</span><br><span class="line">  <span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>常量匹配</strong><br>顾名思义，匹配的类型是具体的常量：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">describe</span></span>(x: <span class="type">Any</span>) = x <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">5</span> =&gt; <span class="string">"five"</span></span><br><span class="line">  <span class="keyword">case</span> <span class="literal">true</span> =&gt; <span class="string">"truth"</span></span><br><span class="line">  <span class="keyword">case</span> <span class="string">"hello"</span> =&gt; <span class="string">"hi"</span></span><br><span class="line">  <span class="keyword">case</span> <span class="type">Nil</span> =&gt; <span class="string">"the empty list"</span></span><br><span class="line">  <span class="keyword">case</span> _ =&gt; <span class="string">"something else"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>变量匹配</strong><br>变量匹配和通配符匹配一样，可以匹配到任意对象：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">expr <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">0</span> =&gt; <span class="string">"zero"</span></span><br><span class="line">  <span class="keyword">case</span> somethingElse =&gt; <span class="string">"not zero: "</span> + somethingElse</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是注意变量只能使用一次，不能出现 <code>case Dog(name, name)</code> 这种情况</p>
+<p>另外，对变量加上反引号 <code>`</code> ` 就可以使这个变量变成一个常量匹配，例如：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> pi = math.<span class="type">Pi</span></span><br><span class="line"></span><br><span class="line">expr <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> `pi` =&gt; <span class="string">"Pi = "</span> + pi</span><br><span class="line">  <span class="keyword">case</span> _ =&gt; <span class="string">"OJBK"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里额外讲一下反引号 <code>`</code> <code>在 Scala 中的两个用途，一个是把 Scala 的关键字变成普通标志符来使用，如 `</code>Thread.<code>yield</code>()<code></code>；另一个就是上面所示，把小写字母标志符作为常量来用。</p>
+<p><strong>构造器匹配</strong><br>构造器匹配应该是我们最常用到的，即可以匹配到某个类以及类里面对应的成员变量，如果该成员变量也是一个类，那么还可以继续深度匹配下去</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">animal <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Dog</span>(name) =&gt; println(name)</span><br><span class="line">  <span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>序列匹配</strong><br>可以用于匹配列表或者集合</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">expr <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">List</span>(<span class="number">0</span>, _, _) =&gt; println(<span class="string">"found it"</span>)</span><br><span class="line">  <span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子指定了列表的数量是三个，如果想要不指定数量，可以用正则的方式 <code>_*</code></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">expr <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">List</span>(<span class="number">0</span>, _*) =&gt; println(<span class="string">"found it"</span>)</span><br><span class="line">  <span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>多元组匹配</strong></p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">expr <span class="keyword">match</span>&#123;</span><br><span class="line">  <span class="keyword">case</span> (a, b, c) =&gt; println(<span class="string">"matched "</span> + a + b + c)</span><br><span class="line">  <span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>类型匹配</strong><br>匹配到具体属于那个类型</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">x <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> s: <span class="type">String</span> =&gt; s.length</span><br><span class="line">  <span class="keyword">case</span> m: <span class="type">Map</span>[_, _] =&gt; m.size</span><br><span class="line">  <span class="keyword">case</span> _ =&gt; <span class="number">-1</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是这里注意一点，类型匹配只能匹配到这个类的类型，无法匹配到这个类的参数的类型，例如下面这个例子：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isIntIntMap</span></span>(x: <span class="type">Any</span>) = x <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> m: <span class="type">Map</span>[<span class="type">Int</span>, <span class="type">Int</span>] =&gt; <span class="literal">true</span></span><br><span class="line">  <span class="keyword">case</span> _ =&gt; <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译器就会发出警告：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;console&gt;:<span class="number">12</span>: warning: non-variable <span class="class"><span class="keyword">type</span> <span class="title">argument</span> <span class="title">Int</span> <span class="title">in</span> <span class="title">type</span> <span class="title">pattern</span> <span class="title">scala</span>.<span class="title">collection</span>.<span class="title">immutable</span>.<span class="title">Map</span>[<span class="type">Int</span>,<span class="type">Int</span>] (<span class="params">the underlying of <span class="type">Map</span>[<span class="type">Int</span>,<span class="type">Int</span>]</span>) <span class="title">is</span> <span class="title">unchecked</span> <span class="title">since</span> <span class="title">it</span> <span class="title">is</span> <span class="title">eliminated</span> <span class="title">by</span> <span class="title">erasure</span></span></span><br><span class="line"><span class="class">         <span class="title">case</span> <span class="title">m</span></span>: <span class="type">Map</span>[<span class="type">Int</span>, <span class="type">Int</span>] =&gt; <span class="literal">true</span></span><br><span class="line">                 ^</span><br></pre></td></tr></table></figure>
+<p>这是因为类似于 Java，Scala 的泛型也是通过类型擦除来实现的，所以在运行时类型参数信息是未知的，因此对应到模式匹配，只能匹配到类的类型，但是无法匹配该类的参数的类型。</p>
+<p>唯一的例外就是数组，数组的元素存在数组值中，因此可以匹配到其类型</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isStringArray</span></span>(x: <span class="type">Any</span>) = x <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> a: <span class="type">Array</span>[<span class="type">String</span>] = <span class="string">"yes"</span></span><br><span class="line">  <span class="keyword">case</span> _ =&gt; <span class="string">"no"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>变量绑定</strong><br>如果我们需要模式匹配中的某些值，并且无法直接获取到，这时可以使用 <code>@</code> 把这个值绑定到一个变量，可以在后面的表达式中使用</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">animal <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Dog</span>(name, b @ <span class="type">Behavior</span>(<span class="string">"run"</span>, _)) =&gt; b</span><br><span class="line">  <span class="keyword">case</span> _ =&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="其他注意点"><a href="#其他注意点" class="headerlink" title="其他注意点"></a>其他注意点</h4><p>模式匹配并不是都是 <code>selector match { alternatives }</code> 的格式，下面的例子其实也是模式匹配</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ((country, city) &lt;- capitals)</span><br><span class="line">  println(<span class="string">"The capital of "</span> + country + <span class="string">" is "</span> + city)</span><br></pre></td></tr></table></figure>
+<p>另外，如果需要在模式匹配时加上判断，可以在匹配项的后面加上 <code>if</code> 判断条件：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">x <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="comment">// match only positive integers</span></span><br><span class="line">  <span class="keyword">case</span> n: <span class="type">Int</span> <span class="keyword">if</span> <span class="number">0</span> &lt; n =&gt; ...</span><br><span class="line">  <span class="comment">// match only strings starting with letter 'a'</span></span><br><span class="line">  <span class="keyword">case</span> s: <span class="type">String</span> <span class="keyword">if</span> s(<span class="number">0</span>) == 'a' =&gt; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Sealed-classes"><a href="#Sealed-classes" class="headerlink" title="Sealed classes"></a>Sealed classes</h2><p>有时我们可以看到在一个类前面会有 <code>sealed</code> 关键字如下：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sealed</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Animal</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Dog</span>(<span class="params">name: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">Animal</span></span></span><br><span class="line"><span class="class"><span class="title">case</span> <span class="title">class</span> <span class="title">Cat</span>(<span class="params">name: <span class="type">String</span></span>) <span class="keyword">extends</span> <span class="title">Animal</span></span></span><br></pre></td></tr></table></figure>
+<p>这种类有什么特点呢？一般来说我们会给一个父类设置为 <code>sealed</code>，其子类必须与其在同一个文件下面。那么这个与模式匹配有什么关系呢？一般模式匹配我们会把所有的可能性都想到，对应的可能性一般是一个父类下的多个子类，当我们把父类设置为 <code>sealed</code> 的时候，如果你模式匹配缺少了某些子类时，编译器就会给出一个警报，可以防止我们遗漏掉子类。</p>
+<h2 id="Option"><a href="#Option" class="headerlink" title="Option"></a>Option</h2><p>相信写过 Java 代码的都遇到过头疼的 <code>NullPointerException</code>，在 Scala 中使用 Option 来解决这个问题。<code>Option</code> 类用来指代可选的值，就是这个值可能有也可能为空，当有值的话它的结果就是 <code>Some(x)</code> 的形式，当没有值的时候结果就是 <code>None</code>，与模式匹配结合起来就能给出正确的结果：</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show</span></span>(x: <span class="type">Option</span>[<span class="type">String</span>]) = x <span class="keyword">match</span> &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="type">Some</span>(s) =&gt; s</span><br><span class="line">  <span class="keyword">case</span> <span class="type">None</span> =&gt; <span class="string">"?"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们这里使用 <code>Map</code> 来验证一下，因为 Scala 中 Map 的 get 方法返回的就是 Option 对象</p>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> capitals = <span class="type">Map</span>(<span class="string">"China"</span> -&gt; <span class="string">"Beijing"</span>, <span class="string">"Japan"</span> -&gt; <span class="string">"Tykyo"</span>)</span><br><span class="line"></span><br><span class="line">scala&gt; show(capitals get <span class="string">"China"</span>)</span><br><span class="line">res19: <span class="type">String</span> = <span class="type">Beijing</span></span><br><span class="line"></span><br><span class="line">scala&gt; show(capitals get <span class="string">"America"</span>)</span><br><span class="line">res20: <span class="type">String</span> = ?</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>模式匹配可以替代 Java 中的两件事，一个是 <code>if</code> 语句，另一个是 <code>switch</code> 语句，所以如果你还困扰于各种 if 判断逻辑中，那就快把模式匹配引入你的代码里面吧。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2018/02/07/details-of-scala-implicit/"
+                              data-toggle="tooltip" data-placement="top" title="Scala Implicit 详解">
+                              Previous<br><span>Scala Implicit 详解</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2018/04/28/spark-mode/"
+                              data-toggle="tooltip" data-placement="top" title="Spark client mode 和 cluster mode 的区别">
+                              Next<br><span>Spark client mode 和 cluster mode 的区别</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Scala" title="Scala">Scala</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>
