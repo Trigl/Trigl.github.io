@@ -16,8 +16,8 @@ So i just pushed the whole hexo project for your convenience, all pre settings a
 ##### 1.Init
 
 ```
-git clone https://github.com/Kaijun/hexo-theme-huxblog.git
-cd hexo-theme-huxblog
+git clone https://github.com/Trigl/Trigl.github.io.git blog
+cd blog
 ```
 
 ##### 2.Install hexo
@@ -37,15 +37,14 @@ Especially the section:
 ```
 deploy:
   type: git
-  repo: https://github.com/Kaijun/hexo-theme-huxblog
-  branch: gh-pages
+  repo: https://github.com/Trigl/Trigl.github.io.git
+  branch: master
 ```
 Replace with your own repo!
 
-##### 4.Writting/Serve/Deploy
+##### 4.deploy local/remote
 
 ```
-hexo new post IMAPOST
 hexo serve // run hexo in local environment
 hexo clean && hexo deploy // hexo will push the static files automatically into the specific branch(gh-pages) of your repo!
 ```
