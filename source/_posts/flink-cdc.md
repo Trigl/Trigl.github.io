@@ -6,7 +6,7 @@ author:     "Ink Bai"
 catalog:    true
 header-img: "/img/post/flink-cdc.jpg"
 tags:
-    - Flink CDC
+    - Flink
 ---
 
 > [flink-cdc](https://github.com/ververica/flink-cdc-connectors) 提供了基于 flink 的 cdc 方案，今天做一个简单介绍。
