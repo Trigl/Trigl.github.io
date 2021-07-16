@@ -26,6 +26,7 @@ layout: page
     admin: ['<%= config.gitalk.admin %>'],
     distractionFreeMode: <%= config.gitalk.distractionFreeMode %>,
     id: window.location.pathname,
+    proxy: '<%= config.gitalk.proxy %>'
     });
     gitalk.render('gitalk-container');
 </script>
