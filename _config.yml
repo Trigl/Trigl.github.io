@@ -49,7 +49,7 @@ gitalk:
   owner: Trigl    #github用户名
   admin: Trigl
   distractionFreeMode: false #是否启用类似FB的阴影遮罩
-  proxy: https://netnr-proxy.cloudno.de/https://github.com/login/oauth/access_token
+  proxy: https://holy-grass-dca6.baixin2world.workers.dev/?https://github.com/login/oauth/access_token
 
 
 # Analytics settings
