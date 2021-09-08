@@ -1,0 +1,50 @@
+---
+layout:     post
+title:      "MIT 分布式系统笔记（一）"
+subtitle:   "课程简介"
+date:       2021-08-21 01:00:00
+author:     "Ink Bai"
+header-style: "text"
+tags:
+    - MIT 6.824 Distributed Systems
+---
+
+> MIT 6.824 Distributed Systems 这门课可谓是分布式系统入门的必修课，今天开始刷一遍，同步记录一些笔记。
+
+## 资源
+工欲善其事必先利其器，首先是刷这门课的一些资源：
+
+课程表：https://pdos.csail.mit.edu/6.824/schedule.html
+
+B站视频：https://www.bilibili.com/video/BV1x7411M7Sf
+
+youtube 上的课程讲解：https://www.youtube.com/channel/UC_7WrbZTCODu1o_kfUMq88g/featured
+
+助教写的指导：https://thesquareplanet.com/blog/students-guide-to-raft/
+
+知乎比较好的回答：
+https://www.zhihu.com/question/29597104/answer/1524420907
+https://www.zhihu.com/question/29597104/answer/1971438797
+
+## 课前准备
+阅读论文 [MapReduce](/2021/08/21/mapreduce-paper)
+
+## 课程笔记
+分布式系统是应用基础设施，整体**抽象**出来包含三部分：
+
+- 存储
+- 通信
+- 计算
+
+容错：在成千上万台机器中，故障很容易产生。
+- 可用性
+- 可恢复性
+
+解决这两个问题的方法：
+- 保存在非易失性存储中，如硬盘、闪存或者 SSD 中。  
+- 副本
+
+一致性
+
+## Lab1：MapReduce
+lab1 题目、需要安装的一些软件和其他必备条件见这里：https://pdos.csail.mit.edu/6.824/labs/lab-mr.html

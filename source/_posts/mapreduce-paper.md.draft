@@ -1,0 +1,19 @@
+---
+layout:     post
+title:      "MapReduce 论文阅读"
+date:       2021-08-21 02:00:00
+author:     "Ink Bai"
+header-style: "text"
+tags:
+    - Papers
+---
+
+> 论文 PDF 地址：[MapReduce](https://pdos.csail.mit.edu/6.824/papers/mapreduce.pdf)
+
+Q：
+1、figure1 第一步，input file split 是在什么时候做的？map之前吗？
+2、reduce 机器从 map 机器拉数据是通过RPC调用，这个过程是怎样的？
+3、reduce sorted key 的时候使用外排序（External sorting）算法
+4、失败时的语义问题不是太明白
+5、副作用部分关于输出文件的原子性和一致性不是很明白
+6、其他类型的系统和MapReduce架构上的区别，MPI 计算系统
