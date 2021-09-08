@@ -106,14 +106,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -190,6 +190,86 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2017/05/24/realtime-process-with-sparkstreaming/">
+        <h2 class="post-title">
+            SparkStreaming + Flume + Kafka 进行实时日志分析
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+每个公司想要进行数据分析或数据挖掘，收集日志、ETL都是第一步的，今天就讲一下如何实时地（准实时，每分钟分析一次）收集日志，处理日志，把处理后的记录存入Hive中，并附上完整实战代码
+
+整体架构思考一下，正常情况下我们会如何收集并分析日志呢？
+首先，业务日志会通过Nginx（或者其他方式，我们是使用Nginx写入日志）每分钟写入到磁盘中，现在我们想要使用Spark分析日志，就需要先将磁盘中......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2017-05-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2017/04/01/data-warehouse/">
+        <h2 class="post-title">
+            数据仓库的架构与设计
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+公司之前的数据都是直接传到Hdfs上进行操作，没有一个数据仓库，趁着最近空出几台服务器，搭了个简陋的数据仓库，这里记录一下数据仓库的一些知识。
+
+什么是数据仓库数据仓库的概念官方定义
+数据仓库是一个面向主题的、集成的、随时间变化的、但信息本身相对稳定的数据集合，用于对管理决策过程的支持。
+这个定义的确官方，但是却指出了数据仓库的四个特点。
+特点
+
+面向主题：数据仓库都是基于某个明确主题，仅......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2017-04-01
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/07/31/spring-xml-bootstrap-order/">
+        <h2 class="post-title">
+            关于 web.xml 中 Spring 配置文件的启动顺序
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+但凡搞 JavaWeb 开发的对 web.xml 应该是非常熟悉了，但是你真的了解其中的配置吗，这里我们讲一下 Spring 相关配置启动的先后顺序。
+
+在web.xml中定义的Spring的配置文件一般有两个：
+1、Spring上下文环境的配置文件：applicationContext.xml
+123456&lt;context-param&gt;	&lt;param-name&gt;c......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-07-31
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -379,79 +459,6 @@ AOP配置元素
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2016/01/10/simplify-spring-xml-configuration-3/">
-        <h2 class="post-title">
-            简化 Spring XML 配置（三）
-        </h2>
-        <h3 class="post-subtitle">
-            自动寻找 bean
-        </h3>
-        <div class="post-content-preview">
-            讲解之前首先了解Spring从配置上下文环境到最后注入bean的整个过程
-
-首先是Spring加载上下文环境，即将所有的bean都放入容器中
-12ApplicationContext ctx = new ClassPathXmlApplicationContext("com/springinaction/springidol/spring-idol1.xml");Coder coder = ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2016-01-10
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/01/10/simplify-spring-xml-configuration-2/">
-        <h2 class="post-title">
-            简化 Spring XML 配置（二）
-        </h2>
-        <h3 class="post-subtitle">
-            使用注解装配 bean
-        </h3>
-        <div class="post-content-preview">
-            
-从Spring2.5开始，Spring开始支持使用注解的方式来自动装配bean的属性。这种方式与XML里面配置方式相比，减少了代码量，更加方便快捷。
-
-如果想用注解来配置bean，首先要做的就是在XML文件中添加  &lt;context:annotation-config&gt;元素，在XML开始添加如下代码：
-1234567891011&lt;?xml version="1.0" en......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2016-01-10
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2016/01/09/lines-of-lol/">
-        <h2 class="post-title">
-            那些年玩过的英雄联盟
-        </h2>
-        <h3 class="post-subtitle">
-            无形装逼，最为致命——LOL那些有趣的台词
-        </h3>
-        <div class="post-content-preview">
-            
-玩LOL也很久了，这个游戏浪费我很多时间，但是也带给我很多快乐，这已足够。虽然现在工作没什么时间玩，但是回想起某些英雄的语录感觉还是很有意思，或搞笑、或经典、或哲理，好的游戏让人收获的不仅是游戏本身，也许对我们的生活也是一种启迪。现在就重温以下这些经（zhuang)典(bi)语录吧！
-
-德玛西亚皇子（吕布皮肤贼帅！！！）Protect the faithful!保护忠良！No quarte......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2016-01-09
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -501,21 +508,21 @@ AOP配置元素
                             
                         
                             
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            
+                        
+                            
                             <a href="/archive/?tag=Scala" title="Scala" rel="7">Scala</a>
                             
                         
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
-                            
                         
                             
                         
                             
-                        
-                            
-                        
+                            <a href="/archive/?tag=Flink" title="Flink" rel="4">Flink</a>
                             
                         
                             
@@ -527,6 +534,8 @@ AOP配置元素
                             
                         
                             
+                        
+                            
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
                             
                         
@@ -535,9 +544,9 @@ AOP配置元素
                             
                         
                             
-                        
-                            
                             <a href="/archive/?tag=剑指 Offer" title="剑指 Offer" rel="27">剑指 Offer</a>
+                            
+                        
                             
                         
                             

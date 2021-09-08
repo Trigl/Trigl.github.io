@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Flink 学习大纲 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2021/08/25/flink-introduction/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+
+  <header class="intro-header style-text" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Flink" title="Flink">Flink</a>
+                        
+                    </div>
+                    <h1>Flink 学习大纲</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2021-08-25,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>随着阿里的强势入主，Flink 目前已经成为了国内事实上的标准流式处理框架，本文将对其做一个基本的介绍，作为后续深入学习的大纲。<br>本文主要回答以下三个问题：</p>
+<ul>
+<li>Flink 到底是什么？解决了什么问题？</li>
+<li>Flink 包含哪些基本内容？</li>
+<li>Flink 学习资源推荐</li>
+</ul>
+</blockquote>
+<h2 id="Flink-是什么？"><a href="#Flink-是什么？" class="headerlink" title="Flink 是什么？"></a>Flink 是什么？</h2><p>官方文档里说，Flink 是一个框架和分布式处理引擎，用于在无边界和有边界数据流上进行有状态的计算。</p>
+<p>首先 Flink 是一个框架，也就意味着已经为我们包装好了各种功能和组件，我们直接可以拿来方便的使用。<br>那么用来干嘛呢，它的作用就是一个分布式处理引擎，处理的是数据流。<br>数据流又分位无边界和有边界的数据，无边界也就是流式数据，有边界也就是批数据。<br>最后，强调了进行的是有状态计算，一般任务分位有状态计算和无状态计算。<br>无状态计算指的是处理一条数据的结果仅跟这条数据本身有关，输入不变的情况下输出一定也不变。<br>而有状态计算指的是处理一条数据，除了要计算该条数据本身，还要与其他有状态的数据结合起来，比如说一些需要时间窗口的计算。</p>
+<h2 id="要掌握-Flink-需要学习哪些内容"><a href="#要掌握-Flink-需要学习哪些内容" class="headerlink" title="要掌握 Flink 需要学习哪些内容"></a>要掌握 Flink 需要学习哪些内容</h2><p>作为一个成熟强大的框架，Flink 包含的内容非常多，我认为需要掌握的核心内容有：</p>
+<ul>
+<li>流计算常见概念和基本知识</li>
+<li>Flink 的整体架构，包括分层 API、Flink 集群的部署、Flink 任务的执行</li>
+<li>Flink 的状态管理，包括 State 的底层实现、State 的类型、基于 State 实现容错等等</li>
+<li>Flink 关于时间的内容，watermark 和 window 等</li>
+<li>Flink DataStream API</li>
+<li>Flink 的 connectors</li>
+<li>Flink 网络栈，如何通信</li>
+<li>Flink Table API/SQL 相关内容</li>
+<li>Flink Debug 和监控相关的内容</li>
+<li>Flink 的优缺点，与其他流处理引擎的对比</li>
+<li>Flink 的业界实践</li>
+</ul>
+<h2 id="学习-Flink-的一些资源"><a href="#学习-Flink-的一些资源" class="headerlink" title="学习 Flink 的一些资源"></a>学习 Flink 的一些资源</h2><p><a href="https://flink-learning.org.cn/activity/detail/bdbef5a3caf3029595b8c64d556c9811" target="_blank" rel="noopener">Flink 中文学习社区</a>：有一些入门和进阶的视频。<br><a href="/files/Apache-Flink-Stateful-Computations-over-Data-Streams.pdf">Flink 知识图谱</a><br><a href="https://book.douban.com/subject/27080632/" target="_blank" rel="noopener">Streaming System</a>：讲流处理引擎的一本书，书本的质量非常高，配了大量的图，目的就是让你很容易的懂流处理引擎中的概念（比如时间、窗口、水印等）。<br><a href="https://arxiv.org/pdf/1506.08603.pdf" target="_blank" rel="noopener">Lightweight Asynchronous Snapshots for Distributed Dataflows</a>：Apache Flink 所实现的一个轻量级的、异步做状态快照的方法。基于此，Flink 得以保证分布式状态的一致性，从而保证整个系统的 exactly-once 语义。<br><a href="https://lamport.azurewebsites.net/pubs/chandy.pdf" target="_blank" rel="noopener">Distributed Snapshots: Determining Global States of Distributed Systems</a>：分布式快照算法 Chandy-Lamport<br><a href="https://www.oreilly.com/radar/the-world-beyond-batch-streaming-101/" target="_blank" rel="noopener">Streaming 101: The world beyond batch</a><br><a href="https://www.oreilly.com/radar/the-world-beyond-batch-streaming-102/" target="_blank" rel="noopener">Streaming 102: The world beyond batch</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/06/09/flink-cdc/"
+                              data-toggle="tooltip" data-placement="top" title="Flink CDC 介绍">
+                              Previous<br><span>Flink CDC 介绍</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/08/26/flink-architecture/"
+                              data-toggle="tooltip" data-placement="top" title="Flink 集群的组成">
+                              Next<br><span>Flink 集群的组成</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Flink" title="Flink">Flink</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

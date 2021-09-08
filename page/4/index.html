@@ -106,14 +106,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -190,6 +190,85 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2019/01/10/offer-sword-21/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 21：包含 min 函数的栈
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数。在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
+
+引入一个辅助栈用来存放当前位置的最小元素，入栈时如果该数小于这个最小值，那么辅助栈就入这个数，如果大于该最小值，就还是入之前的元素，出栈的时候同时出即可。
+代码如下：
+12345678910111213141516171819202122......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2019/01/10/offer-sword-20/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 20：顺时针打印矩阵
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
+
+例如：如果输入如下矩阵
+12341    2    3    45    6    7    89    10   11   1213   14   15   16
+则依次打印出 1、2、3、4、8、12、16、15、14、13、9、5、6、7、11、10。
+代码如下：
+123456789101112131415161718......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2019/01/10/offer-sword-19/">
+        <h2 class="post-title">
+            「剑指 Offer」面试题 19：二叉树的镜像
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+请完成一个函数，输入一个二叉树，该函数输出它的镜像。
+
+一颗树的镜像的过程是：前序遍历这棵树的每个结点，如果遍历到的结点有子结点，就交换这两个结点，然后再递归得出这两个子结点的镜像，递归的终止条件是已经到达了叶子结点，就得到了整个树的镜像，代码如下：
+123456789101112131415161718192021222324252627282930/**public class Tre......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2019-01-10
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -365,97 +444,6 @@
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2019/01/07/offer-sword-11/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 11：数值的整数次方
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-给定一个 double 类型的浮点数 base 和 int 类型的整数 exponent，求 base 的 exponent 次方。不得使用库函数，同时不需要考虑大数问题。
-
-求一个浮点数的整数次方，我们很容易想到的方法就是累乘，这样做的时间复杂度是 O(n)。我们也可以通过如下公式求 a 的 n 次方：
-
-n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-01-07
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2019/01/07/offer-sword-10/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 10：二进制中 1 的个数
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-请实现一个函数，输入一个整数，输出该数二进制表示中 1 的个数。例如把 9 表示成二进制是 1001，有两位是 1。因此如果输入是 9，该函数输出 2。
-
-这道题目考察二进制和位运算，一个数字转换成二进制以后有五种位运算，分别是与、或、异或、左移和右移。
-其中与、或和异或运算规律如下表：
-
-
-
-运算规则
-
-
-
-
-
-
-
-
-与（&amp;）
-0 &amp; 0 = 0
-1 &amp; 0 = ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-01-07
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2019/01/02/offer-sword-9/">
-        <h2 class="post-title">
-            「剑指 Offer」面试题 9：斐波那契数列
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-输入一个整数 n，输出斐波那契数列的第 n 项。斐波那契数列的定义如下：F0 = 0F1 = 1Fn = F[n-1]+ F[n-2] (n &gt; 1)
-
-这个题目看到的第一眼，很容易就想到使用递归的方法来做，只要我们知道了斐波那契数列第 0 项和第 1 项的值，其他项的值都可以通过这两项递归累加得到。
-但是这样真的没问题吗？每次使用递归的时候我们都要考虑一下有没有性能问题，比如求解 ......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2019-01-02
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -505,21 +493,21 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
                             
                         
                             
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            
+                        
+                            
                             <a href="/archive/?tag=Scala" title="Scala" rel="7">Scala</a>
                             
                         
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
-                            
                         
                             
                         
                             
-                        
-                            
-                        
+                            <a href="/archive/?tag=Flink" title="Flink" rel="4">Flink</a>
                             
                         
                             
@@ -531,6 +519,8 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
                             
                         
                             
+                        
+                            
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
                             
                         
@@ -539,9 +529,9 @@ n 为偶数：a^n = a^(n/2) * a^(n/2)n 为奇数：a^n = ......
                             
                         
                             
-                        
-                            
                             <a href="/archive/?tag=剑指 Offer" title="剑指 Offer" rel="27">剑指 Offer</a>
+                            
+                        
                             
                         
                             

@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Flink CDC 介绍 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2021/06/09/flink-cdc/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post/flink-cdc.jpg')
+    }
+</style>
+
+  <header class="intro-header" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Flink" title="Flink">Flink</a>
+                        
+                    </div>
+                    <h1>Flink CDC 介绍</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2021-06-09,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p><a href="https://github.com/ververica/flink-cdc-connectors" target="_blank" rel="noopener">flink-cdc</a> 提供了基于 flink 的 cdc 方案，今天做一个简单介绍。</p>
+</blockquote>
+<h2 id="术语解释"><a href="#术语解释" class="headerlink" title="术语解释"></a>术语解释</h2><p>CDC：Change data capture</p>
+<p>DML：data manipulation language，对数据进行增删改的一些操作</p>
+<p>DDL：data definition language，数据库定义</p>
+<p>BINLOG：binary log，mysql二进制日志文件，顺序写顺序读，性能高，mysql中会记录最新的文件名和位置。</p>
+<p>GTID：全局事务ID（Global Transaction ID），是一个已提交事务的编号，并且是一个全局唯一的编号，主从集群情况下基于GTID恢复和复制会变得非常简单。</p>
+<p>Kafka Connect：用于连接Kafka和其他系统，类似于flink connect，但是可部署。</p>
+<p>InnoDB MVCC：multi-versioned concurrency control，多重版本控制，这是为了解决高并发情况下一致性读数据的问题。当事物隔离级别设置为repeated read时，开启事物后的第一个select语句那个时间点会形成一个snapshot，此后的select查询结果都是一致的。这个等价于START TRANSACTION WITH CONSISTENT SNAPSHOT语句。</p>
+<h2 id="常见CDC框架对比"><a href="#常见CDC框架对比" class="headerlink" title="常见CDC框架对比"></a>常见CDC框架对比</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>Canal</th>
+<th>Maxwell</th>
+<th>Debezium</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>开源方</td>
+<td>阿里</td>
+<td>zendesk</td>
+<td>redhat</td>
+</tr>
+<tr>
+<td>开发语言</td>
+<td>Java</td>
+<td>Java</td>
+<td>Java</td>
+</tr>
+<tr>
+<td>支持数据库</td>
+<td>Mysql</td>
+<td>Mysql</td>
+<td>MongoDB、MySQL、PostgreSQL、SQL Server 、Oracle( 孵化)、DB2( 孵化)、Cassandra( 孵化)</td>
+</tr>
+<tr>
+<td>是否支持解析DDL同步</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>是否支持HA</td>
+<td>是</td>
+<td>需定制</td>
+<td>基于kafka-connector</td>
+</tr>
+<tr>
+<td>社区活跃（2021-06-09）</td>
+<td>star：19.4k<br>release：2021-04-19</td>
+<td>star：2.8k<br>release：2021-06-03</td>
+<td>star：4.8k<br>release：2021-05-28</td>
+</tr>
+<tr>
+<td>文档</td>
+<td>中文</td>
+<td>英文</td>
+<td>英文，官方文档非常详细</td>
+</tr>
+<tr>
+<td>MQ集成</td>
+<td>RocketMQ、Kafka</td>
+<td>Kafka</td>
+<td>Kafka</td>
+</tr>
+</tbody>
+</table>
+<h2 id="Debezium-架构"><a href="#Debezium-架构" class="headerlink" title="Debezium 架构"></a>Debezium 架构</h2><p>Debezium有三种常见CDC架构：</p>
+<p>1、以插件的形式，部署在 Kafka Connect 上<br><img src="/img/content/debezium-architecture.png" alt=""><br>中间的部分是 Kafka Broker，Kafka Connect 是单独的服务，需要下载 debezium-connector-mysql 连接器，解压到服务器指定的地方，然后在 connect-distribute.properties 中指定连接器的根路径即可使用。</p>
+<p>2、Debezium Server<br><img src="/img/content/debezium-server-architecture.png" alt=""><br>可以监控两种DB类型的数据变化事件，写入到三种类型的sink中，更改配置即可。</p>
+<p>3、内嵌在应用程序里<br>嵌入引擎的优点是不需要运行在 kafka connect 上，也不运行在server上，而是作为一个库嵌入到自己的应用中。<br>flink-cdc-connector就是使用了embedded engine，整个架构不需要存储层，可以直接从db检测到change date，发送到对应的各个终端。</p>
+<h2 id="看源码分析Flink-CDC的过程"><a href="#看源码分析Flink-CDC的过程" class="headerlink" title="看源码分析Flink-CDC的过程"></a>看源码分析Flink-CDC的过程</h2><h4 id="创建并启动-Flink-的-SourceFunction"><a href="#创建并启动-Flink-的-SourceFunction" class="headerlink" title="创建并启动 Flink 的 SourceFunction"></a>创建并启动 Flink 的 SourceFunction</h4><p>SourceFunction 类如下，目前不能并行执行，<strong>每个库的每个表都会建立一个连接</strong>。<br><img src="/img/content/image2021-6-9_18-19-3.png" alt=""></p>
+<p>通过Builder模式创建 SourceFunction，相关成员变量如下：<br><img src="/img/content/image2021-6-9_18-38-9.png" alt=""></p>
+<p>其中StartupOptions是指定从哪里开始同步表，有五种：</p>
+<ul>
+<li>INITIAL：同步表的所有内容，包括两部分，先通过Snapshot同步历史全量数据，再通过binlog同步增量数据</li>
+<li>EARLIEST_OFFSET：从binlog最早的位置同步</li>
+<li>LATEST_OFFSET：从binlog最新的位置同步</li>
+<li>SPECIFIC_OFFSETS：从指定binlog位置同步</li>
+<li>TIMESTAMP：同步binlog在TIMESTAMP时间之后的数据</li>
+</ul>
+<p>问题：从社区看，后两个参数目前不可用，想要基于固定位点回溯数据可能需要改Debezium源码。<br><img src="/img/content/image2021-6-10_6-6-8.png" alt=""></p>
+<p>DebeziumDeserializationSchema 是将从 Debezimu 拿到的 SourceRecord 记录转化为可以被 Flink 处理的记录。</p>
+<p>DebeziumSourceFunction 类最核心的成员变量其实就是需要在CK时保存的state如下：<br><img src="/img/content/image2021-6-9_19-51-53.png" alt=""></p>
+<p>DebeziumSourceFunction run 方法的核心逻辑主要如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(SourceContext&lt;T&gt; sourceContext)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 1、配置properties，主要是Debezium使用</span></span><br><span class="line">    properties.setProperty(<span class="string">"name"</span>, <span class="string">"engine"</span>);</span><br><span class="line">    properties.setProperty(<span class="string">"offset.storage"</span>, FlinkOffsetBackingStore<span class="class">.<span class="keyword">class</span>.<span class="title">getCanonicalName</span>())</span>;</span><br><span class="line">    <span class="keyword">if</span> (restoredOffsetState != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// restored from state</span></span><br><span class="line">        properties.setProperty(FlinkOffsetBackingStore.OFFSET_STATE_VALUE, restoredOffsetState);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2、new一个consumer类，用来消费Debezium传过来的数据</span></span><br><span class="line">    <span class="keyword">this</span>.debeziumConsumer =</span><br><span class="line">            <span class="keyword">new</span> DebeziumChangeConsumer&lt;&gt;(</span><br><span class="line">                    sourceContext,</span><br><span class="line">                    deserializer,</span><br><span class="line">                    restoredOffsetState == <span class="keyword">null</span>, <span class="comment">// DB snapshot phase if restore state is null</span></span><br><span class="line">                    <span class="keyword">this</span>::reportError,</span><br><span class="line">                    dbzHeartbeatPrefix);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3、创建并运行DebeziumEngine</span></span><br><span class="line">    <span class="keyword">this</span>.engine =</span><br><span class="line">            DebeziumEngine.create(Connect<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">                    .<span class="title">using</span>(<span class="title">properties</span>)</span></span><br><span class="line"><span class="class">                    .<span class="title">notifying</span>(<span class="title">debeziumConsumer</span>)</span></span><br><span class="line"><span class="class">                    .<span class="title">using</span>(<span class="title">OffsetCommitPolicy</span>.<span class="title">always</span>())</span></span><br><span class="line"><span class="class">                    .<span class="title">using</span>(</span></span><br><span class="line"><span class="class">                            (<span class="title">success</span>, <span class="title">message</span>, <span class="title">error</span>) -&gt; </span>&#123;</span><br><span class="line">                                <span class="keyword">if</span> (!success &amp;&amp; error != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                    <span class="keyword">this</span>.reportError(error);</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;)</span><br><span class="line">                    .build();</span><br><span class="line">    executor.execute(engine);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4、graceful stop</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个流程中，我们最关心的其实就是一个问题：如何通过flink保存我们当前读取到的数据库位置信息？也就是如何进行CK，而CK又分为全量和增量的情况。</p>
+<p>关键实现就是 DebeziumChangeConsumer#handleBatch</p>
+<p>flink一般处理record和进程CK是在一个线程中同步执行，这里DebeziumChangeConsumer类是在DebeziumEngine的线程中执行的，与CK线程不一样，需要加锁。</p>
+<p>可以看到全量拉数据过程中，一直会持有CK锁，也就是全量时无法进行CK。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 批量处理数据</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleBatch</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        List&lt;ChangeEvent&lt;SourceRecord, SourceRecord&gt;&gt; changeEvents,</span></span></span><br><span class="line"><span class="function"><span class="params">        DebeziumEngine.RecordCommitter&lt;ChangeEvent&lt;SourceRecord, SourceRecord&gt;&gt; committer)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.currentCommitter = committer;</span><br><span class="line">    <span class="keyword">this</span>.processTime = System.currentTimeMillis();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (ChangeEvent&lt;SourceRecord, SourceRecord&gt; event : changeEvents) &#123;</span><br><span class="line">            SourceRecord record = event.value();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 过滤掉heartbeat事件，但是仍然需要记录offset</span></span><br><span class="line">            <span class="keyword">if</span> (isHeartbeatEvent(record)) &#123;</span><br><span class="line">                <span class="comment">// keep offset update</span></span><br><span class="line">                <span class="keyword">synchronized</span> (checkpointLock) &#123;</span><br><span class="line">                    debeziumOffset.setSourcePartition(record.sourcePartition());</span><br><span class="line">                    debeziumOffset.setSourceOffset(record.sourceOffset());</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// drop heartbeat events</span></span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            deserialization.deserialize(record, debeziumCollector);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// isInDbSnapshotPhase，处于全量db snapshot阶段，此时全程都要获取锁，通过UNSAFE类拿锁</span></span><br><span class="line">            <span class="keyword">if</span> (isInDbSnapshotPhase) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!lockHold) &#123;</span><br><span class="line">                    MemoryUtils.UNSAFE.monitorEnter(checkpointLock);</span><br><span class="line">                    lockHold = <span class="keyword">true</span>;</span><br><span class="line">                    LOG.info(</span><br><span class="line">                            <span class="string">"Database snapshot phase can't perform checkpoint, acquired Checkpoint lock."</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">if</span> (!isSnapshotRecord(record)) &#123;</span><br><span class="line">                    MemoryUtils.UNSAFE.monitorExit(checkpointLock);</span><br><span class="line">                    isInDbSnapshotPhase = <span class="keyword">false</span>;</span><br><span class="line">                    LOG.info(</span><br><span class="line">                            <span class="string">"Received record from streaming binlog phase, released checkpoint lock."</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// emit the actual records. this also updates offset state atomically</span></span><br><span class="line">            emitRecordsUnderCheckpointLock(</span><br><span class="line">                    debeziumCollector.records, record.sourcePartition(), record.sourceOffset());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        LOG.error(<span class="string">"Error happens when consuming change messages."</span>, e);</span><br><span class="line">        errorReporter.reportError(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Takes a snapshot of the Debezium Consumer state.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;Important: This method must be called under the checkpoint lock.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">byte</span>[] snapshotCurrentState() <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// this method assumes that the checkpoint lock is held</span></span><br><span class="line">    <span class="keyword">assert</span> Thread.holdsLock(checkpointLock);</span><br><span class="line">    <span class="keyword">if</span> (debeziumOffset.sourceOffset == <span class="keyword">null</span> || debeziumOffset.sourcePartition == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> stateSerializer.serialize(debeziumOffset);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Debezium-从数据库拉数据的过程分析"><a href="#Debezium-从数据库拉数据的过程分析" class="headerlink" title="Debezium 从数据库拉数据的过程分析"></a>Debezium 从数据库拉数据的过程分析</h4><p>上面 Flink Source 的代码中，实际上是通过 EmbeddedEngine 拉的数据，这个类就是最核心的引擎类，做了拉取数据，保存状态，断点恢复等的工作。</p>
+<p>概括一下就是两步：</p>
+<ul>
+<li>通过SnapshotReader全量拉数据</li>
+<li>通过BinlogReader增量拉数据</li>
+</ul>
+<p>那么如何区分全量和增量数据呢，记录里面会有字段进行标识：<br><img src="/img/content/image2021-6-10_2-8-19.png" alt=""></p>
+<h4 id="SnapshotReader全量拉数据过程"><a href="#SnapshotReader全量拉数据过程" class="headerlink" title="SnapshotReader全量拉数据过程"></a>SnapshotReader全量拉数据过程</h4><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>加全局锁/表级锁</td>
+</tr>
+<tr>
+<td>2</td>
+<td>在重复读的隔离级别下，开启事务，得到mvcc的一致性snapshot<br>SET TRANSACTION ISOLATION LEVEL REPEATABLE READ<br>START TRANSACTION WITH CONSISTENT SNAPSHOT</td>
+</tr>
+<tr>
+<td>3</td>
+<td>读取最新binlog文件名、位置、gtid值</td>
+</tr>
+<tr>
+<td>4</td>
+<td>查询库表schema变化</td>
+</tr>
+<tr>
+<td>5</td>
+<td>释放锁</td>
+</tr>
+<tr>
+<td>6</td>
+<td>select *的方式按批拉取记录，每个记录设置snapshot标签</td>
+</tr>
+<tr>
+<td>7</td>
+<td>最后一条记录设置last snapshot标签</td>
+</tr>
+<tr>
+<td>8</td>
+<td>提交或者回滚事务</td>
+</tr>
+</tbody>
+</table>
+<p>步骤6的流式读取是通过下面方式实现的：<br><img src="/img/content/image2021-6-10_5-48-32.png" alt=""></p>
+<p>存在问题1：无锁情况下，步骤2和步骤3之间如果有其他并发写操作，会丢失数据<br>解决：步骤3要放在步骤2之前，数据可能会重复，但不会丢失。</p>
+<p>存在问题2：Debezium 对 mysql 支持，而mariadb在 gtid 的机制上并不是完全兼容 mysql<br>Debezium 会去检测数据库是否开启了 gtid，检测方式为：<br><img src="/img/content/image2021-6-10_5-3-8.png" alt=""></p>
+<p>Mysql gitd默认关闭，系统变量里有一个 GTID_MODE，设置为 on 就打开了。<br>而MariaDB 从 10.0.2 开始，GTID 是默认自动打开的，但是这里代码的结果返回的是没有打开gtid。</p>
+<h2 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h2><p>1、不加锁全量拉的过程，全量拉取和后续binlog读取之间的临界点如何处理，会有数据重复或丢失<br>如果从头同步一张表，分为两部分，首先是获取表snapshot，通过select *读全量；然后读binlog。<br>获取表snapshot会通过：设置可重复读+开启事务保证一致性。</p>
+<ol>
+<li>设置可重复读：SET TRANSACTION ISOLATION LEVEL REPEATABLE READ</li>
+<li>开启事务：START TRANSACTION WITH CONSISTENT SNAPSHOT</li>
+</ol>
+<p>查看Debezium源码发现它获取全量snapshot的过程是</p>
+<ol>
+<li>设置可重复读</li>
+<li>开启snapsht的一致性事务</li>
+<li>查询当前binlog位置并且保存</li>
+</ol>
+<p>注意这三个操作如果不是原子操作，数据可能会丢。Debezium里面有一个参数专门指定这个过程是否加锁：<br><img src="/img/content/image2021-6-8_16-2-48.png" alt=""></p>
+<p>如果 snapshot.locking.mode 设置为 none，也就是不加锁，在第2步和第3步如果有write行为，就会导致数据丢失或者重复。</p>
+<p>Update：Debezium 5.1.2.Final 版本已经修复了这个问题。</p>
+<p>2、首次全量拉数据是否要分配很大内存？如果是流式拉是怎么实现的？<br>可以流式拉取，但是有一个小bug，不影响使用。<br><a href="https://github.com/ververica/flink-cdc-connectors/issues/98" target="_blank" rel="noopener">https://github.com/ververica/flink-cdc-connectors/issues/98</a></p>
+<p>3、全量拉取如果DB crash，重建连接，是否会丢失数据？<br>应该会抛连接不上的错误，如果是这样flink任务会直接挂掉重新拉数据</p>
+<p>4、增量读取binlog时如果DB crash，是否能够正常恢复？<br>基于binlog的文件和位置做CK的话，需要binlog文件所在的从库恢复之后flink才能正常拉数据，如果通过gtid做恢复没有问题。</p>
+<p>5、ddl 变更场景如何处理？<br>目前flink-cdc-connector不支持ddl的同步：<a href="https://github.com/ververica/flink-cdc-connectors/issues/175" target="_blank" rel="noopener">https://github.com/ververica/flink-cdc-connectors/issues/175</a><br>如果业务表的schema发生了改变，需要自己做些兼容或者告警。</p>
+<p>6、mariadb 和 mysqldb 关于 gtid 的区别<br>mariadb在 gtid 的机制上并不是完全兼容 mysql，设置gtid的方式不一样，获取gtid也不一样，检测gtid的机制也不一样<br>需要更改Debezium代码</p>
+<p>7、MVCC 在超大表、频繁读写情况下，事务可能会断掉，拉数据会异常，待具体测试</p>
+<p>8、serverId 要保证随机分配</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>flink-cdc 可以利用 flink 的优势来实现 cdc 方案，而且如果使用 flink sql cdc 更可以大大减少代码量，但是业界没有太多实践，如果要用于生产环境，可能需要做一些二次开发或者改造工作，做大量 benchmark 来验证稳定性。</p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2020/11/30/java-concurrency-practice/"
+                              data-toggle="tooltip" data-placement="top" title="「Notes」Java 并发编程实战">
+                              Previous<br><span>「Notes」Java 并发编程实战</span>
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="next">
+                            <a href="/2021/08/25/flink-introduction/"
+                              data-toggle="tooltip" data-placement="top" title="Flink 学习大纲">
+                              Next<br><span>Flink 学习大纲</span>
+                            </a>
+                        </li>
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Flink" title="Flink">Flink</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="白墨，Software Engineer | 这里是 @Ink白墨 的个人博客，与你一起发现更大的世界。">
+    <meta name="keyword"  content="白墨, Ink白墨, Ink Bai, inkbai, 白墨的博客, Ink&#39;s Blog, 博客, 个人网站, 互联网, Web, Data Engineer">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+          Flink 集群的组成 - 白墨的博客 | Ink&#39;s Blog
+        
+    </title>
+
+    <link rel="canonical" href="http://baixin.ink/2021/08/26/flink-architecture/">
+
+    <!-- Bootstrap Core CSS -->
+    
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/hux-blog.min.css">
+
+
+    <!-- Pygments Highlight CSS -->
+    
+<link rel="stylesheet" href="/css/highlight.css">
+
+
+    <!-- Custom Fonts -->
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="https://cdn.staticfile.org/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-107315243-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-107315243-1');
+    </script>
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top invert">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Ink&#39;s Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+
+                    
+
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                    
+
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                    
+
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Main Content -->
+    
+<!-- Image to hack wechat -->
+<!-- <img src="http://baixin.ink/img/icon_wechat.jpg" width="0" height="0"> -->
+<!-- <img src="{{ site.baseurl }}/{% if page.header-img %}{{ page.header-img }}{% else %}{{ site.header-img }}{% endif %}" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/home-bg.jpg')
+    }
+</style>
+
+  <header class="intro-header style-text" >
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                          <a class="tag" href="/archive/?tag=Flink" title="Flink">Flink</a>
+                        
+                    </div>
+                    <h1>Flink 集群的组成</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by Ink Bai on
+                        2021-08-26,
+                        <span id="busuanzi_container_page_pv">
+                            <span id="busuanzi_value_page_pv">&</span> views
+                        </span><br/>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <blockquote>
+<p>本文介绍了 Flink 架构，描述了其主要组件如何交互以执行应用程序和从故障中恢复。</p>
+</blockquote>
+<p>Flink 采用的是分布式系统中标准的 master-slave 架构，运行时包含两个主要组件：一个 JobManager 和一个或多个 TaskManager。当 Flink 集群启动后，首先会启动一个 JobManager 和一个或多个 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个 TaskManager 去执行，然后 TaskManager 将心跳和统计信息汇报给 JobManager。TaskManager 之间以流的形式进行数据的传输。上述三者均为独立的 JVM 进程。</p>
+<p><img src="/img/content/flink-arc.jpg" alt=""></p>
+<h2 id="Flink-Program"><a href="#Flink-Program" class="headerlink" title="Flink Program"></a>Flink Program</h2><p>Client 不是运行时和程序执行的一部分，而是用于准备数据流并将其发送给 JobManager。</p>
+<h2 id="JobManager"><a href="#JobManager" class="headerlink" title="JobManager"></a>JobManager</h2><p>JobManager 的主要用于调度 Flink 应用的分布式执行，具体职责有：调度 task、对完成的 task 或者失败的 task 做出反应、协调全局 checkpoint、全局容错恢复等。这个进程内又由三个不同组件组成：</p>
+<ul>
+<li>ResourceManager：我们不创造资源，我们只是资源的搬运工。ResourceManager 负责 Flink 集群中的资源分配、回收，它管理的是 task slots，task slot 是 Flink 集群中资源的最小单位。Flink 仅仅是一个 manager，它为不同的环境和资源提供者（如 YARN、Mesos、Kubernetes 和 standalone 部署）实现了对应的 ResourceManager。</li>
+<li>JobMaster：负责管理单个 Flink Job 的执行，Flink 集群中可以同时运行多个作业，每个作业都有自己的 JobMaster</li>
+<li>Dispatcher：提供了一个 REST 接口，用来提交 Flink 应用程序执行，并为每个提交的作业启动一个新的 JobMaster，同时它还运行 Flink WebUI 用来提供作业执行情况</li>
+</ul>
+<h2 id="TaskManager"><a href="#TaskManager" class="headerlink" title="TaskManager"></a>TaskManager</h2><p>也称为 worker，用来实际执行 task，并且缓存和交换数据流。每个 worker 都是一个 JVM 进程。</p>
+<h4 id="task-和-subtask"><a href="#task-和-subtask" class="headerlink" title="task 和 subtask"></a>task 和 subtask</h4><p>这里要理解 task 和 subtask 的概念，Flink 一个 job 是由多个 task 组成的，task 可以理解成是一个逻辑概念，而它的物理实体就是 subtask。比如一个 task 是 map 操作，我们设置这个操作的并行度是 5，实际执行的时候也就会启动 5 个线程去做这个 map 操作，这 5 个线程就是 5 个 subtask，即一个线程真正去执行的是 subtak。</p>
+<p><img src="/img/content/flink-tasks.png" alt=""></p>
+<p>这里还有一个概念叫 operator chain，即算子链，如果两个相邻算子之间没有发生数据 shuffle，那么它们就可以合而为一形成一个整体叫做算子链，这个算子链也是一个 task。</p>
+<p>上面提到了数据 shuffle，shuffle 也就是洗牌，我们知道 Flink 是并行执行的，一个并行下的数据流称为一个分区，比如算子 A 有 5 个并行度，那么算子 A 处理数据时也就分成了 5 个分区，如果传输到算子 B 的时候，仍然是 5 个分区，并且原来属于算子 A 下某个分区的数据到了算子 B 还在对应的分区内，我们就说数据没有发生 shuffle，比如常见的 map 算子、filter 算子。但是像 keyBy 这种算子，同一个 key 的元素需要聚合在一起，那么就会发生原本属于同一分区下的数据按照 key 分配到了不同的分区，这就叫数据发生了 shuffle。</p>
+<p>发生 shuffle 就意味着数据需要通过网络在 task 之间进行传递，会涉及到序列化、磁盘读写、socket 读写与反序列化等多个过程。而相同数据在内存中通过方法调用的方式传输，仅需要传输对象指针即可，消耗非常小。</p>
+<p>目前 Flink 提供了 chaining 算子的机制将相邻算子链接到一个 task 内来避免 shuffle，它能减少线程之间的切换，减少消息的序列化与反序列化，减少数据在缓冲区的交换，减少数据在 TM 之间的网络传输，并减少延迟的同时提高整体吞吐量。但是 chaining 算子存在诸多限制，其中一条就是“下游算子的入度为 1”，也就是说下游算子只能有一路输入。这就将多路输入的算子（如 join）排除在外。</p>
+<h4 id="slot"><a href="#slot" class="headerlink" title="slot"></a>slot</h4><p>讲完 task 和 subtask 再来说说 task slot，TaskManager 中资源调度的最小单位是 task slot，一般一个 TaskManager 中可以有多个 slot。例如，具有 3 个 slot 的 TaskManager，会将其托管内存 1/3 用于每个 slot。分配资源意味着 subtask 不会与其他作业的 subtask 竞争托管内存，但是注意此处没有 CPU 隔离，当前 slot 仅分离 task 的托管内存。</p>
+<p>上面说了 task 实际上是分配到 subtask 执行的，那么 subtask 如何使用 slot 的资源呢？</p>
+<p>默认情况下，Flink 允许 subtask 共享 slot，即便它们是不同 task 的 subtask，只要是来自于同一作业即可。允许 slot 共享有两个主要优点：</p>
+<ul>
+<li>Flink 集群所需的 task slot 和作业中使用的最大并行度恰好一样。一般一个作业有多个 task，这些 task 各自设置的并行度可能不一样，当我们允许 subtask 共享 slot 的时候，我们就可以看哪个 task 设置的并行度最大，然后直接把作业的并行度设置为这个最大值即可。</li>
+<li>容易获得更好的资源利用。由于各个 slot 的资源都是一样的，如果没有 slot 共享，非密集 subtask（source/map）将占用和密集型 subtask（window） 一样多的资源，这就产生了资源浪费。</li>
+</ul>
+<p>如这张图，我们不设置 subtask 共享 slot，每个 slot 下面只跑一个 subtask，各个 slot 的资源利用率不均匀。<br><img src="/img/content/no-share-slot.png" alt=""></p>
+<p>相反，如下图，subtask 可以共享 slot 时，基本并行度从上面中的 2 增加到 6，可以充分利用分配的资源，同时确保繁重的 subtask 在 TaskManager 之间公平分配。<br><img src="/img/content/share-slot.png" alt=""></p>
+<h2 id="Refer"><a href="#Refer" class="headerlink" title="Refer"></a>Refer</h2><p><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.13/zh/docs/concepts/flink-architecture/" target="_blank" rel="noopener">Flink 架构</a></p>
+
+
+                <hr>
+
+                
+
+                <ul class="pager">
+                    
+                        <li class="previous">
+                            <a href="/2021/08/25/flink-introduction/"
+                              data-toggle="tooltip" data-placement="top" title="Flink 学习大纲">
+                              Previous<br><span>Flink 学习大纲</span>
+                            </a>
+                        </li>
+                    
+                    
+                </ul>
+
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css"> -->
+                
+<link rel="stylesheet" href="/css/gitalk.css">
+
+                <!-- <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> -->
+                
+<script src="/js/gitalk.min.js"></script>
+
+                <div id="gitalk-container"></div>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: '237a3caad30f68ed4cd9',
+                    clientSecret: '18d5cc6873b72bffb9c13f7d9355b39c519b04b6',
+                    repo: 'Trigl.github.io',
+                    owner: 'Trigl',
+                    admin: ['Trigl'],
+                    distractionFreeMode: false,
+                    id: window.location.pathname,
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                       
+                          <a class="tag" href="/archive/?tag=Flink" title="Flink">Flink</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+
+                    
+                        <li><a href="http://hongjiang.info" target="_blank">写点什么</a></li>
+                    
+                        <li><a href="https://blog.bcmeng.com" target="_blank">编程小梦</a></li>
+                    
+                        <li><a href="http://matt33.com" target="_blank">Matt&#39;s Blog</a></li>
+                    
+                        <li><a href="https://tech.meituan.com" target="_blank">美团技术团队</a></li>
+                    
+                        <li><a href="http://hbasefly.com" target="_blank">有态度的HBase/Spark/BigData</a></li>
+                    
+                        <li><a href="https://blog.csdn.net/bluishglc" target="_blank">Laurence的技术博客</a></li>
+                    
+                        <li><a href="https://www.throwable.club/" target="_blank">Throwable</a></li>
+                    
+                        <li><a href="http://www.ruanyifeng.com/home.html" target="_blank">阮一峰的个人网站</a></li>
+                    
+                        <li><a href="https://www.javadoop.com/" target="_blank">Javadoop</a></li>
+                    
+                </ul>
+                
+            </div>
+
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                
+                
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/baixin2world">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/trigl">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.linkedin.com/in/inkbai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://www.instagram.com/ink_bai">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Ink&#39;s Blog 2021
+                    <br>
+                    Powered by <a href="https://github.com/Trigl/Trigl.github.io" target="_blank" rel="noopener">Baixin</a> |
+                    Hosted by <a href="https://pages.coding.me" target="_blank" rel="noopener">Coding Pages</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+
+<script src="/js/jquery.min.js"></script>
+
+
+<!-- Bootstrap Core JavaScript -->
+
+<script src="/js/bootstrap.min.js"></script>
+
+
+<!-- Custom Theme JavaScript -->
+
+<script src="/js/hux-blog.min.js"></script>
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js", function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'd4616d758662c2a84423f725cfda1027';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog (selector) {
+        var P = $('div.post-container'),a,n,t,l,i,c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#"+$(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="'+i+'" rel="nofollow">'+t+'</a>');
+            l = $('<li class="'+n+'_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+    generateCatalog(".catalog-body");
+    // toggle side catalog
+    $(".catalog-toggle").click((function(e){
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<!-- fancybox support -->
+
+  <!-- for theme: default is false -->
+  <!-- for page: default is true -->
+  
+<script src="/js/jquery.fancybox.min.js"></script>
+
+  
+<script src="/js/wrapImage.js"></script>
+
+  
+<link rel="stylesheet" href="/css/jquery.fancybox.min.css">
+
+
+
+
+<script src="/js/archive.js"></script>
+
+
+
+</body>
+
+</html>

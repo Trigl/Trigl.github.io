@@ -106,14 +106,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -190,6 +190,79 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2016/01/10/simplify-spring-xml-configuration-3/">
+        <h2 class="post-title">
+            简化 Spring XML 配置（三）
+        </h2>
+        <h3 class="post-subtitle">
+            自动寻找 bean
+        </h3>
+        <div class="post-content-preview">
+            讲解之前首先了解Spring从配置上下文环境到最后注入bean的整个过程
+
+首先是Spring加载上下文环境，即将所有的bean都放入容器中
+12ApplicationContext ctx = new ClassPathXmlApplicationContext("com/springinaction/springidol/spring-idol1.xml");Coder coder = ......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-01-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/01/10/simplify-spring-xml-configuration-2/">
+        <h2 class="post-title">
+            简化 Spring XML 配置（二）
+        </h2>
+        <h3 class="post-subtitle">
+            使用注解装配 bean
+        </h3>
+        <div class="post-content-preview">
+            
+从Spring2.5开始，Spring开始支持使用注解的方式来自动装配bean的属性。这种方式与XML里面配置方式相比，减少了代码量，更加方便快捷。
+
+如果想用注解来配置bean，首先要做的就是在XML文件中添加  &lt;context:annotation-config&gt;元素，在XML开始添加如下代码：
+1234567891011&lt;?xml version="1.0" en......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-01-10
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2016/01/09/lines-of-lol/">
+        <h2 class="post-title">
+            那些年玩过的英雄联盟
+        </h2>
+        <h3 class="post-subtitle">
+            无形装逼，最为致命——LOL那些有趣的台词
+        </h3>
+        <div class="post-content-preview">
+            
+玩LOL也很久了，这个游戏浪费我很多时间，但是也带给我很多快乐，这已足够。虽然现在工作没什么时间玩，但是回想起某些英雄的语录感觉还是很有意思，或搞笑、或经典、或哲理，好的游戏让人收获的不仅是游戏本身，也许对我们的生活也是一种启迪。现在就重温以下这些经（zhuang)典(bi)语录吧！
+
+德玛西亚皇子（吕布皮肤贼帅！！！）Protect the faithful!保护忠良！No quarte......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2016-01-09
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -336,21 +409,21 @@ Spring bean 是基础中的基础，这里用一些生动的例子来讲解。
                             
                         
                             
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            
+                        
+                            
                             <a href="/archive/?tag=Scala" title="Scala" rel="7">Scala</a>
                             
                         
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
-                            
                         
                             
                         
                             
-                        
-                            
-                        
+                            <a href="/archive/?tag=Flink" title="Flink" rel="4">Flink</a>
                             
                         
                             
@@ -362,6 +435,8 @@ Spring bean 是基础中的基础，这里用一些生动的例子来讲解。
                             
                         
                             
+                        
+                            
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
                             
                         
@@ -370,9 +445,9 @@ Spring bean 是基础中的基础，这里用一些生动的例子来讲解。
                             
                         
                             
-                        
-                            
                             <a href="/archive/?tag=剑指 Offer" title="剑指 Offer" rel="27">剑指 Offer</a>
+                            
+                        
                             
                         
                             

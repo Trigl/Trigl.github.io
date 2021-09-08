@@ -106,14 +106,14 @@
 
                         
                         <li>
-                            <a href="/about/">About</a>
+                            <a href="/archive/">Archive</a>
                         </li>
                         
                     
 
                         
                         <li>
-                            <a href="/archive/">Archive</a>
+                            <a href="/about/">About</a>
                         </li>
                         
                     
@@ -190,6 +190,92 @@
 
                 <!-- Main Content -->
 
+
+<div class="post-preview">
+
+    <a href="/2018/11/23/offer-sword/">
+        <h2 class="post-title">
+            「剑指 Offer」刷题笔记
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+准备用一个月时间在牛客网上刷完剑指 Offer，每天两道题，立此贴为证，别被打脸哦，下个月 23 号来检验成果，我希望看到完整的笔记链接！
+
+面试题 02：实现 Singleton 模式面试题 03：二维数组中的查找面试题 04：替换空格面试题 05：从尾到头打印链表面试题 06：重建二叉树面试题 07：用两个栈实现队列面试题 08：旋转数组的最小数字面试题 09：斐波那契数列面试题 10......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-11-23
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2018/10/24/spark-deploy/">
+        <h2 class="post-title">
+            Spark 部署要点
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            
+写完一个 Spark 应用程序以后，如何把它部署到集群上运行呢，这个部署的过程是怎样的呢，这里我主要以 Yarn 集群为主来讲解。
+
+基本术语让我们先了解一下 Spark 中常用的一些基本术语：
+
+
+
+术语
+含义
+
+
+
+
+Application
+用户创建的 Spark 应用，会在集群中形成 driver 进程和 executor 进程。
+
+
+Application jar
+包含用户 Spa......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-10-24
+    </p>
+
+</div>
+<hr>
+
+<div class="post-preview">
+
+    <a href="/2018/10/18/ReentrantReadWriteLock/">
+        <h2 class="post-title">
+            ReentrantReadWriteLock 使用
+        </h2>
+        <h3 class="post-subtitle">
+            
+        </h3>
+        <div class="post-content-preview">
+            ReentrantReadWriteLock 提供了读写锁机制可以方便我们更好实现并发场景，首先明确读写锁地特征：读锁与读锁不互斥，写锁与读锁互斥，写锁与写锁互斥。
+依据此，我们就可以应用在这样地场景下：如果多个线程可以并行跑，那么我们就可以给它们都分配读锁；如果某个线程必须阻塞其他所有线程开跑，那我们就给它设置写锁。
+用一个例子来讲解一下，现在共有四个线程，其中三个可以并行跑，一个必须阻塞......
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Ink Bai on
+        2018-10-18
+    </p>
+
+</div>
+<hr>
 
 <div class="post-preview">
 
@@ -375,78 +461,6 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
 </div>
 <hr>
 
-<div class="post-preview">
-
-    <a href="/2018/07/13/netty-http-server/">
-        <h2 class="post-title">
-            使用 Netty 写一个 HTTP Server
-        </h2>
-        <h3 class="post-subtitle">
-            
-        </h3>
-        <div class="post-content-preview">
-            
-前一段时间需要写一个 HTTP Server，之前用 Akka 实现了一个，但是 Netty 更能支撑高并发，连 Spark 2.0 也把 Akka 换成了 Netty 进行网络传输，所以现在再撸一个 Netty 的 Server。
-
-闲话少说，直接开搞，首先将 Netty 加入 sbt：
-1"io.netty" % "netty-all" % "4.1.25.Final"
-我们需要定义两......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-07-13
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/06/20/protocol-buffers-tutorial/">
-        <h2 class="post-title">
-            Protocol Buffers 了解一下？
-        </h2>
-        <h3 class="post-subtitle">
-            Scala 中使用 protocol buffer
-        </h3>
-        <div class="post-content-preview">
-            
-本文是学习 Protocol Buffers 时做的笔记，内容来自官方文档，把其中的精华部分提炼出来做了一个总结。
-
-什么是 protocol buffersProtocol buffers 是一种跨语言跨平台可扩展的序列化结构化数据的方式，常用于通信协议、数据存储等等。首先会定义数据应当如何构造，然后使用特殊生成的源代码把结构化的数据写入到各个数据流或者读取出来。甚至可以更新数据结构而不......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-06-20
-    </p>
-
-</div>
-<hr>
-
-<div class="post-preview">
-
-    <a href="/2018/06/14/notes-of-ddia-1/">
-        <h2 class="post-title">
-            Designing Data-Intensive Applications 读书笔记（I）
-        </h2>
-        <h3 class="post-subtitle">
-            构建可靠的、可扩展和可维护的应用
-        </h3>
-        <div class="post-content-preview">
-            
-17 年听说了这本神书 Designing Data-Intensive Applications，可以说这是一本全面讲解了大数据整个生态的百科全书，之前快速地看过前几章，感觉讲解地很系统而且通俗易懂，但是看到后面开始讲解更多细节性的内容慢慢地有点跟不上节奏了。作为一名数据从业人员感觉很有必要通过这本书把数据系统层面的内容整个做一个了解，所以这次在阅读的过程中会作一些笔记或者说是翻译以加深......
-        </div>
-    </a>
-    <p class="post-meta">
-        Posted by Ink Bai on
-        2018-06-14
-    </p>
-
-</div>
-<hr>
-
 
 
 <!-- Pager -->
@@ -496,21 +510,21 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
                             
                         
                             
+                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
+                            
+                        
+                            
                             <a href="/archive/?tag=Scala" title="Scala" rel="7">Scala</a>
                             
                         
                             
                         
                             
-                            <a href="/archive/?tag=算法" title="算法" rel="6">算法</a>
-                            
                         
                             
                         
                             
-                        
-                            
-                        
+                            <a href="/archive/?tag=Flink" title="Flink" rel="4">Flink</a>
                             
                         
                             
@@ -522,6 +536,8 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
                             
                         
                             
+                        
+                            
                             <a href="/archive/?tag=因崔斯汀" title="因崔斯汀" rel="4">因崔斯汀</a>
                             
                         
@@ -530,9 +546,9 @@ Scala 中方法和函数的区别举个例子吧，下面是一个方法：
                             
                         
                             
-                        
-                            
                             <a href="/archive/?tag=剑指 Offer" title="剑指 Offer" rel="27">剑指 Offer</a>
+                            
+                        
                             
                         
                             
