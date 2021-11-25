@@ -1,0 +1,15 @@
+---
+layout:     post
+title:      "Streaming 101"
+date:       2021-09-12
+author:     "Ink Bai"
+catalog:    true
+header-style: "text"
+tags:
+    - Sreaming System
+---
+
+过程：
+
+
+<video src="/files/file.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video>

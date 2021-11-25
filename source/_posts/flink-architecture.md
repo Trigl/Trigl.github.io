@@ -15,8 +15,8 @@ Flink 采用的是分布式系统中标准的 master-slave 架构，运行时包
 
 ![](/img/content/flink-arc.jpg)
 
-## Flink Program
-Client 不是运行时和程序执行的一部分，而是用于准备数据流并将其发送给 JobManager。
+## Flink Client
+Client 不是运行时和程序执行的一部分，client 端会将流或者批任务编译成一个数据流图，然后将其提交到 JobManager。
 
 ## JobManager
 JobManager 的主要用于调度 Flink 应用的分布式执行，具体职责有：调度 task、对完成的 task 或者失败的 task 做出反应、协调全局 checkpoint、全局容错恢复等。这个进程内又由三个不同组件组成：
