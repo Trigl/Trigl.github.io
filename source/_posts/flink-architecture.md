@@ -56,6 +56,35 @@ JobManager 的主要用于调度 Flink 应用的分布式执行，具体职责�
 相反，如下图，subtask 可以共享 slot 时，基本并行度从上面中的 2 增加到 6，可以充分利用分配的资源，同时确保繁重的 subtask 在 TaskManager 之间公平分配。
 ![](/img/content/share-slot.png)
 
+## 部署模式
+首先明确下面两个术语：
+
+- Flink Application：Flink Application 是一个 Java 应用程序，它通过 main 方法(或其他方式)提交一个或多个 Flink Job。提交作业通常通过调用 execute 来完成。
+- Flink Job：是 Flink DAG 图在运行时的具体表现，一个 DAG 对应一个 Flink Job，一般是通过在 Flink Application 中调用 execute 来创建和提交的。
+
+然后再来看 Flink 如何区分不同的部署模式：
+
+- 集群的生命周期和隔离性保证
+- application 的 main 方法在哪里执行
+
+![](/img/content/deployment_modes.png)
+
+- Application 模式
+隔离性：仅执行同一个 Application 的 Job（一个或多个），生命周期和 Application 的生命周期相同。
+application main 执行位置：Job Manager，相对比在 client 端执行，可以节省 CPU 和下载任务依赖的带宽消耗。
+
+- Per-Job 模式
+隔离性：仅执行一个 Job，生命周期和这个 Job 相同。
+application main 执行位置：client
+
+- Session 模式
+隔离性：可以执行多个 Application 的 Job，共享 JobManager，某一个 Job 结束并不会结束其生命周期。
+application main 执行位置：client
+
+
+
+
 
 ## Refer
 [Flink 架构](https://ci.apache.org/projects/flink/flink-docs-release-1.13/zh/docs/concepts/flink-architecture/)
+[Flink 部署](https://nightlies.apache.org/flink/flink-docs-master/zh/docs/deployment/overview/)
