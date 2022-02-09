@@ -15,8 +15,8 @@ tags:
 ## YARN 简介
 Apache Hadoop YARN（Yet Another Resource Negotiator，另一种资源协调者），是一个通用的资源管理系统和调度平台，可以为基于其运行的任务、应用提供统一的资源管理和调度。主要有两大功能：
 
-- 资源的统一管理和调度： 集群中所有节点的资源(内存、CPU、磁盘、网络等)抽象为Container。计算框架需要资源进行运算任务时需要向YARN申请 Container， YARN按照特定的策略对资源进行调度进行 Container 的分配。
-- 资源隔离： YARN使用了轻量级资源隔离机制Cgroups进行资源隔离以避免相互干扰，一旦Container使用的资源量超过事先定义的上限值，就将其杀死。
+- 资源的统一管理和调度： 集群中所有节点的资源（内存、CPU、磁盘、网络等）抽象为 Container。计算框架需要资源进行运算任务时需要向YARN申请 Container， YARN 按照特定的策略对资源进行调度进行 Container 的分配。
+- 资源隔离： YARN 使用了轻量级资源隔离机制 Cgroups 进行资源隔离以避免相互干扰，一旦 Container 使用的资源量超过事先定义的上限值，就将其杀死。
 
 #### 架构
 YARN 主要架构如下图，总体上是 Master/Slave 架构：
