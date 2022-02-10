@@ -91,4 +91,84 @@ env.execute("Flink Example");
 总结起来就是这么几步：
 
 - 算子关系转换为 StreamGraph，然后再转换为 JobGraph
-- 由 StreamExecutionEnvironment 创建一个 PipelineExecutor，这个 executor 把 JobGraph 提交到 JobManager
+- 由 StreamExecutionEnvironment 创建一个 PipelineExecutor，这个 executor 提交任务
+
+  `AbstractSessionClusterExecutor#execute` 方法里面核心逻辑如下：
+
+  ```java
+  ClusterClient<ClusterID> clusterClient = clusterClientProvider.getClusterClient();
+  return clusterClient
+      .submitJob(jobGraph)
+      .thenApplyAsync(jobID -> (JobClient) new ClusterClientJobClientAdapter<>(
+          clusterClientProvider,
+          jobID))
+      .whenComplete((ignored1, ignored2) -> clusterClient.close());
+  ```
+
+  其中 clusterClient 就是 RestClusterClient，可以提交 Restful 请求。
+- 最后通过 HTTP 协议向 JobManager 提交任务，代码在 `RestClusterClient#sendRetriableRequest`：
+
+  ```java
+  	private <M extends MessageHeaders<R, P, U>, U extends MessageParameters, R extends RequestBody, P extends ResponseBody> CompletableFuture<P>
+  	sendRetriableRequest(M messageHeaders, U messageParameters, R request, Collection<FileUpload> filesToUpload, Predicate<Throwable> retryPredicate) {
+  		return retry(() -> getWebMonitorBaseUrl().thenCompose(webMonitorBaseUrl -> {
+  			try {
+  				return restClient.sendRequest(webMonitorBaseUrl.getHost(), webMonitorBaseUrl.getPort(), messageHeaders, messageParameters, request, filesToUpload);
+  			} catch (IOException e) {
+  				throw new CompletionException(e);
+  			}
+  		}), retryPredicate);
+  	}
+  ```
+
+  host 和 port 正是 JobManager，messageHeaders 的具体实例是 `JobSubmitHeaders.getInstance()`，这里指定了其 url
+
+  ![](/img/content/submit-job.png)
+
+## JobManager 启动新提交的 Job
+JobManager 端接收 HTTP 请求的类是 `DispatcherRestEndpoint`，最底层处理 HTTP 协议是基于 Netty 实现的，底层类是 `LeaderRetrievalHandler`：
+
+```java
+/**
+ * {@link SimpleChannelInboundHandler} which encapsulates the leader retrieval logic for the
+ * REST endpoints.
+ *
+ * @param <T> type of the leader to retrieve
+ */
+@ChannelHandler.Sharable
+public abstract class LeaderRetrievalHandler<T extends RestfulGateway> extends SimpleChannelInboundHandler<RoutedRequest> {
+
+	@Override
+	protected void channelRead0(
+		ChannelHandlerContext channelHandlerContext,
+		RoutedRequest routedRequest) {
+
+		HttpRequest request = routedRequest.getRequest();
+		// other logic
+	}
+
+}
+```
+
+拿到 HTTP Request 并解析之后，最终会在 `Dispatcher#runJob` 处理：
+
+```java
+private CompletableFuture<Void> runJob(JobGraph jobGraph) {
+	Preconditions.checkState(!jobManagerRunnerFutures.containsKey(jobGraph.getJobID()));
+
+	final CompletableFuture<JobManagerRunner> jobManagerRunnerFuture = createJobManagerRunner(jobGraph);
+
+	jobManagerRunnerFutures.put(jobGraph.getJobID(), jobManagerRunnerFuture);
+
+	return jobManagerRunnerFuture
+		.thenApply(FunctionUtils.uncheckedFunction(this::startJobManagerRunner))
+		.thenApply(FunctionUtils.nullFn())
+		.whenCompleteAsync(
+			(ignored, throwable) -> {
+				if (throwable != null) {
+					jobManagerRunnerFutures.remove(jobGraph.getJobID());
+				}
+			},
+			getMainThreadExecutor());
+}
+```
