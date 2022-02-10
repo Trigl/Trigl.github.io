@@ -12,11 +12,16 @@ tags:
 
 > 上文讲了 Flink JobManager 的启动过程，也就是完成了一个 Flink Cluster 的部署，那么接下来我们看一下一个 Flink Job 的提交运行过程。
 
-一个 Flink Job 的提交分为以下两步：
+Flink Job 提交的大体流程如下：
+
+![](/img/content/flink-on-yarn.png)
+
+这个图画的是早期 Flink 版本的架构，图中的 JobManager 在老的 runtime 框架中是存在的，现在把它看成是 JobMaster 就可以。
+
+我们分成以下两步讲解：
 
 - Client 端提交 Flink Job 到 JobManager
-- JobManager 运行该 Job，启动对应的 JobMaster
-- 启动各个 TaskManager
+- JobManager 运行提交的 Job
 
 ## Client 端提交 Flink Job
 提交 Flink Job 的方式有多种，可以通过命令行方式也可以通过 Restful 请求，在 Flink 目录下用命令行方式提交任务如下：
@@ -125,7 +130,7 @@ env.execute("Flink Example");
 
   ![](/img/content/submit-job.png)
 
-## JobManager 启动新提交的 Job
+## JobManager 运行提交的 Job
 JobManager 端接收 HTTP 请求的类是 `DispatcherRestEndpoint`，最底层处理 HTTP 协议是基于 Netty 实现的，底层类是 `LeaderRetrievalHandler`：
 
 ```java
@@ -172,3 +177,17 @@ private CompletableFuture<Void> runJob(JobGraph jobGraph) {
 			getMainThreadExecutor());
 }
 ```
+
+可以看到先创建然后启动 JobManagerRunner，启动之后会将 JobGraph 转化为 ExecutionGraph，基于 ExecutionGraph 开始进行任务调度，任务调度结束就开始正式执行。
+
+## 总结
+对照开头的流程图，可以总结 Flink Job 提交并运行的步骤为：
+- Client 通过 shell 命令提交任务
+- Client 端执行 Flink Job 代码，算子转化为 StreamGraph、StreamGraph 转化为 JobGraph
+- Client 通过 HTTP 协议向 JobManager 提交 JobGraph
+- JobManager 上的 Dispatcher 组件接收并处理任务提交请求，创建并运行 JobMaster
+- JobMaster 向 ResourceManager 申请 slot，若没有之前分配的空闲 slot，ResourceManager 就向 YARN 申请资源
+- YARN 分配 container 资源，然后在这个 container 上启动 TaskManager
+- TaskManager 启动后，ResourceManager 向其转发 JobMaster 申请 slot 的请求
+- TaskManager 向 JobMaster 提供 slot
+- JobMaster 拿到 slot 资源后，正式在上面启动 task
