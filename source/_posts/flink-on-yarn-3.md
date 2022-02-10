@@ -1,0 +1,94 @@
+---
+layout:     post
+title:      "Flink on YARN 部署详解（III）"
+subtitle:   "Flink Job 的提交和运行"
+date:       2022-02-10
+author:     "Ink Bai"
+catalog:    true
+header-style: "text"
+tags:
+    - Flink
+---
+
+> 上文讲了 Flink JobManager 的启动过程，也就是完成了一个 Flink Cluster 的部署，那么接下来我们看一下一个 Flink Job 的提交运行过程。
+
+一个 Flink Job 的提交分为以下两步：
+
+- Client 端提交 Flink Job 到 JobManager
+- JobManager 运行该 Job，启动对应的 JobMaster
+- 启动各个 TaskManager
+
+## Client 端提交 Flink Job
+提交 Flink Job 的方式有多种，可以通过命令行方式也可以通过 Restful 请求，在 Flink 目录下用命令行方式提交任务如下：
+
+```shell
+bin/flink run -d ./examples/streaming/TopSpeedWindowing.jar
+```
+
+进入这个 shell 脚本可以看到启动类是 `org.apache.flink.client.cli.CliFrontend`，注意这个类是运行在 Client 端的，此时还没有提交到 Flink 集群上。跟进代码可以看到主要做了两件事：
+
+- 加载配置，如果在 JobManager 机器上提交 Flink Job，会从本地目录找到 YARN 配置文件：
+
+  ```java
+	public static File getYarnPropertiesLocation(@Nullable String yarnPropertiesFileLocation) {
+
+		final String propertiesFileLocation;
+
+		if (yarnPropertiesFileLocation != null) {
+			propertiesFileLocation = yarnPropertiesFileLocation;
+		} else {
+			propertiesFileLocation = System.getProperty("java.io.tmpdir");
+		}
+
+		String currentUser = System.getProperty("user.name");
+
+		return new File(propertiesFileLocation, YARN_PROPERTIES_FILE + currentUser);
+	}
+	```
+
+  找到配置文件就可以确定 YARN 的 ApplicationId 了，当然也可以在命令行通过 `--applicationId` 指定。
+
+- 初始化任务运行的上下文环境
+
+  ```java
+  StreamContextEnvironment.setAsContext(
+    executorServiceLoader,
+    configuration,
+    userCodeClassLoader,
+    enforceSingleJobExecution,
+    suppressSysout);
+  ```
+
+- 运行 Job Jar 的入口类，这里也就是 `./examples/streaming/TopSpeedWindowing.jar`
+
+  ```java
+  /**
+   * This method assumes that the context environment is prepared, or the execution
+   * will be a local execution by default.
+   */
+  public void invokeInteractiveModeForExecution() throws ProgramInvocationException {
+    callMainMethod(mainClass, args);
+  }
+  ```
+
+> Tips：可以在 `flink-conf.yaml` 内配置如下参数远程 debug Client 模块、JobManager 模块和 TaskManager 模块。
+```shell
+env.java.opts.client: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+env.java.opts.jobmanager: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006"
+env.java.opts.taskmanager: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5007"
+```
+
+接下来就是运行 Flink 应用代码，Flink 应用代码结构比较固定，伪代码如下：
+
+```
+final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+addSource();
+addTransformers();
+addSink();
+env.execute("Flink Example");
+```
+
+总结起来就是这么几步：
+
+- 算子关系转换为 StreamGraph，然后再转换为 JobGraph
+- 由 StreamExecutionEnvironment 创建一个 PipelineExecutor，这个 executor 把 JobGraph 提交到 JobManager
