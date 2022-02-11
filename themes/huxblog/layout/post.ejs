@@ -18,7 +18,12 @@ layout: layout
 
     .long-length-container {
       margin-left: 0px;
-      width: 80%
+    }
+
+    @media (min-width: 1200px) {
+      .long-length-container {
+        width: 80%;
+      }
     }
 </style>
 <% if(page["header-style"] == 'text') { %>
