@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Designing Data-Intensive Applications 读书笔记（I）"
+title:      "「Notes」Designing Data-Intensive Applications（I）"
 subtitle:   "构建可靠的、可扩展和可维护的应用"
 date:       2018-06-14
 author:     "Ink Bai"

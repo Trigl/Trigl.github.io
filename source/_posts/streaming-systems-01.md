@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Streaming Systems 读书笔记（I）"
+title:      "「Notes」Streaming Systems（I）"
 subtitle:   "Streaming 理论入门"
 date:       2022-01-21
 author:     "Ink Bai"
