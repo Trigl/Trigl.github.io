@@ -4,7 +4,7 @@ title:      "那些年迷过的小李飞刀"
 subtitle:   "多情剑客无情剑"
 date:       2015-12-27
 author:     "Ink Bai"
-catalog:    false
+catalog:    true
 header-img: "/img/post/the-sword.jpg"
 tags:
     - 因崔斯汀

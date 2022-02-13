@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 10：二进制中 1 的个数"
 date:       2019-01-07 01:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-10.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

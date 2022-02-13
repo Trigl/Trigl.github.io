@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 4：替换空格"
 date:       2018-11-27 01:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-4.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

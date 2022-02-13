@@ -4,6 +4,7 @@ title:      "Flink 学习大纲"
 date:       2021-08-25
 author:     "Ink Bai"
 header-style: "text"
+catalog:    true
 tags:
     - Flink
 ---
@@ -44,5 +45,6 @@ tags:
 [Streaming System](https://book.douban.com/subject/27080632/)：讲流处理引擎的一本书，书本的质量非常高，配了大量的图，目的就是让你很容易的懂流处理引擎中的概念（比如时间、窗口、水印等）。
 [Lightweight Asynchronous Snapshots for Distributed Dataflows](https://arxiv.org/pdf/1506.08603.pdf)：Apache Flink 所实现的一个轻量级的、异步做状态快照的方法。基于此，Flink 得以保证分布式状态的一致性，从而保证整个系统的 exactly-once 语义。
 [Distributed Snapshots: Determining Global States of Distributed Systems](https://lamport.azurewebsites.net/pubs/chandy.pdf)：分布式快照算法 Chandy-Lamport
+[MillWheel: Fault-Tolerant Stream Processing at Internet Scale](https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/41378.pdf)：MillWheel 是 Google 内部研发的实时流数据处理系统，具有分布式、低延迟、高可用、支持 exactly-once 语义的特点。
 [Streaming 101: The world beyond batch](https://www.oreilly.com/radar/the-world-beyond-batch-streaming-101/)
 [Streaming 102: The world beyond batch](https://www.oreilly.com/radar/the-world-beyond-batch-streaming-102/)

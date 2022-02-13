@@ -6,6 +6,7 @@ date:       2019-08-26
 author:     "Ink Bai"
 header-img: "/img/post/effective-java-1-plus.jpg"
 header-style: "text"
+catalog:    true
 tags:
     - Effective Java
 ---

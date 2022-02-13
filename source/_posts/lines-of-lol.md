@@ -4,7 +4,7 @@ title:      "那些年玩过的英雄联盟"
 subtitle:   "无形装逼，最为致命——LOL那些有趣的台词"
 date:       2016-01-09
 author:     "Ink Bai"
-catalog:    false
+catalog:    true
 header-img: "/img/post/post-bg-lol.jpg"
 tags:
     - 因崔斯汀

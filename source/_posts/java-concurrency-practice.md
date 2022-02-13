@@ -4,6 +4,7 @@ title:      "「Notes」Java 并发编程实战"
 date:       2020-11-30
 author:     "Ink Bai"
 header-style: "text"
+catalog:    true
 tags:
     - 并发
 ---

@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 5：从尾到头打印链表"
 date:       2018-11-27 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-5.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

@@ -5,6 +5,7 @@ subtitle:   "个人笔记"
 date:       2020-02-14
 author:     "Ink Bai"
 header-style: "text"
+catalog:    true
 tags:
     - Go
 ---

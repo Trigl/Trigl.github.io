@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 19：二叉树的镜像"
 date:       2019-01-10 03:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-19.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

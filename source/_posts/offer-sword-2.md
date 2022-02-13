@@ -5,6 +5,7 @@ date:       2018-11-23 01:00:00
 author:     "Ink Bai"
 catalog:    true
 header-img: "/img/post/offer-sword-02.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

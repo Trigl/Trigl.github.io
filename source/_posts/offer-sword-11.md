@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 11：数值的整数次方"
 date:       2019-01-07 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-11.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

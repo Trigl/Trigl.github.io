@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 8：旋转数组的最小数字"
 date:       2019-01-01 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-8.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

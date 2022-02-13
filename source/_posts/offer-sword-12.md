@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 12：打印 1 到最大的 n 位数"
 date:       2019-01-08 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-12.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

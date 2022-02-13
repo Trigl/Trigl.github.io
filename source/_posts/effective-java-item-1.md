@@ -5,6 +5,7 @@ subtitle:   "考虑使用静态工厂方法替换构造方法"
 date:       2019-08-25
 author:     "Ink Bai"
 header-img: "/img/post/effective-java-1.jpg"
+catalog:    true
 tags:
     - Effective Java
 ---

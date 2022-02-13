@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 13：在 O(1) 时间删除链表结点"
 date:       2019-01-08 03:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-13.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

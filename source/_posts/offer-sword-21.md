@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 21：包含 min 函数的栈"
 date:       2019-01-10 05:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-21.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

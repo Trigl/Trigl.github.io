@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 15：链表中倒数第 k 个结点"
 date:       2019-01-08 05:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-15.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

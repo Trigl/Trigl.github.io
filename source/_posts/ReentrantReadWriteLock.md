@@ -4,6 +4,7 @@ title:      "ReentrantReadWriteLock 使用"
 date:       2018-10-18
 author:     "Ink Bai"
 header-img: "/img/post/read-write-lock.jpg"
+catalog:    true
 tags:
     - 并发
 ---

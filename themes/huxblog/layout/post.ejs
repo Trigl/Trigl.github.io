@@ -20,9 +20,36 @@ layout: layout
       margin-left: 0px;
     }
 
+    .long-length-container img {
+      display: inherit;
+      max-height: 500px;
+    }
+
+    .long-heading-container {
+      margin-left: 0px;
+    }
+
+    @media (min-width: 768px) {
+      .long-length-container {
+        width: 100%;
+        padding-right: 15px;
+      }
+
+      .long-heading-container {
+        width: 100%;
+        padding-right: 15px;
+      }
+    }
+
     @media (min-width: 1200px) {
       .long-length-container {
-        width: 80%;
+        width: 83%;
+        padding-right: 15px;
+      }
+
+      .long-heading-container {
+        width: 70%;
+        padding-right: 15px;
       }
     }
 </style>
@@ -42,7 +69,7 @@ layout: layout
                 catalog-container">
             </div>
 
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 long-length-container">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 long-heading-container">
                 <div class="post-heading">
                     <div class="tags">
                         <% page.tags.forEach(function(tag){ %>

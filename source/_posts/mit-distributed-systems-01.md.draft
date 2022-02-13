@@ -5,6 +5,7 @@ subtitle:   "课程简介"
 date:       2021-08-21 01:00:00
 author:     "Ink Bai"
 header-style: "text"
+catalog:    true
 tags:
     - MIT 6.824 Distributed Systems
 ---
@@ -41,7 +42,7 @@ https://www.zhihu.com/question/29597104/answer/1971438797
 - 可恢复性
 
 解决这两个问题的方法：
-- 保存在非易失性存储中，如硬盘、闪存或者 SSD 中。  
+- 保存在非易失性存储中，如硬盘、闪存或者 SSD 中。
 - 副本
 
 一致性

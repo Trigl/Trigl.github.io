@@ -76,12 +76,11 @@ bin/flink run -d ./examples/streaming/TopSpeedWindowing.jar
   }
   ```
 
-> Tips：可以在 `flink-conf.yaml` 内配置如下参数远程 debug Client 模块、JobManager 模块和 TaskManager 模块。
-```shell
+> Tips：可以在 `flink-conf.yaml` 内配置如下参数远程 debug Client 模块、JobManager 模块和 TaskManager 模块：
 env.java.opts.client: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 env.java.opts.jobmanager: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006"
 env.java.opts.taskmanager: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5007"
-```
+
 
 接下来就是运行 Flink 应用代码，Flink 应用代码结构比较固定，伪代码如下：
 

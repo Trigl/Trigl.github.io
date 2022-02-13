@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 24：二叉搜索树的后序遍历序�
 date:       2019-01-11 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-24.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---

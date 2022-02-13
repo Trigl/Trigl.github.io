@@ -5,6 +5,7 @@ subtitle:   "I have a dream"
 date:       2016-04-02
 author:     "Ink Bai"
 header-img: "/img/post/my-dream.jpeg"
+catalog:    true
 tags:
     - 因崔斯汀
 ---

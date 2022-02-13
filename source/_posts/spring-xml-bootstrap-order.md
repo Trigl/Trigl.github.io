@@ -4,7 +4,7 @@ title:      "关于 web.xml 中 Spring 配置文件的启动顺序"
 # subtitle:   "《Spring in Action》笔记，总体介绍一下Spring"
 date:       2016-07-31
 author:     "Ink Bai"
-catalog:    false
+catalog:    true
 header-img: "/img/post/post-bg-spring.jpg"
 tags:
     - Spring

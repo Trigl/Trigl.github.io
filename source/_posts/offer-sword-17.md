@@ -4,6 +4,7 @@ title:      "「剑指 Offer」面试题 17：合并两个排序的链表"
 date:       2019-01-09 02:00:00
 author:     "Ink Bai"
 header-img: "/img/post/offer-sword-17.jpg"
+catalog:    true
 tags:
     剑指 Offer
 ---
