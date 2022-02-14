@@ -1,14 +1,19 @@
 ---
 layout:     post
-title:      "「Notes」Streaming Systems（I）"
+title:      "「Notes」Streaming Systems 第一章"
 subtitle:   "Streaming 理论入门"
 date:       2022-01-21
 author:     "Ink Bai"
 catalog:    true
-header-style: "text"
+# header-style: "text"
+header-img: "/img/archive-bg.jpg"
 tags:
     - Streaming Systems
 ---
+
+> 准备阅读 Streaming Systems，这本书偏向于介绍构建流计算系统的通用理论知识，做一些阅读笔记。
+
+第一章包括了对流处理中基本概念的描述，讨论了流式系统的能力、两种重要的时间概念，以及一些常见的数据处理模式。
 
 ## 基本术语解释：Streaming 到底是什么？
 Streaming System：用来处理无限数据集的数据处理引擎。
