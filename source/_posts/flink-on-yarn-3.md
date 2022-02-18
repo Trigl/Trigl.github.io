@@ -130,27 +130,68 @@ env.execute("Flink Example");
   ![](/img/content/submit-job.png)
 
 ## JobManager 运行提交的 Job
-JobManager 端接收 HTTP 请求的类是 `DispatcherRestEndpoint`，最底层处理 HTTP 协议是基于 Netty 实现的，底层类是 `LeaderRetrievalHandler`：
+JobManager 端接收 HTTP 请求的类是 `DispatcherRestEndpoint`，最底层处理 HTTP 协议是基于 Netty 实现的，在其 pipeline 上添加各种类型的 handler：
 
 ```java
 /**
- * {@link SimpleChannelInboundHandler} which encapsulates the leader retrieval logic for the
- * REST endpoints.
+ * Starts this REST server endpoint.
  *
- * @param <T> type of the leader to retrieve
+ * @throws Exception if we cannot start the RestServerEndpoint
  */
-@ChannelHandler.Sharable
-public abstract class LeaderRetrievalHandler<T extends RestfulGateway> extends SimpleChannelInboundHandler<RoutedRequest> {
+public final void start() throws Exception {
+	log.info("Starting rest endpoint.");
 
-	@Override
-	protected void channelRead0(
-		ChannelHandlerContext channelHandlerContext,
-		RoutedRequest routedRequest) {
+	final Router router = new Router();
+	final CompletableFuture<String> restAddressFuture = new CompletableFuture<>();
 
-		HttpRequest request = routedRequest.getRequest();
-		// other logic
-	}
+	handlers = initializeHandlers(restAddressFuture);
 
+	/* sort the handlers such that they are ordered the following:
+	 * /jobs
+	 * /jobs/overview
+	 * /jobs/:jobid
+	 * /jobs/:jobid/config
+	 * /:*
+	 */
+	Collections.sort(
+		handlers,
+		RestHandlerUrlComparator.INSTANCE);
+
+	checkAllEndpointsAndHandlersAreUnique(handlers);
+	handlers.forEach(handler -> registerHandler(router, handler, log));
+
+	ChannelInitializer<SocketChannel> initializer = new ChannelInitializer<SocketChannel>() {
+
+		@Override
+		protected void initChannel(SocketChannel ch) {
+			RouterHandler handler = new RouterHandler(router, responseHeaders);
+
+			// SSL should be the first handler in the pipeline
+			if (isHttpsEnabled()) {
+				ch.pipeline().addLast("ssl",
+					new RedirectingSslHandler(restAddress, restAddressFuture, sslHandlerFactory));
+			}
+
+			ch.pipeline()
+				.addLast(new HttpServerCodec())
+				.addLast(new FileUploadHandler(uploadDir))
+				.addLast(new FlinkHttpObjectAggregator(maxContentLength, responseHeaders))
+				.addLast(new ChunkedWriteHandler())
+				.addLast(handler.getName(), handler)
+				.addLast(new PipelineErrorHandler(log, responseHeaders));
+		}
+	};
+
+	NioEventLoopGroup bossGroup = new NioEventLoopGroup(1, new ExecutorThreadFactory("flink-rest-server-netty-boss"));
+	NioEventLoopGroup workerGroup = new NioEventLoopGroup(0, new ExecutorThreadFactory("flink-rest-server-netty-worker"));
+
+	bootstrap = new ServerBootstrap();
+	bootstrap
+		.group(bossGroup, workerGroup)
+		.channel(NioServerSocketChannel.class)
+		.childHandler(initializer);
+
+	// other logic
 }
 ```
 
