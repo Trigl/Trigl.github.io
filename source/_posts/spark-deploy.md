@@ -66,11 +66,5 @@ spark-submit \
 -t streaming
 ```
 
-## 工作调度
-Spark 调度资源的方式主要有两种，前面有讲过，不同的 Spark 应用部署在集群的时候，他们的 executor 进程都是相互独立的，所占用的资源也都是相互独立的，这种调度成为应用之间的调度，由集群管理器控制。而在一个 Spark 应用内部，多个 job 可能会在多个线程上并发执行，针对每一个 SparkContext，Spark 提供了 fair schduler 来调度资源。
-
-#### 应用间调度
-
-
 ## Refer
 [Spark 官方文档](http://spark.apache.org/docs/latest/cluster-overview.html)
