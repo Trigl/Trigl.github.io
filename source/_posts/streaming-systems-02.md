@@ -44,9 +44,9 @@ PCollection<KV<Team, Integer>> totals = input.apply(Sum.integersPerKey());
 
 首先通过 IO 操作读取数据源，数据源的数据就是上面表格中的示例数据，然后应用一个一对一转换 `ParseFn` 对数据源做解析，产生一个新的 `PCollection`，它的类型是 KV 对。之后再进行一次转换，应用 `Sum.integersPerKey()` 函数，即对相同 key 对应的 value 累加，最后仍然产生一个新的 `PCollection`，类型还是 KV 对，这个就是我们要的最终数据结果。
 
-用一个动图展示计算单独一个 Team 的总成绩的过程如下图：
+下图展示了累加分数的进程：
 
-<video width="70%" height="70%" src="/files/stsy_0203.mp4" controls="controls"></video>
+![](/img/content/stsy_0203.jpg)
 
 为了方便展示，这里仅展示了单独一个 team 的转换过程，实际上在真实数据管道中，相似的操作和相似的 team 可以同时在多台机器上运行。
 
@@ -67,9 +67,9 @@ PCollection<KV<Team, Integer>> totals = input
   .apply(Sum.integersPerKey());
 ```
 
-下面的动图展示了单独某个 key 在窗口内计算的过程：
+下图展示了单独某个 key 在窗口内计算的过程：
 
-<video width="70%" height="70%" src="/files/stsy_0205.mp4" controls="controls"></video>
+![](/img/content/stsy_0205.jpg)
 
 可以看到不同于之前的全局计算，这里分成了 4 个时间窗口，每个窗口大小是两分钟。
 
@@ -96,9 +96,9 @@ PCollection<KV<Team, Integer>> totals = input
   .apply(Sum.integersPerKey());
 ```
 
-<video width="70%" height="70%" src="/files/stsy_0206.mp4" controls="controls"></video>
+![](/img/content/stsy_0206.jpg)
 
-从上面的动图可以看到单个窗口内每来一条记录就会产生一次输出，也就是产生一个 pane。这种变更性的 trigger 特别适合数据写到表里的场景，表的数据会实时更新，并且随着时间推进结果也愈发精确。
+从上图可以看到单个窗口内每来一条记录就会产生一次输出，也就是产生一个 pane。这种变更性的 trigger 特别适合数据写到表里的场景，表的数据会实时更新，并且随着时间推进结果也愈发精确。
 
 但是每来一条记录都 trigger 的缺点就是成本太高，会消耗大量资源，特别是 key 数量很多的时候，此时就可以考虑周期性变更 trigger，每个周期延迟固定时间后开始下一周期，如每秒钟甚至每分钟变更一次。可以依据是否对齐延迟细分为两种类型：
 
@@ -111,9 +111,9 @@ PCollection<KV<Team, Integer>> totals = input
   .apply(Sum.integersPerKey());
 ```
 
-<video width="70%" height="70%" src="/files/stsy_0207.mp4" controls="controls"></video>
+![](/img/content/stsy_0207.jpg)
 
-Spark Streaming 的微批思想就类似于这种对齐 trigger，这种 trigger 的缺点就是所有的结果都是在同一时间输出，就会导致周期性地负载变高，此时就可以选择非对齐延迟的 trigger。
+上图就是按照实际处理时间切分 pane，Spark Streaming 的微批思想就类似于这种对齐 trigger，这种 trigger 的缺点就是所有的结果都是在同一时间输出，就会导致周期性地负载变高，此时就可以选择非对齐延迟的 trigger。
 
 2.非对齐延迟（unaligned delay）：窗口内对应的 key 实际到达数据后才开始计算延迟的时间周期
 
@@ -124,9 +124,9 @@ PCollection<KV<Team, Integer>> totals = input
   .apply(Sum.integersPerKey());
 ```
 
-<video width="70%" height="70%" src="/files/stsy_0208.mp4" controls="controls"></video>
+![](/img/content/stsy_0208.jpg)
 
-对比上面对齐延迟的动图，可以很明显看出非对齐延迟可以打散负载，对于大规模数据处理来说是一种更好的选择。
+对比上面对齐延迟的图，可以很明显看出非对齐延迟可以打散负载，对于大规模数据处理来说是一种更好的选择。
 
 **3.1.2、完整性 trigger**
 讲完了变更性 trigger，再来看完整性 trigger。完整性 trigger 是指这个窗口的数据全部到达之后才会输出结果，这类似于批处理，只不过是数据限定在一个窗口期内。
@@ -155,18 +155,19 @@ PCollection<KV<Team, Integer>> totals = input
   .apply(Sum.integersPerKey());
 ```
 
-> 完整性 trigger：完美型 watermark 和预测型 watermar
-<video width="70%" height="70%" src="/files/stsy_0210.mp4" controls="controls"></video>
+> 完整性 trigger：完美型 watermark 和启发型 watermar
+
+![](/img/content/stsy_0210.jpg)
 
 图中左右两边分别展现了两种实现的 watermark：
 
 - 完美型 watermark：处理时间到事件时间的映射完全准确，能够完全保证数据的完整性，不会有任何数据迟到的情况。
-- 预测型 watermark：一般而言，完美只存在于想象当中，在大多数分布式场景中，我们能做的是尽可能根据进入的记录的各种信息来预估此时的 watermark，例如网络一般延迟多久、数据是否有序等。大多数情况下，这种预测是比较准确的，但是也会有不准的情况，此时就会导致有些数据被认为是迟到的数据。
+- 启发型 watermark：一般而言，完美只存在于想象当中，在大多数分布式场景中，我们能做的是尽可能根据进入的记录的各种信息来预估此时的 watermark，例如网络一般延迟多久、数据是否有序等。大多数情况下，这种预测是比较准确的，但是也会有不准的情况，此时就会导致有些数据被认为是迟到的数据。
 
 我们可以发现 watermark 或者说完整性这个概念本身，可能会存在下面两个问题：
 
 - 数据延迟：用上面图左完美 watermark 来举例，由于 [12:00, 12:02) 时间内的一条数据晚到了很久，这个窗口在很久之后才被 trigger，这就引发了连锁反应，它后面的几个窗口 trigger 时间都推迟了。
-- 数据不完整：用上面图右预测型 watermark 来举例，它预测的 watermark 比较早，数据不会延迟很久，但是却导致有一条数据迟到了没有包含在这个窗口期内，也就是造成了数据不完整。而某些场景是很关心数据的完整性的，典型的例子就是 outer join，如果没有 watermark 这样的概念，你怎么知道什么时候两条流应该停止 join 输出结果呢？
+- 数据不完整：用上面图右启发型 watermark 来举例，它预测的 watermark 比较早，数据不会延迟很久，但是却导致有一条数据迟到了没有包含在这个窗口期内，也就是造成了数据不完整。而某些场景是很关心数据的完整性的，典型的例子就是 outer join，如果没有 watermark 这样的概念，你怎么知道什么时候两条流应该停止 join 输出结果呢？
 
 所谓鱼与熊掌不可兼得，不能又想要数据完整又想要数据不延迟，能不能「我都要」呢？想一想前面 `3.1.1、变更性 trigger` 中的优点，可以低延迟地更新数据的结果，每次变更数据都更准确，如果变更性 trigger 和 watermark 所提供的完整性结合起来会怎样呢？
 
@@ -188,10 +189,11 @@ PCollection<KV<Team, Integer>> totals = input
                   .withLateFirings(AfterCount(1))));
 ```
 
-> 前置/准时/后置 trigger：完美型 watermark 和预测型 watermar
-<video width="70%" height="70%" src="/files/stsy_0211.mp4" controls="controls"></video>
+> 前置/准时/后置 trigger：完美型 watermark 和启发型 watermar
 
-将本动图和上面 `完整性 trigger：完美型 watermark 和预测型 watermar` 对比，你会发现不论是完美的 watermark 还是预测型的 watermark，他们貌似差距不大了，都能在数据准确的基础上还能保持快速更新输出结果。
+![](/img/content/stsy_0211.jpg)
+
+将本图和上面 `完整性 trigger：完美型 watermark 和启发型 watermar` 对比，你会发现不论是完美的 watermark 还是启发型的 watermark，他们貌似差距不大了，都能在数据准确的基础上还能保持快速更新输出结果。
 
 一切看起来都很完美，但是还有一个问题，就是当你设置了一个后置 trigger，也就意味着即使某个窗口在完整性 trigger 输出结果之后，还是需要保存其状态，以方便后续到来的数据更新这个结果，那么这个状态需要保存多久呢？
 
@@ -216,7 +218,7 @@ PCollection<KV<Team, Integer>> totals = input
  .apply(Sum.integersPerKey());
 ```
 
-<video width="70%" height="70%" src="/files/stsy_0212.mp4" controls="controls"></video>
+![](/img/content/stsy_0212.jpg)
 
 不过最后再强调一点，凡事无绝对，具体情况还是要具体分析。虽然大部分系统有必要设置一个延迟时间阈值，但是如果你的系统的确需要结果非常精确，比如计算网站每天的 PV，同时 key 的数量不大，比如只有有限几个网站，那完全可以把窗口的生命周期设置为无限。
 
@@ -229,7 +231,7 @@ PCollection<KV<Team, Integer>> totals = input
 - Accumulating（累加）：每次输出一个 pane 之后，保存结果，下次产生新的 pane 之后与之前保存的结果累加，然后再覆盖保存的结果。比如可以通过一个 k/v 存储的外部系统如 HBase 来存储结果。
 - Accumulating and retracting（累加并撤销）：这种模式类似于累加模式，不同之处在于当产生一个新 pane 之后，除了累加，还会对前一个 pane 做出额外的撤销操作。这种模式本质上是在说「我上次告诉你结果是 X，现在我发现我错了。去掉我上次告诉你的 X，换成新的结果 Y」。
 
-比如前面动图 `前置/准时/后置 trigger：完美型 watermark 和预测型 watermar` 在 [12:06, 12:08) 区间范围内有两个 pane，下面这个表格展示了这三种聚合方式对应的最终结果：
+比如前面动图 `前置/准时/后置 trigger：完美型 watermark 和启发型 watermar` 在 [12:06, 12:08) 区间范围内有两个 pane，下面这个表格展示了这三种聚合方式对应的最终结果：
 
 ![](/img/content/accumulation.jpg)
 
