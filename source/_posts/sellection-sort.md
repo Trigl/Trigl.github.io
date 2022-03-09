@@ -6,7 +6,7 @@ author:     "Ink Bai"
 catalog:    true
 header-img: "/img/post/sellection-sort.jpg"
 tags:
-    - 算法
+    - 算法与数据结构
 ---
 
 ## 思想
