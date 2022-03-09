@@ -145,6 +145,36 @@ public interface HighAvailabilityServices extends ClientHighAvailabilityServices
 
 #### yarn.application-attempts 参数配置的坑
 `yarn.application-attempts` 必须设置一个大于 2 的数，否则可能会发生无法从之前的 container 恢复的情况，会导致启动新的 TaskManager。
+
+这是为什么呢？YARN 每次重启 AM 都是一次新的 attempt，重启 AM 不一定会重启这个任务其他的 container，例如 AM 上的 Flink JobManager 挂了，下一次 attempt 只重启 AM 和其上的 JobManager，但是保留 TaskManager 所在的 container，这样就可以保证任务不挂、复用资源。
+
+而保留除了 AM 之外的其他 container，必须满足：AM 连续失败重启次数 < `yarn.application-attempts` - 1
+
+AM 连续失败重启次数是指在一个固定时间间隔内，AM 失败重启了几次，具体实现在 `org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl#getNumFailedAppAttempts` 内：
+
+```Java
+private int getNumFailedAppAttempts() {
+  int completedAttempts = 0;
+  long endTime = this.systemClock.getTime();
+  // Do not count AM preemption, hardware failures or NM resync
+  // as attempt failure.
+  for (RMAppAttempt attempt : attempts.values()) {
+    if (attempt.shouldCountTowardsMaxAttemptRetry()) {
+      if (this.attemptFailuresValidityInterval <= 0
+          || (attempt.getFinishTime() > endTime
+              - this.attemptFailuresValidityInterval)) {
+        completedAttempts++;
+      }
+    }
+  }
+  return completedAttempts;
+}
+```
+
+可以看到，当前时刻往前 `attemptFailuresValidityInterval` 时间断内进行的 attempt 才会被算到连续重试次数内，Flink 设置的 `attemptFailuresValidityInterval` 默认值是 10s，也就意味着在 10s 内完成上一次 AM 挂掉到这一次 AM 启动，失败次数才会累加 1，正常情况下这么短的时间至多重启一次，因此 AM 连续失败重启次数最多就是 1
+
+再回到上面说的，要保留除了 AM 之外的其他 container，必须满足：当前 AM 连续失败重启次数 < `yarn.application-attempts` - 1，因此 `yarn.application-attempts` 配置地值最好大于 2
+
 ## 总结
 本文首先介绍了 Flink HA 解决的问题和配置方式，然后讲解了实现 HA 需要实现如下相关服务：
 
@@ -158,3 +188,5 @@ public interface HighAvailabilityServices extends ClientHighAvailabilityServices
 ## Refer
 [JobManager 高可用](https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/deployment/ha/overview/)
 [京东Flink优化与技术实践](https://cloud.tencent.com/developer/news/738891)
+[The Number of Maximum Attempts of an Yarn Application in Hadoop Two](http://johnjianfang.blogspot.com/2015/04/the-number-of-maximum-attempts-of-yarn.html)
+[yarn关于app max attempt深度解析，针对长服务appmaster平滑重启](https://www.cnblogs.com/yanghuahui/p/4911276.html)
