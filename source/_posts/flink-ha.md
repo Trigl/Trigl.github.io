@@ -13,10 +13,11 @@ tags:
 
 说到高可用，本质上都是为了尽可能降低系统的不可用时间，对于 Flink 这样的流计算引擎而言，高可用也就意味着实时任务的断流时间尽可能的小，表现在时间上就是低延迟，这对一些时效性要求高的作业来说至关重要。当然，Flink 任务整体的高可用涉及到很多方面，如 JobManager 保证高可用、TaskManager 的故障恢复、甚至 connector 上可以做一些高可用保障，本文主要介绍 JobManager 的高可用，会尝试解答以下几个问题：
 
-> **1. 如何配置 JobManager 高可用？**
-**2. JobManager 的高可用具体是怎么实现的？**
-**3. Flink on YARN 下 JobManager 的高可用有何特殊之处？**
-**4. 当前的高可用实现是否存在问题、生产实践中有哪些坑？**
+> **1. Flink JobManager 的高可用用来解决什么问题？**
+**2. 如何配置 JobManager 高可用？**
+**3. JobManager 的高可用具体是怎么实现的？**
+**4. Flink on YARN 下 JobManager 的高可用有何特殊之处？**
+**5. 当前的高可用实现是否存在问题、生产实践中有哪些坑？**
 
 ## JobManager 高可用简介
 JobManager 的高可用就是用来解决其单点问题，高可用的一般概念指的集群中同时存在多个点，其中一个是 leader 节点，其他的都是 stand-by 节点，当 leader 故障时 stand-by 中的某个节点升级为 leader 继续提供服务，也就是保证了系统的「高可用」，如图：
@@ -60,10 +61,9 @@ Flink 的高可用服务需要通过下面几个细分服务来实现：
 
 - leader 选举：当 JobManager 出现故障时，需要从其他 stand-by 节点中找一个替补作为新的 JobManager，此时就需要进行 leader 选举，即从 n 个候选者中选出一个领导者
 - leader 发现：TaskManager 需要跟 JobManager 地址保持通信，那新的 JobManager 之后，TaskManager 如何感知到呢？这也就是一个服务发现的过程，需要能够检索到当前领导者的地址。而分布式环境下的服务发现需要依赖于能够提供一致性的系统，例如 ZooKeeper。
-- 状态持久化：作业恢复需要某些元数据，如 JobGraphs、用户代码 jar、已完成的检查点等，因此需要将这些状态持久化下来。一般这些状态比较大，需要持久化到一个第三方 FileSystem 中，例如 HDFS，前面 `high-availability.storageDir` 就会指定一个持久化路径。
+- 状态持久化：JobManager 恢复需要某些元数据，如作业的 JobGraphs、用户代码 jar、已完成的检查点等，因此需要将这些状态持久化下来。一般这些状态比较大，需要持久化到一个第三方 FileSystem 中，例如 HDFS，前面 `high-availability.storageDir` 就会指定一个持久化路径。
 
-
-
+#### 接口设计
 Flink 源码中高可用的实现是通过接口 `HighAvailabilityServices` 来直接体现的，可以说这个接口直接暴露了高可用所具有的一切能力，我们来看一下都有哪些方法：
 
 ```Java
@@ -113,7 +113,28 @@ public interface HighAvailabilityServices extends ClientHighAvailabilityServices
   - RunningJobsRegistry：任务的状态，例如是处于运行态还是结束态
   - BlobStore：BlobStore 提供了管理下载大文件的能力，比如用户 jar
 
-上面介绍了为高可用功能抽象出来的的接口类，这个接口的 ZooKeeper 实现类就是 `ZooKeeperHaServices`，感兴趣的可以自行研究。
+上面介绍了为高可用功能抽象出来的的接口类，这个接口的 ZooKeeper 实现类就是 `ZooKeeperHaServices`。
+
+#### 基于 ZooKeeper 的 HA 实现
+**1. leader 选举**
+如果 Flink 集群还没有选出主 JobManager，此时多个从 JobManager 首先会通过 ZooKeeper 选出 leader，选出之后这个 leader 会在 ZooKeeper 上创建一个「临时节点」，并且在这个节点上写入该 leader 的 address 和一个 sessionId，写入这个 address 信息是为了之后进行 leader 发现。临时节点路径如下：
+
+```
+/flink/cluster_id_1/resource_manager_lock
+/flink/cluster_id_1/job-id-1/job_manager_lock
+```
+
+为什么要写入到临时节点呢？leader 节点会与 ZooKeeper 保持一个 session 连接，当这个连接断掉时，临时节点就会被 ZooKeeper 删除。因为当 leader 和 ZooKeeper 无连接时，它就不再是 leader 了，因此删掉其 address 信息，其他节点就不会发现一个错误的 leader 地址了。
+
+除了写入 leader 的 address 之外还会写入一个 sessionId，每个 leader 都会生成一个唯一的 sessionId，可以通过这个 sessionId 区分 leader 是否发生了变化。
+
+**2. leader 发现**
+leader 发现也比较简单，它是基于 ZooKeeper 的 Watcher 模式，即可以对 ZooKeeper 的节点进行主动监听，只要节点发生变化，如节点内容变更、节点被删除或者异常信息，都可以通知到 listener。
+
+如需要拿到 JobManager 地址的组件，比如 TaskManager，启动一个 ZooKeeper client 并且监听 JobManager 在 leader 选举写入的临时节点，从而拿到其 address 和 sessionId，之后便可进行通信。若 JobManager 切换了 leader，临时节点上的内容发生变化，此时 TaskManager 也可第一时间被通知到，会拿到新的 JobManager address，保证任务的正常运行。
+
+**3. 持久化数据**
+ZooKeeper 的目的是用来解决分布式系统的一致性问题，并不是做存储，一般不能存储太大的数据。所以 HA 要保存的数据，如果比较小会直接保存在 ZooKeeper，如果比较大则会保存在一个 FileSystem 如 HDFS 中，而 ZooKeeper 仅保存文件在 FileSystem 的路径。
 
 ## Flink on YARN 模式下的高可用有何不同？
 如上所述，一般概念的高可用同时存在多个实例，保证 leader 实例出现问题之后其他「替补」可以及时补上。但是 Flink on YARN 模式下，一个 Flink 集群仅会启动一个 JobManager，不会同时启动多个 JobManager，当 JobManager 出现故障以后也是由 YARN 自动感知并重新启动一个新的 JobManager。
@@ -179,7 +200,9 @@ private int getNumFailedAppAttempts() {
 本文首先介绍了 Flink HA 解决的问题和配置方式，然后讲解了实现 HA 需要实现如下相关服务：
 
 - leader 选举和发现
-- 任务重启需要持久化状态
+- 持久化恢复 JobManager 需要的信息
+
+接着讲解了基于 ZooKeeper 的 HA 实现，核心是先通过 ZooKeeper 选出 leader 节点，然后再利用其 Watcher 机制进行 leader 发现，通过存储在 ZooKeeper 和外部 FileSystem 中的数据来恢复新的 JobManager。
 
 然后我们说明了 Flink on YARN 模式下 HA 的不同之处：任何时候只会存在一个 JobManager 节点，不会有其他备用的 stand-by 节点，高可用是通过 YARN ResourceManager 快速重启 ApplicationMaster（JobManager）实现的，这种 case 下也就不存在多节点竞争 leader 的问题，也不会有并发问题。
 
