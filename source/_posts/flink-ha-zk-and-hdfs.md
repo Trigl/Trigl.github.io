@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "ZooKeeper 故障时如何保证 Flink HA 仍然起作用？"
-subtitle:   "Flink on YARN 模式下使用 HDFS 保障 HA"
+title:      "ZooKeeper 故障时如何保证 Flink JobManager 的高可用？"
+subtitle:   "Flink on YARN 模式下 HDFS + ZooKeeper 实现 HA"
 date:       2022-03-11
 author:     "Ink Bai"
 catalog:    true
@@ -12,7 +12,7 @@ tags:
 ---
 
 > 上篇文章 [Flink JobManager 高可用详解](/2022/02/11/flink-ha/) 介绍了 Flink JobManager 的高可用及其实现，文章后面讨论了一种异常场景：
->**「若 ZooKeeper 发生了比较大的故障，宕机时间比较久，此时如何保障 Flink HA 能够继续起作用？」**
+>**「若 ZooKeeper 发生了比较大的故障，宕机时间比较久，此时如何保障 Flink JobManager 的高可用？」**
 > 带着这个问题，今天进行一些更深入的探索。
 
 ## 移除 ZooKeeper？
