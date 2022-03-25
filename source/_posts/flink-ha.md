@@ -24,7 +24,7 @@ JobManager 的高可用就是用来解决其单点问题，高可用的一般概
 
 ![](/img/content/jobmanager_ha_overview.png)
 
-当 JobManager 挂掉之后，stand-by 节点可以快速恢复一个新的 JobManager，任务的 TaskManager 会发现这个新的 JobManager 的地址并与之恢复通信，TaskManager 可以继续正常运行，任务不会出现断流。
+当 JobManager 挂掉之后，stand-by 节点可以快速恢复一个新的 JobManager，任务可以被重新拉起。在 per-job 模式下作用可能不是很大，但是在 session 模式下 JobManager 高可用是非常重要的。
 
 Flink 提供了两种具体的高可用实现，分别是基于 ZooKeeper 和基于 Kubernetes，本文主要讲解 Flink on YARN 模式下基于 ZooKeeper 的高可用实现。
 
@@ -164,14 +164,12 @@ ZooKeeper 的目的是用来解决分布式系统的一致性问题，并不是�
 
 除了降级的方案，还有其他提升 HA 可用性的方案，例如在 ZK 异常时我们也可以选择 HDFS 进行 leader 选举和发现，后续有时间再具体讲一下。
 
-#### yarn.application-attempts 参数配置的坑
-`yarn.application-attempts` 必须设置一个大于 2 的数，否则可能会发生无法从之前的 container 恢复的情况，会导致启动新的 TaskManager。
+#### yarn.application-attempts 参数
+`yarn.application-attempts` 是指 YARN 可对 AM 进行重启恢复的最大次数，YARN 每次重启 AM 都是一次新的 attempt。需要注意的是 Flink 配置 HA 后这个参数默认设置为 2，这是为什么呢，能不能配置成其他值？
 
-这是为什么呢？YARN 每次重启 AM 都是一次新的 attempt，重启 AM 不一定会重启这个任务其他的 container，例如 AM 上的 Flink JobManager 挂了，下一次 attempt 只重启 AM 和其上的 JobManager，但是保留 TaskManager 所在的 container，这样就可以保证任务不挂、复用资源。
+YARN 中，AM 失败次数必须小于这个值才允许被重启，因此如果这个值设置为 1 那就意味着 AM 只要挂掉就无法再重启了。
 
-而保留除了 AM 之外的其他 container，必须满足：AM 连续失败重启次数 < `yarn.application-attempts` - 1
-
-AM 连续失败重启次数是指在一个固定时间间隔内，AM 失败重启了几次，具体实现在 `org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl#getNumFailedAppAttempts` 内：
+然后要明白一点，AM 连续失败重启次数是指在一个固定时间间隔内，AM 失败重启了几次，具体实现在 `org.apache.hadoop.yarn.server.resourcemanager.rmapp.RMAppImpl#getNumFailedAppAttempts` 内：
 
 ```Java
 private int getNumFailedAppAttempts() {
@@ -192,9 +190,15 @@ private int getNumFailedAppAttempts() {
 }
 ```
 
-可以看到，当前时刻往前 `attemptFailuresValidityInterval` 时间断内进行的 attempt 才会被算到连续重试次数内，Flink 设置的 `attemptFailuresValidityInterval` 默认值是 10s，也就意味着在 10s 内完成上一次 AM 挂掉到这一次 AM 启动，失败次数才会累加 1，正常情况下这么短的时间至多重启一次，因此 AM 连续失败重启次数最多就是 1
+可以看到，当前时刻往前 `attemptFailuresValidityInterval` 时间段内的 attempt 才会被算到连续重试次数内，Flink 设置的 `attemptFailuresValidityInterval` 默认值是 10s，一般这么短时间 AM 失败重启 1 次，因此可以把 `yarn.application-attempts` 设置成 2.
 
-再回到上面说的，要保留除了 AM 之外的其他 container，必须满足：当前 AM 连续失败重启次数 < `yarn.application-attempts` - 1，因此 `yarn.application-attempts` 配置地值最好大于 2
+那么能否设置成大于 2 的值呢？Application 的 AM 挂了之后，YARN 重启 AM 的时候可以选择保留这个 Application 其他的 container，这样可以避免再次申请 container，当参数 `yarn.application-attempts` 设置大于 2 时就可以实现这个效果。听起来很好，但是 Flink 重启 JobManager 之后会恢复所有的 JobMaster，如果此时复用之前的 container，就会在之前的 TaskManager JVM 内重新拉起对应的 task，然而 TaskManager 之前的 task 资源如内存和线程并没有被释放，就会产生资源泄漏问题，如下就是重启 JobManager 多次后 TaskManager 线程数和堆外内存情况：
+
+![](/img/content/tm-thread.jpg)
+
+![](/img/content/tm-direct.jpg)
+
+因此虽然 YARN 提供了复用 container 的策略，但是 Flink 却无法使用，在 session 模式如果 JobManager 发生重启，就会同时重启所有的任务，如果任务数很多的话就存在很大的风险了，这部分可以优化的点是热重启 JobManager，也就是重启 JobManager 不影响 TaskManager。
 
 ## 总结
 本文首先介绍了 Flink HA 解决的问题和配置方式，然后讲解了实现 HA 需要实现如下相关服务：
@@ -211,5 +215,6 @@ private int getNumFailedAppAttempts() {
 ## Refer
 [JobManager 高可用](https://nightlies.apache.org/flink/flink-docs-release-1.14/zh/docs/deployment/ha/overview/)
 [京东Flink优化与技术实践](https://cloud.tencent.com/developer/news/738891)
+[腾讯基于 Flink 的实时流计算平台演进之路](https://toutiao.io/posts/f0mjql/preview)
 [The Number of Maximum Attempts of an Yarn Application in Hadoop Two](http://johnjianfang.blogspot.com/2015/04/the-number-of-maximum-attempts-of-yarn.html)
 [yarn关于app max attempt深度解析，针对长服务appmaster平滑重启](https://www.cnblogs.com/yanghuahui/p/4911276.html)
