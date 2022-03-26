@@ -1,0 +1,12 @@
+---
+layout:     post
+title:      "Flink 增量 Checkpoint 原理"
+#subtitle:   "YARN 架构 && Flink on YARN 简介"
+date:       2022-02-12
+author:     "Ink Bai"
+catalog:    true
+header-style: "text"
+#header-img: "/img/archive-bg.jpg"
+tags:
+    - Flink
+---

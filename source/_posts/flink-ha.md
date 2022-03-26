@@ -50,7 +50,7 @@ high-availability=zookeeper
 high-availability.zookeeper.quorum=localhost:2181
 high-availability.storageDir=hdfs:///flink/ha
 zookeeper.sasl.disable=true
-yarn.application-attempts=4
+yarn.application-attempts=2
 ```
 
 `high-availability.storageDir` 用来指定一个 FileSystem 的路径用于持久化数据，后面会讲到为什么需要配置。
@@ -141,7 +141,7 @@ ZooKeeper 的目的是用来解决分布式系统的一致性问题，并不是�
 
 ![](/img/content/yarn-restart-am.jpg)
 
-尽管 YARN 恢复重启 JobManager 也需要时间，并不能做到真正意义上的 JobManager 永不宕机，但是得益于 YARN 高效的资源调度和分配能力，这个重启的时间会非常快，所以也可以看做是实现了高可用。这种方式的好处是：
+尽管 YARN 恢复重启 JobManager 也需要时间，并不能做到真正意义上的 JobManager 永不宕机，但是得益于 YARN 高效的资源调度和分配能力，这个重启的时间会非常快，所以也可以看作是实现了高可用。这种方式的好处是：
 
 - 日常不需要启动 stand-by JobManager，避免了资源浪费
 - 故障时多个 stand-by 节点同时争夺 leader，可能存在并发问题；管理单个 JobManager 比较简单，不容易出问题
@@ -162,7 +162,7 @@ ZooKeeper 的目的是用来解决分布式系统的一致性问题，并不是�
 
 此时我们就需要准备作业启动时的降级方案了，在 ZK 不可用时，应该做到作业的启动不受影响，降级到不开启 HA 的启动方式，通过指定 checkpoint 路径进行启动。
 
-除了降级的方案，还有其他提升 HA 可用性的方案，例如在 ZK 异常时我们也可以选择 HDFS 进行 leader 选举和发现，后续有时间再具体讲一下。
+除了降级的方案，还有其他提升 HA 可用性的方案，例如在 ZK 异常时我们也可以选择 HDFS 进行 leader 选举和发现，具体见 [ZooKeeper 故障时如何保证 Flink JobManager 的高可用？](/2022/03/11/flink-ha-zk-and-hdfs/)
 
 #### yarn.application-attempts 参数
 `yarn.application-attempts` 是指 YARN 可对 AM 进行重启恢复的最大次数，YARN 每次重启 AM 都是一次新的 attempt。需要注意的是 Flink 配置 HA 后这个参数默认设置为 2，这是为什么呢，能不能配置成其他值？

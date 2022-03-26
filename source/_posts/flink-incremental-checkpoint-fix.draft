@@ -1,0 +1,12 @@
+---
+layout:     post
+title:      "解决 Flink 增量 Checkpoint 的问题"
+subtitle:   "实现 Full Checkpoint"
+date:       2022-02-12 01:00:00
+author:     "Ink Bai"
+catalog:    true
+header-style: "text"
+#header-img: "/img/archive-bg.jpg"
+tags:
+    - Flink
+---
