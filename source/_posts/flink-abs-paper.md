@@ -86,17 +86,17 @@ Flink 可以设置多种语义保证，对于那些无法容忍延迟但是可�
 #### Flink 1.11 新特性：非对齐 Checkpoint
 对于高反压的场景，反压和对齐 checkpoint 可能会互相影响，比如流量突增导致反压，由于 barrier 到达依赖于数据及时向下游流动，这样就会导致 barrier 对齐时间变长，checkpoint 时间变长。当 checkpoint 时间变长后，算子的 input buffer 很容易就满了，又会反过来加剧反压。这样极端情况可能导致数据延迟非常久。
 
-因此 Flink 1.11 实现了新的非对齐 Checkpoint 来解决这个问题，基本原理还是源于 Chandy-Lamport 算法，就是各个节点不再对其多个上游输入进行 barrier 对齐，只要接收到上游 barrier 之后就开始本身的状态，然后立即向下游广播 barrier，不会阻塞数据流。当有其他上游消息进入的时候，由于其他上游 barrier 还没到，就需要保存 barrier 到达之前的这些消息作为 snapshot 的一部分，保证通过 Checkpoint 恢复的时候能够拿到所有的数据。整体来看非对齐 Chekcpoint 就是用空间换时间。
+因此 Flink 1.11 实现了新的非对齐 Checkpoint 来解决这个问题，基本原理还是源于 Chandy-Lamport 算法，就是各个节点不再对其多个上游输入进行 barrier 对齐，只要接收到上游 barrier 之后就开始进行 snapshot，先保存本身的状态，然后立即向下游广播 barrier，不会阻塞数据流。当有其他上游消息进入的时候，由于其他上游 barrier 还没到，因此还需要保存 barrier 到达之前的这些消息作为 snapshot 的一部分，保证通过 Checkpoint 恢复的时候能够拿到所有的数据。整体来看非对齐 Chekcpoint 就是用空间换时间。
 
 显而易见，这样带来的问题就是持久化的数据变多，对磁盘的压力增大，同时作业的恢复时间也会变长。因此没有哪种方案能够完美解决所有问题，非对齐 Checkpoint 可能更适合那些容易产生高反压的复杂作业，对于只是做 ETL 的简单作业而言，更轻量级的对齐 Checkpoint 显然是更优选。
 
 ## 总结
-本文详细介绍了 Flink Checkpoint 的实现基础，ABS 算法，包含的内容如下：
+本文详细介绍了 Flink Checkpoint 的实现基础 ABS 算法，包含的内容如下：
 
 - ABS 实现原理
   - barrier 对齐：节点需要等待所有上游节点 barrier 都到达之后再开始进行 snapshot
-  - 异步：后台异步写入状态，不阻塞数据处理主流程
   - Checkpoint 流程：JobManager 协调器定期触发 Checkpoint，向所有 source 算子发送 barrier，barrier 一路向下传播到 sink 节点，非 source 算子节点通过 barrier 对齐机制做 snapshot，snapshot 仅保存自身状态即可，不需要保存 channel 中的数据，当所有算子的所有节点 snapshot 都成功之后，向 JobManager ack，checkpoint 完成。
+  - 异步：后台异步写入状态，不阻塞数据处理主流程
 - 解决 barrier 对齐导致的延迟问题
   - barrier 对齐是为了实现 exactly-once，只要 Flink 设置为 at-least-once 就不会再进行 barrier 对齐，带来的问题就是数据重复。
   - Flink 1.11 实现了非对齐 Checkpoint，完整实现了 Chandy-Lamport 算法，通过空间换时间的方式使 Checkpoint 不再阻塞数据流，非常适合高反压作业。
