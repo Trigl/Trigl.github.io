@@ -226,11 +226,11 @@ ExecutionGraph 是在创建 JobMaster 时就构建完成的，之后就可以被
 
 这个物理执行图实际上是 TaskManager 内 task 的执行情况，从中我们可以看到 Task 的关键数据结构：
 
-- Task：算子实际执行的子任务
-- ResultPartitioner：可以看做是 Task 数据的发送缓存层，而 Task 是 ResultPartitioner 的生产者。
-- ResultSubpartition：定义了子分区，记录会基于不同的 StreamPartitioner 选择不同的子分区分发，例如 ForwardPartitioner 会固定选择首个子分区，而 RebalancePartitioner 会轮询选择所有子分区分发。
-- InputGate：可以看做是 Task 的接收缓冲层，也可以把它看做是 ResultPartitioner 的消费者。
-- InputChannel：用来实际消费子分区 ResultSubpartition 的数据，与其一一对应。
+- Task：Execution 被调度后在分配的 TaskManager 中启动对应的 Task，Task 包裹了具有用户执行逻辑的 operator。
+- ResultPartitioner：可以看做是 Task 数据的发送缓冲层，而 Task 是 ResultPartitioner 的生产者。
+- ResultSubpartition：是 ResultPartition 的一个子分区，其其数目要由下游消费 Task 数和 DistributionPattern 来决定。记录会基于不同的 StreamPartitioner 选择不同的子分区分发，例如 ForwardPartitioner 会固定选择首个子分区，而 RebalancePartitioner 会轮询选择所有子分区分发。
+- InputGate：可以看做是 Task 的接收缓冲层，也可以把它看做是 ResultPartitioner 的消费者，每个 InputGate 消费了一个或多个的 ResultPartition。
+- InputChannel：每个 InputGate 会包含一个以上的 InputChannel，用来实际消费子分区 ResultSubpartition 的数据，与其一一相连。
 
 ## 总结
 本文介绍了一个 Flink 作业，从 API 层面，到 Client 端提交，到 JobManager 调度运行起来，其 Graph 的转换会经过下面几个阶段：
