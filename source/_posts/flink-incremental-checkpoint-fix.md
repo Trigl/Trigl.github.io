@@ -36,7 +36,7 @@ tags:
 - 由于要从多个 checkpoint 中读取恢复数据，任务恢复时间变久
 - 尽管 checkpoint 自身有清理机制，但由于 checkpoint 之间存在依赖关系，旧的 checkpoint 可能并不会被删除，文件数会膨胀
 
-例如我们有一个大状态作业，整个 checkpoint 文件大小超过 10T，shard 共享文件数多达 20W 个，单个算子的文件大小超过 1T
+例如我们有一个大状态作业，整个 checkpoint 文件大小超过 10T，shared 共享文件数多达 20W 个，单个算子的文件大小超过 1T
 
 ![](/img/content/state-size.jpg)
 
