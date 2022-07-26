@@ -201,7 +201,7 @@ JobMaster 会根据 JobGraph 生成对应的 ExecutionGraph，ExecutionGraph 是
 ExecutionGraph 的核心数据结构：
 
 - ExecutionJobVertex：与 JobGraph 中的 JobVertex 对等
-- ExecutionVertex：是 ExecutionJobVertex 并行执行的子任务，对应后续实际运行的 Task，每个 ExecutionJobVertex 内 ExecutionJobVertex 的个数就是算子的并行度
+- ExecutionVertex：是 ExecutionJobVertex 并行执行的子任务，对应后续实际运行的 Task，每个 ExecutionJobVertex 内 ExecutionVertex 的个数就是算子的并行度
 - Execution：对 ExecutionVertex 的一次实际执行，每次执行都会生成新的 Execution，由 ExecutionAttemptId 来唯一标识
 - IntermediateResult：与 JobGraph 中的 IntermediateDataSet 对等
 - IntermediateResultPartition：可以看做是 IntermediateResult 并行化下的一个子结构，用来表示上面 ExecutionVertex 的一个输出分区
