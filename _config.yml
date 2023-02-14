@@ -80,10 +80,6 @@ featured-condition-size: 2              # A tag will be featured if the size of 
 # Friends
 friends: [
     {
-        title: "写点什么",
-        href: "http://hongjiang.info"
-    },
-    {
         title: "编程小梦",
         href: "https://blog.bcmeng.com"
     },
@@ -94,18 +90,6 @@ friends: [
     {
         title: "美团技术团队",
         href: "https://tech.meituan.com"
-    },
-    {
-        title: "有态度的HBase/Spark/BigData",
-        href: "http://hbasefly.com"
-    },
-    {
-        title: "Laurence的技术博客",
-        href: "https://blog.csdn.net/bluishglc"
-    },
-    {
-        title: "Throwable",
-        href: "https://www.throwable.club/"
     },
     {
         title: "阮一峰的个人网站",
