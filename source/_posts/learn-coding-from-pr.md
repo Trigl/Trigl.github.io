@@ -55,7 +55,7 @@ tags:
 ![](/img/content/screenshot-20230223-000343.png)
 
 通过加限制条件避免频繁执行某一逻辑：
-![](source/img/content/screenshot-20230223-002936.png)
+![](/img/content/screenshot-20230223-002936.png)
 
 #### `log.error` 也可以打堆栈！
 ![](/img/content/screenshot-20230223-001513.png)
